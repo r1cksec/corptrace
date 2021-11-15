@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# stop on error
+set -e
+# stop on undefined
+set -u
+
+if [ ${#} -ne 1 ]
+then
+    echo usage ${0} githubUser
+    exit
+fi
+
+res=$(curl -s "https://github.com/orgs/${1}/people")
+tempFile="/tmp/gitUsersOfOrga"
+allRepos=""
+
+# check if user or organisation
+if [[ ${res} == *"Not Found"* ]]
+then
+    userRepos=$(curl -s "https://github.com/${1}?tab=repositories")
+    allRepos=$(echo ${userRepos} | tr " " "\n" | grep 'href="/' | grep "${1}" | awk -F '"' '{print $2}' | awk -F '/' '{print "https://github.com/"$2"/"$3}' | grep -v "?" | sort -u | tail -n +2)
+    allRepos=$(echo ${allRepos} | tr " " "\n")
+
+    for repo in ${allRepos}
+    do
+        echo ${repo}
+    done
+else
+    echo ${res} | tr " " "\n" | grep -i 'id="member-' | awk -F 'id="member-' '{print $2}' | awk -F '"' '{print "https://github.com/"$1}' > ${tempFile}
+
+    # -r prevents backslashes from being interpreted, -n reads last line
+    while read -r currUser || [[ -n "${currUser}" ]]
+    do
+        userRepos=$(curl -s "${currUser}?tab=repositories")
+        baseName=$(basename ${currUser})
+        currRepos=$(echo ${userRepos} | tr " " "\n" | grep 'href="/' | grep "${baseName}" | awk -F '"' '{print $2}' | awk -F '/' '{print "https://github.com/"$2"/"$3}' | grep -v "?" | sort -u | tail -n +2)
+
+        for repo in ${currRepos}
+        do
+            echo ${repo}
+        done
+
+    done < ${tempFile}
+fi
+

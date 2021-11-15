@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import shutil
+import pathlib
+from os.path import expanduser
+
+# check amount of passed arguments
+if (len(sys.argv) != 2):
+    print("usage: {} pathToRepositoryUrlFile ".format(sys.argv[0]))
+    sys.exit(1)
+
+tempDir = "/tmp/allGithubRepoDir/"
+
+if (not os.path.exists(tempDir)):
+    os.makedirs(tempDir)
+
+allKeyWords = ["\"ftp:\"", "\"password=\"", "\"passwort=\"", "\"ssh:\"", "\"smb:\""]
+
+allFileExtensions = ["**/*.conf", "**/*.cnf", "**/*.config", "**/*.kdb", "**/*.kdbc", "**/*.key", "**/*.p12", "**/*.pem", "**/*.rdp", "**/*.remmina", "**/*.txt", "**/*.vdi"]
+
+class bcolors:
+    green = '\033[92m'
+    yellow = "\033[1;33m"
+    ends= '\033[0m'
+
+with open(sys.argv[1]) as allGithubrepos:
+    for currRepo in allGithubrepos:
+        repoName = os.path.basename(os.path.abspath(currRepo))
+        repoName = repoName.replace("\n","")
+        print("")
+        print(f"{bcolors.green}#######################################{bcolors.ends}")
+        print(currRepo)
+        os.system("git clone " + currRepo.replace("\n","") + " " + tempDir + repoName + " > /dev/null")
+
+        fileDir = tempDir + repoName
+
+        print(f"{bcolors.yellow}Files:{bcolors.ends}")
+        for fileExt in allFileExtensions:
+            for fil in list(pathlib.Path(fileDir).glob(fileExt)):
+                print(fil)
+
+        print("")
+        print(f"{bcolors.yellow}Keywords:{bcolors.ends}")
+        for keyWord in allKeyWords:
+            # only print lines less 100 char
+            os.system("grep -iR --color " + keyWord + " " + tempDir + repoName + "/* | awk '{print substr($0,1,300) }'")
+

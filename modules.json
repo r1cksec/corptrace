@@ -1,0 +1,108 @@
+[
+    {
+        "name": "amass-intel-domain",
+        "riskLevel": "2",
+        "syntax": "amass intel -d <domain> -whois > <outputFile> 2>&1"
+    },
+    {
+        "name": "amass-intel-asn",
+        "riskLevel": "2",
+        "syntax": "amass intel -asn <asnNumber> > <outputFile> 2>&1"
+    },
+    {
+        "name": "amass-osint",
+        "riskLevel": "2",
+        "syntax": "amass enum -passive -d <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "amass-reverse-lookup-cidr",
+        "riskLevel": "2",
+        "syntax": "amass intel -ip -cidr <ipRangeCidr> > <outputFile> 2>&1"
+    },
+    {
+        "name": "amass-reverse-lookup-ranges",
+        "riskLevel": "2",
+        "syntax": "amass intel -ip -addr <ipRange> > <outputFile> 2>&1"
+    },
+    {
+        "name": "cert-san-finder-range",
+        "riskLevel": "3",
+        "syntax": "get-cert-domains-from-ip-range <ipRange> > <outputFile> 2>&1"
+    },
+    {
+        "name": "dnsrecon-zonetransfer",
+        "riskLevel": "3",
+        "syntax": "dnsrecon -d <domain> -t axfr > <outputFile> 2>&1"
+    },
+    {
+        "name": "dnsrecon-zonewalk",
+        "riskLevel": "3",
+        "syntax": "dnsrecon -d <domain> -t zonewalk > <outputFile> 2>&1"
+    },
+    {
+        "name": "favfreak",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | favfreak > <outputFile> 2>&1"
+    },
+    {
+        "name": "get-asn",
+        "riskLevel": "2",
+        "syntax": "ip=$(host <domain> | awk -F 'has address' '{print $2}' | sed 's/ //g' | head -n 1); whois $ip | grep -i origin | awk -F ' ' '{print $2}' > <outputFile> 2>&1"
+    },
+    {
+        "name": "get-github-repos",
+        "riskLevel": "2",
+        "syntax": "get-github-repos <githubUser> > <outputFile> 2>&1"
+    },
+    {
+        "name": "get-mails",
+        "riskLevel": "2",
+        "syntax": "get-mails <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "grep-inside-github-repos",
+        "riskLevel": "2",
+        "syntax": "grep-inside-github-repos <githubRepositoriesFile> > <outputFile> 2>&1"
+    },
+    {
+        "name": "gitleaks",
+        "riskLevel": "2",
+        "syntax": "gitleaks-linux-amd64 --repo-url=<githubRepository> -v > <outputFile> 2>&1"
+    },
+    {
+        "name": "hakrawler",
+        "riskLevel": "2",
+        "syntax": "echo \"https://<domain>\" | hakrawler -d 1 -insecure > <outputFile> 2>&1"
+    },
+    {
+        "name": "massdns",
+        "riskLevel": "4",
+        "syntax": "cat REPLACEME/wordlists/subdomains-top1million-110000.txt | awk -F \" \" '{print $1\".<domain>\"}' | massdns -r REPLACEME/wordlists/resolvers.txt -t A -o S -w <outputFile> > /dev/null 2>&1"
+    },
+    {
+        "name": "scanrepo",
+        "riskLevel": "1",
+        "syntax": "cd <localGithubRepository> ; git log -p | scanrepo > <outputFile> 2>&1"
+    },
+    {
+        "name": "subfinder",
+        "riskLevel": "2",
+        "syntax": "subfinder --silent -d <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "tld-discovery",
+        "riskLevel": "1",
+        "syntax": "tld-discovery <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "trufflehogs",
+        "riskLevel": "2",
+        "syntax": "trufflehog --regex --entropy=False <githubRepository> > <outputFile> 2>&1"
+    },
+    {
+        "name": "waybackurls",
+        "riskLevel": "1",
+        "syntax": "echo <domain> | waybackurls | awk -F 'http' '{print $2}' | cut -d '/' -f 3 | cut -d ':' -f 1 | sort -u > <outputFile> 2>&1"
+    }
+]
+
