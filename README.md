@@ -137,17 +137,17 @@ out
 **Sources**
 
 * <https://github.com/OWASP/Amass>
-* <https://github.com/r1cksec/autorec/scripts/get-cert-domains-from-ip-range>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/get-cert-domains-from-ip-range>
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
-* <https://github.com/r1cksec/autorec/scripts/get-github-repos>
-* <https://github.com/r1cksec/autorec/scripts/get-mails>
-* <https://github.com/r1cksec/autorec/scripts/grep-inside-github-repos>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/get-github-repos>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/get-mails>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/grep-inside-github-repos>
 * <https://github.com/hakluke/hakrawler>
 * <https://github.com/blechschmidt/massdns>
 * <https://github.com/UKHomeOffice/repo-security-scanner>
 * <https://github.com/projectdiscovery/subfinder>
-* <https://github.com/r1cksec/autorec/scripts/tld-discovery>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/tld-discovery>
 * <https://github.com/trufflesecurity/truffleHog>
 * <https://github.com/tomnomnom/waybackurls>
 
