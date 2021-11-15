@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+# for more infos: http://allselenium.info/python-selenium-commands-cheat-sheet-frequently-used/
+# downlaod chrome driver - https://sites.google.com/a/chromium.org/chromedriver/downloads
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+import time
+import sys
+
+# check amount of passed arguments
+if (len(sys.argv) != 2):
+    print("usage: {} domain".format(sys.argv[0]))
+    print("Query phonebook.cz for e-mail addresses")
+    sys.exit(1)
+
+# initiate browser
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+chromeDriver = "chromedriver"
+driver = webdriver.Chrome(options = options, executable_path=chromeDriver)
+
+# get URL
+driver.get("https://phonebook.cz")
+
+# select item/element
+domain = driver.find_element_by_id("domain")
+domain.send_keys(sys.argv[1])
+time.sleep(1)
+domain.send_keys(Keys.RETURN)
+
+time.sleep(1)
+result = driver.find_element_by_id("result")
+mails = result.get_attribute('innerHTML')
+
+mailsSplit = mails.split('target="_blank">')
+
+skipFirst = "1"
+
+for mail in mailsSplit:
+    if (skipFirst == "1"):
+        skipFirst = "0"
+        continue
+
+    currMailSplit = mail.split("</a>")
+    print(currMailSplit[0])
+
+driver.close()
+
