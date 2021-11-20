@@ -272,7 +272,7 @@ class threadForCommand(threading.Thread):
            resolveAbleTlds.append(currDomain[1])
 
 
-# run 3 threads in parallel
+# run 11 threads in parallel
 while tlds:
     if (threading.active_count() <= 10):
         randInd = random.randint(0,len(tlds)-1)
