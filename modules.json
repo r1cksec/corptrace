@@ -55,11 +55,6 @@
         "syntax": "get-github-repos <githubUser> > <outputFile> 2>&1"
     },
     {
-        "name": "get-mails",
-        "riskLevel": "2",
-        "syntax": "get-mails <domain> > <outputFile> 2>&1"
-    },
-    {
         "name": "grep-inside-github-repos",
         "riskLevel": "2",
         "syntax": "grep-inside-github-repos <githubRepositoriesFile> > <outputFile> 2>&1"

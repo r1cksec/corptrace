@@ -122,8 +122,6 @@ out
 │   └── dnsrecon-zonewalk_example.com
 ├── get-asn
 │   └── get-asn_example.com
-├── get-mails
-│   └── get-mails_example.com
 ├── hakrawler
 │   └── hakrawler_example.com
 ├── subfinder
@@ -141,7 +139,6 @@ out
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-github-repos>
-* <https://github.com/r1cksec/autorec/tree/master/scripts/get-mails>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/grep-inside-github-repos>
 * <https://github.com/hakluke/hakrawler>
 * <https://github.com/blechschmidt/massdns>
