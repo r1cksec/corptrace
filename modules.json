@@ -27,7 +27,7 @@
     {
         "name": "cert-san-finder-range",
         "riskLevel": "3",
-        "syntax": "get-cert-domains-from-ip-range <ipRange> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/get-cert-domains-from-ip-range <ipRange> > <outputFile> 2>&1"
     },
     {
         "name": "dnsrecon-zonetransfer",
@@ -52,12 +52,17 @@
     {
         "name": "get-github-repos",
         "riskLevel": "2",
-        "syntax": "get-github-repos <githubUser> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/get-github-repos <githubUser> > <outputFile> 2>&1"
+    },
+    {
+        "name": "get-ips-from-asn",
+        "riskLevel": "1",
+        "syntax": "whois -h whois.radb.net -- '-i origin <asnNumber>' | grep -E '([0-9.]+){4}/[0-9]+' -C 1 > <outputFile> 2>&1"
     },
     {
         "name": "grep-inside-github-repos",
         "riskLevel": "2",
-        "syntax": "grep-inside-github-repos <githubRepositoriesFile> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/grep-inside-github-repos <githubRepositoriesFile> > <outputFile> 2>&1"
     },
     {
         "name": "gitleaks",
@@ -87,7 +92,7 @@
     {
         "name": "tld-discovery",
         "riskLevel": "1",
-        "syntax": "tld-discovery <domain> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/tld-discovery <domain> > <outputFile> 2>&1"
     },
     {
         "name": "trufflehogs",
