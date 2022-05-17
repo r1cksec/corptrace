@@ -1,3 +1,5 @@
+#!/bin/bash
+
 pathToResults="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "Please enter path to result directory:"
@@ -11,4 +13,5 @@ cat ${pathToResults}/hakrawler/* | awk -F "http" '{print $2}' | cut -d "/" -f 3 
 cat ${pathToResults}/subfinder/* | grep -v "INF" | grep -v "WRN" | sort -u >> ${pathToResults}/all-domains.txt
 cat ${pathToResults}/waybackurls/* | sort -u >> ${pathToResults}/all-domains.txt
 cat ${pathToResults}/cert-san-finder-range/* | grep -v "Final Domain" | grep -v nmap | sort -u >> ${pathToResults}/all-domains.txt
+cat ${pathToResults}/hakrawler-range/* | awk -F "http" '{print $2}' | cut -d "/" -f 3 | sort -u | grep -E -v '([0-9]*\.){3}[0-9]*' >> ${pathToResults}/all-domains.txt
 
