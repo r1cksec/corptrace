@@ -18,7 +18,7 @@ grep "Ports" /tmp/${timeStamp}-nmap-out | awk -F " " '{print $2" "$5}' | cut -d 
 while read -r line 
 do
     ip=$(echo ${line} | cut -d " " -f 1)
-    # if str1 contains str2 substring
+
     if [[ ${line} == *" 80"* ]]
     then
         echo "http://${ip}" | hakrawler -u -s -insecure

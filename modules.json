@@ -77,7 +77,12 @@
     {
         "name": "hakrawler",
         "riskLevel": "2",
-        "syntax": "echo \"https://<domain>\" | hakrawler -d 1 -insecure > <outputFile> 2>&1"
+        "syntax": "echo \"https://www.<domain>\" | hakrawler -insecure > <outputFile> 2>&1"
+    },
+    {
+        "name": "hakrawler-range",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/hakrawler-on-range <ipRange> > <outputFile> 2>&1"
     },
     {
         "name": "massdns",
