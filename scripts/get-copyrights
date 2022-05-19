@@ -6,7 +6,6 @@ then
     exit
 fi
 
-# -r prevents backslashes from being interpreted, -n reads last line
 while read -r url
 do
     echo -n "[${url}]  "
