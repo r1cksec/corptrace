@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ ${#} -ne 1 ]
+then
+    echo usage urlFile
+    exit
+fi
+
+# -r prevents backslashes from being interpreted, -n reads last line
+while read -r url
+do
+    echo -n "[${url}]  "
+    curl -s -k -L ${url} | grep -ioE "[-\&;_[:blank:],\.[:alnum:]]*©[-\&;_[:blank:],\.[:alnum:]]*" | python3 -c 'import html,sys; print(html.unescape(sys.stdin.read()), end="")'
+	echo ""
+done < ${1}
+

@@ -42,12 +42,17 @@
     {
         "name": "favfreak",
         "riskLevel": "2",
-        "syntax": "cat <domainFile> | favfreak > <outputFile> 2>&1"
+        "syntax": "cat <urlFile> | favfreak > <outputFile> 2>&1"
     },
     {
         "name": "get-asn",
         "riskLevel": "2",
         "syntax": "ip=$(host <domain> | awk -F 'has address' '{print $2}' | sed 's/ //g' | head -n 1); whois $ip | grep -i origin | awk -F ' ' '{print $2}' > <outputFile> 2>&1"
+    },
+    {
+        "name": "get-copyrights",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/get-copyrights <urlFile> > <outputFile> 2>&1"
     },
     {
         "name": "get-dns-records",

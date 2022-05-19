@@ -138,6 +138,7 @@ out
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-cert-domains-from-ip-range>
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/get-copyrights>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-dns-records>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-github-repos>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/grep-inside-github-repos>
