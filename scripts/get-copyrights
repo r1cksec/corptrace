@@ -6,10 +6,26 @@ then
     exit
 fi
 
+timeStamp=$(date +"%Y-%m-%d_%T")
+
+
+# -r prevents backslashes from being interpreted, -n reads last line
 while read -r url
 do
-    echo -n "[${url}]  "
-    curl -s -k -L ${url} | grep -ioE "[-\&;_[:blank:],\.[:alnum:]]*©[-\&;_[:blank:],\.[:alnum:]]*" | python3 -c 'import html,sys; print(html.unescape(sys.stdin.read()), end="")'
-	echo ""
+    echo -n "[${url}]  " >> /tmp/get-copyrights-${timeStamp}
+    curl -s -k -L ${url} | grep -ioE "[-\&;_[:blank:],\.[:alnum:]]*©[-\&;_[:blank:],\.[:alnum:]]*" | python3 -c 'import html,sys; print(html.unescape(sys.stdin.read()), end="")' >> /tmp/get-copyrights-${timeStamp}
+	echo "" >> /tmp/get-copyrights-${timeStamp}
+	echo "${url} - done"
 done < ${1}
+
+echo ""
+echo "#################"
+echo ""
+
+sed -i '/^[[:space:]]*$/d' /tmp/get-copyrights-${timeStamp}
+sed -i '/^[[:space:]]*$/d' /tmp/get-copyrights-${timeStamp}
+sed -i '/©/!d' /tmp/get-copyrights-${timeStamp}
+cat /tmp/get-copyrights-${timeStamp} | awk -F "]" '{print $2" "$1"]"}' | sed 's/[ ][ ]*/ /g' | sort
+
+rm /tmp/get-copyrights-${timeStamp}
 
