@@ -195,7 +195,7 @@ def createCommandFromTemplate(allExecutableModules):
 
             # special case for path variables
             if ("file" in currArg.lower()):
-                basenameOfFile = os.path.basename(currArg)
+                basenameOfFile = os.path.basename(vars(args)[currArg])
                 exeString = exeString.replace("<" + currArg + ">", 
                                               vars(args)[currArg])
                 modOutput = modOutput + "_" + basenameOfFile.replace(":","-")
