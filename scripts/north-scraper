@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+import sys
+import time
+import urllib.parse
+
+if (len(sys.argv) != 3):
+    print("usage: {} northDataUrl limitQueries".format(sys.argv[0]))
+    sys.exit(1)
+
+options = webdriver.ChromeOptions()
+options.add_argument("headless")
+driverPath = Service("REPLACEMEDRIVER")
+driver = webdriver.Chrome(service = driverPath, options = options)
+
+nodeNames = []
+nodeHref = []
+nodeHrefDone = []
+
+startNodeSplit = sys.argv[1].split("/")
+startNodeName = startNodeSplit[3].split(",")
+cleanStartNodeName = urllib.parse.unquote(startNodeName[0]).replace("+" ," ")
+
+startNodeHref = startNodeSplit[3] + "/" + startNodeSplit[4]
+nodeNames.append(cleanStartNodeName)
+nodeHref.append("/" + startNodeHref)
+nodeHrefDone.append("/" + startNodeHref)
+
+print("Query /" + startNodeHref)
+
+driver.get(sys.argv[1])
+time.sleep(10)
+nodes = driver.find_elements_by_class_name("node")
+
+for node in nodes:
+    icon = node.text[0].replace("\n","")
+    name = node.text[2:]
+    href = node.get_attribute("href")
+
+    if (icon == "\uf1ad"):
+        if (href not in nodeHref):
+           if (href is not None):
+               nodeNames.append(urllib.parse.unquote(name).replace("+", " "))
+               nodeHref.append(href["animVal"])
+
+counter = 1
+
+while 1:
+    allNodesDoneFlag = "1"
+
+    for h in nodeHref:
+        if (h in nodeHrefDone):
+            continue
+        else:
+            print("Query " + h)
+            counter = counter + 1
+
+            if (counter == int(sys.argv[2])):
+                sortedNames = sorted(set(nodeNames))
+                print("\n\n##### Results #####\n")
+                for n in sortedNames:
+                    print(n)
+                driver.close()
+                exit(0)
+
+            allNodesDoneFlag = "0"
+            nodeHrefDone.append(h)
+
+            driver.get("https://www.northdata.com" + h)
+            time.sleep(10)
+
+            nodes = driver.find_elements_by_class_name("node")
+
+            for node in nodes:
+                icon = node.text[0].replace("\n","")
+                name = node.text[2:]
+                href = node.get_attribute("href")
+
+                if (icon == "\uf1ad"):
+                    if (href is not None):
+                        if (href["animVal"] not in nodeHref):
+                            nodeNames.append(urllib.parse.unquote(name).replace("+", " "))
+                            nodeHref.append(href["animVal"])
+
+    if (allNodesDoneFlag == "1"):
+        print("\n\n##### Results #####\n")
+        sortedNames = sorted(set(nodeNames))
+        for n in sortedNames:
+            print(n)
+        driver.close()
+        exit(0)
+

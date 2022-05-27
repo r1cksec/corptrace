@@ -16,6 +16,7 @@ If a module is not installed, an error is issued and the next module is executed
 
 ## Install
 The setup script will only read the absolute path of the script location and insert this path into the `modules.json` file.
+Furthermore the script will prompt you for the full path to your selenium driver (used for get-mails and north-scraper).
 
 ```
 bash setup.sh
@@ -64,8 +65,9 @@ For example, the following module would add the value `domain (-d)` to the Argpa
 
 ## Help
 ```
-usage: autorec.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES [EXCLUDEMODULES ...]]] [-im [INCLUDEMODULES [INCLUDEMODULES ...]]] [-an ASNNUMBER] [-d DOMAIN]
-                  [-df DOMAINFILE] [-grf GITHUBREPOSITORIESFILE] [-gr GITHUBREPOSITORY] [-gu GITHUBUSER] [-ir IPRANGE] [-irc IPRANGECIDR] [-lgr LOCALGITHUBREPOSITORY]
+usage: autorec.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES [EXCLUDEMODULES ...]]] [-im [INCLUDEMODULES [INCLUDEMODULES ...]]]
+                  [-an ASNNUMBER] [-d DOMAIN] [-grf GITHUBREPOSITORIESFILE] [-gr GITHUBREPOSITORY] [-gu GITHUBUSER] [-ir IPRANGE] [-irc IPRANGECIDR] [-lgr LOCALGITHUBREPOSITORY]
+                  [-ndu NORTHDATAURL] [-uf URLFILE]
 
 Automatic reconaissance.
 Please dont be evil.
@@ -77,8 +79,8 @@ Print matching modules for a given domain:
 Execute modules for given domain:
 ./autorec.py -o /tmp/output -d example.com -e
 
-Only execute modules that contains at least one given substring in their name:
-./autorec.py -o /tmp/output -d example.com -im amass -rl 4 -e
+Only execute modules that contains at least one of the given substring in their name:
+./autorec.py -o /tmp/output -d example.com -im amass -ip 192.168.1.3-9 -e
 
 Execute modules with higher risk level, use more threads and increase timeout:
 ./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 900
@@ -101,13 +103,14 @@ optional arguments:
                         modules that will be included
   -an ASNNUMBER, --asnNumber ASNNUMBER
   -d DOMAIN, --domain DOMAIN
-  -df DOMAINFILE, --domainFile DOMAINFILE
   -grf GITHUBREPOSITORIESFILE, --githubRepositoriesFile GITHUBREPOSITORIESFILE
   -gr GITHUBREPOSITORY, --githubRepository GITHUBREPOSITORY
   -gu GITHUBUSER, --githubUser GITHUBUSER
   -ir IPRANGE, --ipRange IPRANGE
   -irc IPRANGECIDR, --ipRangeCidr IPRANGECIDR
   -lgr LOCALGITHUBREPOSITORY, --localGithubRepository LOCALGITHUBREPOSITORY
+  -ndu NORTHDATAURL, --northDataUrl NORTHDATAURL
+  -uf URLFILE, --urlFile URLFILE
 ```
 
 ## Demo
@@ -141,6 +144,8 @@ out
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-copyrights>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-dns-records>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-github-repos>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/get-mails
+* <https://github.com/r1cksec/autorec/tree/master/scripts/north-scraper
 * <https://github.com/r1cksec/autorec/tree/master/scripts/grep-inside-github-repos>
 * <https://github.com/zricethezav/gitleaks>
 * <https://github.com/hakluke/hakrawler>
