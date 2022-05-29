@@ -263,7 +263,8 @@ class threadForModule(threading.Thread):
 """
 # define and configure static arguments
 argumentParser = argparse.ArgumentParser(description="""Automatic reconaissance.
-Please dont be evil.
+Use at your own risk.
+I do not take any responsibility for your actions!
 
 Basic usage:
 Print matching modules for a given domain:

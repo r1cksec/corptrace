@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+
+import sys
+import time
+from selenium import webdriver                        
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.keys import Keys
+
+# check amount of passed arguments
+if (len(sys.argv) != 2):
+    print("usage: {} copyright".format(sys.argv[0]))
+    sys.exit(1)
+
+driverPath = Service("REPLACEMEDRIVER")
+options = webdriver.ChromeOptions()
+options.add_argument("headless")
+driver = webdriver.Chrome(service = driverPath, options = options)
+
+url = "https://www.google.com/search?q=%22" + sys.argv[1] + "%22"
+driver.get(url)
+time.sleep(4)
+
+driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+time.sleep(4)
+
+elems = driver.find_elements_by_xpath("//a[@href]")
+for elem in elems:
+    hrefContent = elem.get_attribute("href")
+    if ("google" in hrefContent) or ("javascript" in hrefContent):
+        continue
+    else:
+        print(elem.get_attribute("href"))
+
+url = "https://www.google.com/search?q=%22" + sys.argv[1] + "%22&start=10"
+
+driver.get(url)
+time.sleep(4)
+
+elems = driver.find_elements_by_xpath("//a[@href]")
+for elem in elems:
+    hrefContent = elem.get_attribute("href")
+    if ("google" in hrefContent) or ("javascript" in hrefContent):
+        continue
+    else:
+        print(elem.get_attribute("href"))
+
+driver.close()
+
+

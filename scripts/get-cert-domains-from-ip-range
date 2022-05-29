@@ -14,7 +14,7 @@ outFile = "/tmp/nmap-ssl-cert-" + sys.argv[1].replace("/","_") + ".nmap "
 nmapCommand2 = sys.argv[1] + " > /dev/null"
 os.system(nmapCommand + outFile + nmapCommand2)
 
-# used to sort resulting domains uniq
+# used to sort resulting domains unique
 allDomains = []
 
 # grep certificate commonName and alternative name for each host
@@ -58,4 +58,5 @@ for currDom in allFinalDomains:
     print (currDom)
 
 os.system("rm " + outFile)
+
 

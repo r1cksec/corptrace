@@ -42,7 +42,7 @@
     {
         "name": "favfreak",
         "riskLevel": "2",
-        "syntax": "cat <urlFile> | favfreak > <outputFile> 2>&1"
+        "syntax": "cat <domainFile> | awk '{print \"https://\"$0}' | favfreak > <outputFile> 2>&1"
     },
     {
         "name": "get-asn",
@@ -52,7 +52,7 @@
     {
         "name": "get-copyrights",
         "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-copyrights <urlFile> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/get-copyrights <domainFile> > <outputFile> 2>&1"
     },
     {
         "name": "get-dns-records",
@@ -123,6 +123,11 @@
         "name": "trufflehogs",
         "riskLevel": "2",
         "syntax": "trufflehog --regex --entropy=False <githubRepository> > <outputFile> 2>&1"
+    },
+    {
+        "name": "who-is-who",
+        "riskLevel": "4",
+        "syntax": "REPLACEME/scripts/who-is-who <domainFile> > <outputFile> 2>&1"
     },
     {
         "name": "waybackurls",

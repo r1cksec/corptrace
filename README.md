@@ -65,12 +65,12 @@ For example, the following module would add the value `domain (-d)` to the Argpa
 
 ## Help
 ```
-usage: autorec.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES [EXCLUDEMODULES ...]]] [-im [INCLUDEMODULES [INCLUDEMODULES ...]]]
-                  [-an ASNNUMBER] [-d DOMAIN] [-grf GITHUBREPOSITORIESFILE] [-gr GITHUBREPOSITORY] [-gu GITHUBUSER] [-ir IPRANGE] [-irc IPRANGECIDR] [-lgr LOCALGITHUBREPOSITORY]
-                  [-ndu NORTHDATAURL] [-uf URLFILE]
+usage: autorec.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]] [-an ASNNUMBER] [-d DOMAIN]
+                  [-df DOMAINFILE] [-grf GITHUBREPOSITORIESFILE] [-gr GITHUBREPOSITORY] [-gu GITHUBUSER] [-ir IPRANGE] [-irc IPRANGECIDR] [-lgr LOCALGITHUBREPOSITORY] [-ndu NORTHDATAURL]
 
 Automatic reconaissance.
-Please dont be evil.
+Use at your own risk.
+I do not take any responsibility for your actions!
 
 Basic usage:
 Print matching modules for a given domain:
@@ -85,7 +85,7 @@ Only execute modules that contains at least one of the given substring in their 
 Execute modules with higher risk level, use more threads and increase timeout:
 ./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 900
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -o OUTPUT, --output OUTPUT
                         path to output directory
@@ -97,12 +97,13 @@ optional arguments:
                         set maximal riskLevel for modules (possible values 1-4, 2 is default)
   -ta THREADAMOUNT, --threadAmount THREADAMOUNT
                         the amount of parallel running threads (default 5)
-  -em [EXCLUDEMODULES [EXCLUDEMODULES ...]], --exludeModules [EXCLUDEMODULES [EXCLUDEMODULES ...]]
+  -em [EXCLUDEMODULES ...], --exludeModules [EXCLUDEMODULES ...]
                         modules that will be excluded (exclude ovewrites include)
-  -im [INCLUDEMODULES [INCLUDEMODULES ...]], --includeModules [INCLUDEMODULES [INCLUDEMODULES ...]]
+  -im [INCLUDEMODULES ...], --includeModules [INCLUDEMODULES ...]
                         modules that will be included
   -an ASNNUMBER, --asnNumber ASNNUMBER
   -d DOMAIN, --domain DOMAIN
+  -df DOMAINFILE, --domainFile DOMAINFILE
   -grf GITHUBREPOSITORIESFILE, --githubRepositoriesFile GITHUBREPOSITORIESFILE
   -gr GITHUBREPOSITORY, --githubRepository GITHUBREPOSITORY
   -gu GITHUBUSER, --githubUser GITHUBUSER
@@ -110,7 +111,6 @@ optional arguments:
   -irc IPRANGECIDR, --ipRangeCidr IPRANGECIDR
   -lgr LOCALGITHUBREPOSITORY, --localGithubRepository LOCALGITHUBREPOSITORY
   -ndu NORTHDATAURL, --northDataUrl NORTHDATAURL
-  -uf URLFILE, --urlFile URLFILE
 ```
 
 ## Demo
@@ -137,22 +137,24 @@ out
 
 **Sources**
 
-* <https://github.com/OWASP/Amass>
-* <https://github.com/r1cksec/autorec/tree/master/scripts/get-cert-domains-from-ip-range>
+* <https://github.com/blechschmidt/massdns>
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
+* <https://github.com/hakluke/hakrawler>
+* <https://github.com/OWASP/Amass>
+* <https://github.com/projectdiscovery/subfinder>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/get-cert-domains-from-ip-range>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-copyrights>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-dns-records>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-github-repos>
-* <https://github.com/r1cksec/autorec/tree/master/scripts/get-mails
-* <https://github.com/r1cksec/autorec/tree/master/scripts/north-scraper
+* <https://github.com/r1cksec/autorec/tree/master/scripts/get-mails>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/grep-inside-github-repos>
-* <https://github.com/zricethezav/gitleaks>
-* <https://github.com/hakluke/hakrawler>
-* <https://github.com/blechschmidt/massdns>
-* <https://github.com/UKHomeOffice/repo-security-scanner>
-* <https://github.com/projectdiscovery/subfinder>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/north-scraper>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/search-copyright>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/tld-discovery>
-* <https://github.com/trufflesecurity/truffleHog>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/who-is-who>
 * <https://github.com/tomnomnom/waybackurls>
+* <https://github.com/trufflesecurity/truffleHog>
+* <https://github.com/UKHomeOffice/repo-security-scanner>
+* <https://github.com/zricethezav/gitleaks>
 
