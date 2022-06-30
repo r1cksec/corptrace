@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+
+from selenium import webdriver                        
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.keys import Keys
+import sys
+import urllib.parse
+import time
+
+if (len(sys.argv) != 2):
+    print("usage: {} companyName".format(sys.argv[0]))
+    sys.exit(1)
+
+driverPath = Service("REPLACEMEDRIVER")
+options = webdriver.ChromeOptions()
+options.add_argument("headless")
+driver = webdriver.Chrome(service = driverPath, options = options)
+
+# encode
+encodedCompany = urllib.parse.quote(sys.argv[1])
+
+url = "https://bgp.he.net/search?search[search]=" + encodedCompany
+driver.get(url)
+
+time.sleep(5)
+
+hrefs = driver.find_elements_by_xpath("//a[@href]")
+
+for ref in hrefs:
+    if ("AS" in ref.get_attribute("href")):
+        newUrl = ref.get_attribute("href") + "#_prefixes"
+        break
+
+driver.get(ref.get_attribute("href") + "#_prefixes")
+time.sleep(5)
+ranges = driver.find_elements_by_xpath("//a[@href]")
+
+for rangeElement in ranges:
+    ran = rangeElement.get_attribute("href")
+    if (ran is not None):
+        if ("/net/" in ran):
+            print(ran.replace("https://bgp.he.net/net/",""))
+
+driver.close()
+

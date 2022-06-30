@@ -10,7 +10,7 @@ timeAndDate=$(date "+%F %T")
 timeAndDate=$(echo ${timeAndDate} | sed 's/ /-T-/g')
 timeStamp=$(echo ${timeAndDate} | sed 's/:/-/g')
 
-nmap -sT -Pn ${1} -n -p 80,443 --open -oG "/tmp/${timeStamp}-nmap-out"
+nmap -sT -Pn ${1} -n -p 80,443 --open -oG "/tmp/${timeStamp}-nmap-out" > /dev/null
 
 # get active hosts with webserver
 grep "Ports" /tmp/${timeStamp}-nmap-out | awk -F " " '{print $2" "$5}' | cut -d "/" -f 1 > /tmp/${timeStamp}-grep-out

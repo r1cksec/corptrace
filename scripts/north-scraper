@@ -2,12 +2,13 @@
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.keys import Keys
 import sys
 import time
 import urllib.parse
 
 if (len(sys.argv) != 3):
-    print("usage: {} northDataUrl limitQueries".format(sys.argv[0]))
+    print("usage: {} northDataUrl depth".format(sys.argv[0]))
     sys.exit(1)
 
 options = webdriver.ChromeOptions()
@@ -15,11 +16,26 @@ options.add_argument("headless")
 driverPath = Service("REPLACEMEDRIVER")
 driver = webdriver.Chrome(service = driverPath, options = options)
 
+driver.get("https://northdata.com")
+time.sleep(5)
+driver.find_element_by_id("cmpbntyestxt").click()
+time.sleep(2)
+
+textField = driver.find_element_by_class_name("prompt")
+textField.send_keys(sys.argv[1])
+time.sleep(1)
+textField.send_keys(Keys.ARROW_DOWN)
+time.sleep(1)
+textField.send_keys(Keys.RETURN)
+time.sleep(10)
+driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+
 nodeNames = []
 nodeHref = []
 nodeHrefDone = []
 
-startNodeSplit = sys.argv[1].split("/")
+currentUrl = driver.current_url 
+startNodeSplit = currentUrl.split("/")
 startNodeName = startNodeSplit[3].split(",")
 cleanStartNodeName = urllib.parse.unquote(startNodeName[0]).replace("+" ," ")
 
@@ -30,20 +46,24 @@ nodeHrefDone.append("/" + startNodeHref)
 
 print("Query /" + startNodeHref)
 
-driver.get(sys.argv[1])
-time.sleep(10)
 nodes = driver.find_elements_by_class_name("node")
 
 for node in nodes:
+    if (node is None):
+        break
+
+    if (node.text is None):
+        break
+
     icon = node.text[0].replace("\n","")
     name = node.text[2:]
     href = node.get_attribute("href")
 
     if (icon == "\uf1ad"):
         if (href not in nodeHref):
-           if (href is not None):
-               nodeNames.append(urllib.parse.unquote(name).replace("+", " "))
-               nodeHref.append(href["animVal"])
+            if (href is not None):
+                nodeNames.append(urllib.parse.unquote(name).replace("+", " "))
+                nodeHref.append(href["animVal"])
 
 counter = 1
 
@@ -70,10 +90,14 @@ while 1:
 
             driver.get("https://www.northdata.com" + h)
             time.sleep(10)
+            driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
             nodes = driver.find_elements_by_class_name("node")
 
             for node in nodes:
+                if (node is None):
+                    break
+
                 icon = node.text[0].replace("\n","")
                 name = node.text[2:]
                 href = node.get_attribute("href")
@@ -89,6 +113,7 @@ while 1:
         sortedNames = sorted(set(nodeNames))
         for n in sortedNames:
             print(n)
+
         driver.close()
         exit(0)
 

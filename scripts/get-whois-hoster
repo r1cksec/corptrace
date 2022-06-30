@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ ${#} -ne 1 ]
+then
+    echo usage domainFile
+    exit
+fi
+
+echo "Domain ; IP ; Hoster"
+
+# -r prevents backslashes from being interpreted, -n reads last line
+while read -r domain || [[ -n "${domain}" ]]
+do
+    if [ -z "${domain}" ]
+    then
+        continue
+    fi
+
+    ip=$(host ${domain} | awk -F 'has address' '{print $2}' | sed 's/ //g' | head -n 1)
+    webContent=$(curl -s https://www.lookip.net/ip/${ip} | grep -i company)
+    unkown="unknown company"
+    
+    if [[ ${webContent} == *"${unkown}"* ]]
+    then
+        whois ${1} | grep -i inetnum -A 2
+        echo "${domain} ; ${ip} ; Unknown"
+    else
+        whois ${1} | grep -i inetnum -A 2
+        echo "${domain} ; ${ip} ; $(echo \"${webContent}\" | cut -d '>' -f 5 | cut -d '<' -f 1)"
+    fi
+
+done < ${1}
+

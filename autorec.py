@@ -208,6 +208,7 @@ def createCommandFromTemplate(allExecutableModules):
                 modOutput = modOutput + "_" + bufModOut.replace(":","-")
 
         # insert outputFile
+        modOutput = modOutput.replace(" ","-")
         exeString = exeString.replace("<outputFile>", modOutput)
 
         # check if tool has already been executed
@@ -274,10 +275,10 @@ Execute modules for given domain:
 ./autorec.py -o /tmp/output -d example.com -e
 
 Only execute modules that contains at least one of the given substring in their name:
-./autorec.py -o /tmp/output -d example.com -im amass -ip 192.168.1.3-9 -e
+./autorec.py -o /tmp/output -d example.com -im amass -ir 192.168.1.3-9 -e
 
 Execute modules with higher risk level, use more threads and increase timeout:
-./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 900
+./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 900 -an AS8560
 
 """, formatter_class=RawTextHelpFormatter)
 
