@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.common.by import By
 import urllib.parse
 import sys
 import time
@@ -11,32 +12,31 @@ if (len(sys.argv) != 2):
     print("usage: {} domain".format(sys.argv[0]))
     sys.exit(1)
 
-options = webdriver.ChromeOptions()
-options.add_argument("headless")
-driverPath = Service("REPLACEMEDRIVER")
-driver = webdriver.Chrome(service = driverPath, options = options)
+options = FirefoxOptions()
+options.add_argument("--headless")
+driver = webdriver.Firefox(options=options)
 
 allMails = []
 
-# phonebook
+# phonebook - currently deprecated due to obligation to login 
 
-driver.get("https://phonebook.cz")
-time.sleep(3)
-
-textField = driver.find_element_by_id("domain")
-textField.send_keys(sys.argv[1])
-time.sleep(1)
-textField.send_keys(Keys.RETURN)
-time.sleep(1)
-driver.find_element_by_id("submit1").click()
-time.sleep(2)
-atags = driver.find_element_by_id("result").find_elements_by_tag_name("a")
-
-allMails = []
-
-for t in atags:
-    if (sys.argv[1] in t.get_attribute("innerHTML")):
-        allMails.append(t.get_attribute("innerHTML"))
+#driver.get("https://phonebook.cz")
+#time.sleep(3)
+#
+#textField = driver.find_element_by_id("domain")
+#textField.send_keys(sys.argv[1])
+#time.sleep(1)
+#textField.send_keys(Keys.RETURN)
+#time.sleep(1)
+#driver.find_element_by_id("submit1").click()
+#time.sleep(2)
+#atags = driver.find_element_by_id("result").find_elements_by_tag_name("a")
+#
+#allMails = []
+#
+#for t in atags:
+#    if (sys.argv[1] in t.get_attribute("innerHTML")):
+#        allMails.append(t.get_attribute("innerHTML"))
 
 # skymem
 
@@ -44,7 +44,7 @@ domain = urllib.parse.quote(sys.argv[1])
 driver.get("https://www.skymem.info/srch?q=" + domain)
 time.sleep(5)
 
-elems = driver.find_elements_by_xpath("//a[@href]")
+elems = driver.find_elements(By.XPATH, "//a[@href]")
 allSkymemMails = []
 
 for elem in elems:
@@ -61,7 +61,7 @@ pageCounterLink = domainLink.split("=")
 driver.get(domainLink)
 time.sleep(5)
 
-elements = driver.find_elements_by_xpath("//a[@href]")
+elements = driver.find_elements(By.XPATH, "//a[@href]")
 pageSize = 0
 
 for e in elements:
@@ -82,7 +82,7 @@ for i in range(3, pageSize):
     time.sleep(5)
 
     try:
-        elements = driver.find_elements_by_xpath("//a[@href]")
+        elements = driver.find_elements(By.XPATH, "//a[@href]")
     except:
         print("Frame detached! Here are the possibly incomplete results:")
         break

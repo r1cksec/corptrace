@@ -141,12 +141,12 @@ out
 * <https://github.com/blechschmidt/massdns>
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
+* <https://github.com/dhn/spk>
+* <https://github.com/edoardottt/csprecon>
 * <https://github.com/hakluke/hakrawler>
-* <https://github.com/m4ll0k/infoga>
 * <https://github.com/OWASP/Amass>
 * <https://github.com/projectdiscovery/subfinder>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-asn>
-* <https://github.com/r1cksec/autorec/tree/master/scripts/get-bgp-ip-netblocks>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-cert-domains-from-ip-range>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-copyright>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-dns-records>

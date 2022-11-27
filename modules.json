@@ -10,9 +10,14 @@
         "syntax": "amass enum -passive -d <domain> > <outputFile> 2>&1"
     },
     {
-        "name": "amass-reverse-lookup-ranges",
+        "name": "csprecon",
         "riskLevel": "2",
-        "syntax": "amass intel -ip -addr <ipRange> > <outputFile> 2>&1"
+        "syntax": "csprecon -silent -u https://<domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "csprecon-domain-file",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/csprecon-domains <domainFile> > <outputFile> 2>&1"
     },
     {
         "name": "dnsrecon-zonetransfer",
@@ -25,7 +30,12 @@
         "syntax": "dnsrecon -d <domain> -t zonewalk > <outputFile> 2>&1"
     },
     {
-        "name": "favfreak",
+        "name": "favfreak-http",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk '{print \"http://\"$0}' | favfreak > <outputFile> 2>&1"
+    },
+    {
+        "name": "favfreak-https",
         "riskLevel": "2",
         "syntax": "cat <domainFile> | awk '{print \"https://\"$0}' | favfreak > <outputFile> 2>&1"
     },
@@ -110,9 +120,14 @@
         "syntax": "cat REPLACEME/wordlists/subdomains-top1million-110000.txt | awk -F \" \" '{print $1\".<domain>\"}' | massdns -r REPLACEME/wordlists/resolvers.txt -t A -o S -w <outputFile> > /dev/null 2>&1"
     },
     {
+        "name": "nmap-reverse-lookup-ranges",
+        "riskLevel": "2",
+        "syntax": "nmap -sL <ipRange> | grep 'Nmap scan report for ' | awk -F 'Nmap scan report for ' '{print $2}' | grep '(' > <outputFile> 2>&1"
+    },
+    {
         "name": "north-scraper",
         "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/north-scraper <companyName> 10 > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/north-scraper \"<companyName>\" 10 > <outputFile> 2>&1"
     },
     {
         "name": "scanrepo",
@@ -128,6 +143,11 @@
         "name": "subfinder",
         "riskLevel": "2",
         "syntax": "subfinder --silent -d <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "spk",
+        "riskLevel": "2",
+        "syntax": "spk -silent -s <companyName> > <outputFile> 2>&1"
     },
     {
         "name": "tld-discovery",

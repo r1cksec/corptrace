@@ -1,34 +1,40 @@
 #!/usr/bin/env python3
 
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium import webdriver                        
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 import sys
 import time
 import urllib.parse
 
 if (len(sys.argv) != 3):
-    print("usage: {} northDataUrl depth".format(sys.argv[0]))
+    print("usage: {} companyName depth".format(sys.argv[0]))
     sys.exit(1)
 
-options = webdriver.ChromeOptions()
-options.add_argument("headless")
-driverPath = Service("REPLACEMEDRIVER")
-driver = webdriver.Chrome(service = driverPath, options = options)
+options = FirefoxOptions()
+options.add_argument("--headless")
+driver = webdriver.Firefox(options=options)
 
 driver.get("https://northdata.com")
-time.sleep(5)
-driver.find_element_by_id("cmpbntyestxt").click()
-time.sleep(2)
+WebDriverWait(driver,8).until(EC.element_to_be_clickable((By.ID, "cmpbntyestxt"))).click()
 
-textField = driver.find_element_by_class_name("prompt")
+time.sleep(4)
+
+# enter company name in search field
+textField = driver.find_element(By.CLASS_NAME, "prompt")
 textField.send_keys(sys.argv[1])
-time.sleep(1)
+time.sleep(2)
 textField.send_keys(Keys.ARROW_DOWN)
-time.sleep(1)
+time.sleep(2)
 textField.send_keys(Keys.RETURN)
 time.sleep(10)
-driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+
+actions = ActionChains(driver)
+actions.send_keys(Keys.END).perform()
 
 nodeNames = []
 nodeHref = []
@@ -46,8 +52,9 @@ nodeHrefDone.append("/" + startNodeHref)
 
 print("Query /" + startNodeHref)
 
-nodes = driver.find_elements_by_class_name("node")
+nodes = driver.find_elements(By.CLASS_NAME, "node")
 
+# get all nodes that represents a company
 for node in nodes:
     if (node is None):
         break
@@ -56,7 +63,7 @@ for node in nodes:
         break
 
     icon = node.text[0].replace("\n","")
-    name = node.text[2:]
+    name = node.text[1:]
     href = node.get_attribute("href")
 
     if (icon == "\uf1ad"):
@@ -67,6 +74,7 @@ for node in nodes:
 
 counter = 1
 
+# click on a company node and repeat node collection
 while 1:
     allNodesDoneFlag = "1"
 
@@ -90,16 +98,16 @@ while 1:
 
             driver.get("https://www.northdata.com" + h)
             time.sleep(10)
-            driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+            actions.send_keys(Keys.END).perform()
 
-            nodes = driver.find_elements_by_class_name("node")
+            nodes = driver.find_elements(By.CLASS_NAME, "node")
 
             for node in nodes:
                 if (node is None):
                     break
 
                 icon = node.text[0].replace("\n","")
-                name = node.text[2:]
+                name = node.text[1:]
                 href = node.get_attribute("href")
 
                 if (icon == "\uf1ad"):

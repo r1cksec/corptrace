@@ -7,13 +7,10 @@ echo "Please enter path to result directory:"
 read pathToResults
 
 # grep subdomain results
-cat ${pathToResults}/amass-osint/* | grep -v Querying >> ${pathToResults}/all-domains.txt
-cat ${pathToResults}/amass-reverse-lookup-ranges/* | cut -d " " -f 1 >> ${pathToResults}/all-domains.txt
+cat ${pathToResults}/amass-osint/* | grep -v "Querying\|has finished\|Discoveries are being" >> ${pathToResults}/all-domains.txt
+cat ${pathToResults}/nmap-reverse-lookup-ranges/nmap-reverse-lookup-ranges* >> ${pathToResults}/all-domains.txt
 cat ${pathToResults}/get-cert-domains-from-ip-range/* | grep -v "Final Domain" | grep -v nmap | sort -u >> ${pathToResults}/all-domains.txt
-cat ${pathToResults}/hakrawler/* | awk -F "http" '{print $2}' | cut -d "/" -f 3 | sort -u >> ${pathToResults}/all-domains.txt
-cat ${pathToResults}/hakrawler-domain-file/* | awk -F "http" '{print $2}' | cut -d "/" -f 3 | sort -u >> ${pathToResults}/all-domains.txt
 cat ${pathToResults}/subfinder/* | grep -v "INF" | grep -v "WRN" | sort -u >> ${pathToResults}/all-domains.txt
-cat ${pathToResults}/waybackurls/* | sort -u >> ${pathToResults}/all-domains.txt
 cat ${pathToResults}/massdns/* | cut -d "A" -f 1 | awk -F ". " '{print $1}' >> ${pathToResults}/all-domains.txt
 sort -u ${pathToResults}/all-domains.txt > ${pathToResults}/final-domains.txt
 rm ${pathToResults}/all-domains.txt

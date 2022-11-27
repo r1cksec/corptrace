@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-from selenium import webdriver                        
-from selenium.webdriver.chrome.service import Service
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 import sys
 import urllib.parse
 import time
@@ -11,10 +12,9 @@ if (len(sys.argv) != 2):
     print("usage: {} companyName".format(sys.argv[0]))
     sys.exit(1)
 
-driverPath = Service("REPLACEMEDRIVER")
-options = webdriver.ChromeOptions()
-options.add_argument("headless")
-driver = webdriver.Chrome(service = driverPath, options = options)
+options = FirefoxOptions()
+options.add_argument("--headless")
+driver = webdriver.Firefox(options=options)
 
 # encode
 encodedCompany = urllib.parse.quote(sys.argv[1])
@@ -24,7 +24,7 @@ driver.get(url)
 
 time.sleep(5)
 
-hrefs = driver.find_elements_by_xpath("//a[@href]")
+hrefs = driver.find_elements(By.XPATH, "//a[@href]")
 
 for ref in hrefs:
     if ("AS" in ref.get_attribute("href")):
@@ -33,7 +33,7 @@ for ref in hrefs:
 
 driver.get(ref.get_attribute("href") + "#_prefixes")
 time.sleep(5)
-ranges = driver.find_elements_by_xpath("//a[@href]")
+ranges = driver.find_elements(By.XPATH, "//a[@href]")
 
 for rangeElement in ranges:
     ran = rangeElement.get_attribute("href")
