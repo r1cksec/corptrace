@@ -21,11 +21,10 @@ git log --quiet | grep commit | cut -d " " -f 2 > ${commitFile}
 printf "${Y}########## Commit messages ########## ${N}\n"
 git log | grep "    "
 
-#allKeyWords = ["\"ftp:\"", "\"password=\"", "\"passwort=\"", "\"ssh:\"", "\"smb:\""]
 declare -a allKeyWords=("ssh .*@.*" "ftp .*@.*" "-AsPlainText" "passwor[t,d]=" "access[-_]token" "api[-_]key" "private[-_]key")
 declare -a allFileExtensions=("*.conf" "*.cnf" "*.cfg" "*.config" "*.kdb" "*.kdbx" "*.key" "*.p12" "*.pem" "*.rdp" "*.pfx" "*.remmina" "*.vdi" ".ini")
 
-# -r prevents backslashes from being interpreted, -n reads last line
+# iterate through each commit and grep and search for values inside arrays
 while read -r commitId || [[ -n "${commitId}" ]]
 do
     git checkout --quiet ${commitId}
