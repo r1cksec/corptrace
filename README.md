@@ -151,12 +151,13 @@ out
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-copyright>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-dns-records>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-github-repos>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/get-grep-app>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-ips-from-asn>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-mails>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-netblocks>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-title>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-whois-hoster>
-* <https://github.com/r1cksec/autorec/tree/master/scripts/grep-inside-github-repos>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/grep-through-commits>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/hakrawler-ip-range>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/north-scraper>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/search-google>

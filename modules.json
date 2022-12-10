@@ -65,6 +65,11 @@
         "syntax": "REPLACEME/scripts/get-github-repos <githubUser> > <outputFile> 2>&1"
     },
     {
+        "name": "get-grep-app",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/get-grep-app <companyName> > <outputFile> 2>&1"
+    },
+    {
         "name": "get-ips-from-asn",
         "riskLevel": "1",
         "syntax": "whois -h whois.radb.net -- '-i origin <asNumber>' | grep -E '([0-9.]+){4}/[0-9]+' -C 1 > <outputFile> 2>&1"
@@ -90,9 +95,9 @@
         "syntax": "REPLACEME/scripts/get-whois-hoster <domainFile> > <outputFile> 2>&1"
     },
     {
-        "name": "grep-inside-github-repos",
+        "name": "grep-through-commits",
         "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/grep-inside-github-repos <githubRepositoriesFile> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/grep-through-commits <githubRepository> > <outputFile> 2>&1"
     },
     {
         "name": "gitleaks",

@@ -1,0 +1,56 @@
+#!/bin/bash
+
+if [ ${#} -ne 1 ]
+then
+    echo "usage: githubRepository"
+    exit 1
+fi
+
+Y='\033[0;33m'
+N='\033[0m'
+
+timeStamp=$(date +"%Y-%m-%d_%T")
+tempDir="/tmp/${timeStamp}-grep-inside-repo"
+commitFile="${tempDir}-commits"
+tempFinds="${tempDir}-finds"
+tempGreps="${tempDir}-greps"
+git clone --quiet ${1} ${tempDir}
+echo ""
+cd ${tempDir}
+git log --quiet | grep commit | cut -d " " -f 2 > ${commitFile}
+printf "${Y}########## Commit messages ########## ${N}\n"
+git log | grep "    "
+
+#allKeyWords = ["\"ftp:\"", "\"password=\"", "\"passwort=\"", "\"ssh:\"", "\"smb:\""]
+declare -a allKeyWords=("ssh .*@.*" "ftp .*@.*" "-AsPlainText" "passwor[t,d]=" "access[-_]token" "api[-_]key" "private[-_]key")
+declare -a allFileExtensions=("*.conf" "*.cnf" "*.cfg" "*.config" "*.kdb" "*.kdbx" "*.key" "*.p12" "*.pem" "*.rdp" "*.pfx" "*.remmina" "*.vdi" ".ini")
+
+# -r prevents backslashes from being interpreted, -n reads last line
+while read -r commitId || [[ -n "${commitId}" ]]
+do
+    git checkout --quiet ${commitId}
+    
+    for k in "${allKeyWords[@]}"
+    do
+            grep --color=always -IEiRo ".{0,20}${k}.{0,20}" * >> ${tempGreps} 2> /dev/null
+    done
+
+    for f in "${allFileExtensions[@]}"
+    do
+        find . -iname ${f} | cut -c2- | awk -v g="${1}" -v c="${commitId}" '{print g"/blob/"c$1}' >> ${tempFinds}
+    done
+    
+done < ${commitFile}
+
+echo ""
+printf "${Y}########## Grep results ########## ${N}\n"
+sort -u ${tempGreps}
+echo ""
+printf "${Y}########## Find results ########## ${N}\n"
+sort -u ${tempFinds}
+
+rm -rf ${tempDir}
+rm ${commitFile}
+rm ${tempFinds}
+rm ${tempGreps}
+
