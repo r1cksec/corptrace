@@ -9,17 +9,13 @@ The core is the `modules.json` file, which contains the syntax of the executable
 Variables can also be stored in this configuration file, which are automatically included in the arguments of Argparse.
 
 ## Requirements
-- Python 3
-
-Furthermore all modules specified in the configuration file are considered as dependencies. <br>
-If a module is not installed, an error is issued and the next module is executed.
+- Debian based operating system
 
 ## Install
-The setup script will only read the absolute path of the script location and insert this path into the `modules.json` file.
-Furthermore the script will prompt you for the full path to your selenium driver (used for get-mails and north-scraper).
+The setup script will install tool dependencies and insert the absolute path to the scripts into the `modules.json` file.
 
 ```
-bash setup.sh
+sudo bash setup.sh
 ```
 
 ## Configuration
