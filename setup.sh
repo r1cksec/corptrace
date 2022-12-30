@@ -36,10 +36,10 @@ wget https://github.com/r1cksec/misc/raw/main/binaries/hakrawler -O /usr/local/b
 chmod +x /usr/local/bin/hakrawler
 
 echo ""
-echo "### Compile Biary from Git"
+echo "### Compile Biary from Git."
 echo ""
-git clone https://github.com/blechschmidt/massdns.git /tmp/massnds
-cd /tmp/massnds && make
+git clone https://github.com/blechschmidt/massdns.git /tmp/massdns
+cd /tmp/massdns && make
 mv /tmp/massdns/bin/massdns /usr/local/bin
 chmod +x /usr/local/bin/massdns
 
