@@ -28,8 +28,6 @@ apt install dnsrecon git wget python3 python3-pip whois curl nmap
 echo ""
 echo "### Wget precompiled binaries from: https://github.com/r1cksec/misc/tree/main/binaries"
 echo ""
-wget https://github.com/r1cksec/misc/raw/main/binaries/massdns -O /usr/local/bin/massdns
-chmod +x /usr/local/bin/massdns
 wget https://github.com/r1cksec/misc/raw/main/binaries/spk -O /usr/local/bin/spk
 chmod +x /usr/local/bin/spk
 wget https://github.com/r1cksec/misc/raw/main/binaries/csprecon -O /usr/local/bin/csprecon
