@@ -38,7 +38,7 @@ chmod +x /usr/local/bin/hakrawler
 echo ""
 echo "### Compile Biary from Git"
 echo ""
-git clone https://github.com/blechschmidt/massdns.git /tmp/massnds.git
+git clone https://github.com/blechschmidt/massdns.git /tmp/massnds
 cd /tmp/massnds && make
 mv /tmp/massdns/bin/massdns /usr/local/bin
 chmod +x /usr/local/bin/massdns
