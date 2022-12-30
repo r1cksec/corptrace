@@ -144,13 +144,13 @@ out
 * <https://github.com/projectdiscovery/subfinder>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-asn>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-cert-domains-from-ip-range>
-* <https://github.com/r1cksec/autorec/tree/master/scripts/get-copyright>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-dns-records>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-github-repos>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-grep-app>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-ips-from-asn>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-mails>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-netblocks>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/get-page-owner>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-title>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-whois-hoster>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/grep-through-commits>
