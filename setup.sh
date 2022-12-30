@@ -38,6 +38,14 @@ wget https://github.com/r1cksec/misc/raw/main/binaries/hakrawler -O /usr/local/b
 chmod +x /usr/local/bin/hakrawler
 
 echo ""
+echo "### Compile Biary from Git"
+echo ""
+git clone https://github.com/blechschmidt/massdns.git /tmp/massnds.git
+cd /tmp/massnds && make
+mv /tmp/massdns/bin/massdns /usr/local/bin
+chmod +x /usr/local/bin/massdns
+
+echo ""
 echo "### Wget release binaries from corresponding repositories."
 echo ""
 wget https://github.com/OWASP/Amass/releases/download/v3.21.2/amass_linux_amd64.zip -O /tmp/amass.zip
