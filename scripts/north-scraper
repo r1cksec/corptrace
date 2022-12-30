@@ -11,6 +11,7 @@ from selenium.webdriver.firefox.service import Service
 import sys
 import time
 import urllib.parse
+from os import path
 
 if (len(sys.argv) != 3):
     print("usage: {} companyName depth".format(sys.argv[0]))

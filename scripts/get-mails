@@ -8,6 +8,7 @@ from selenium.webdriver.firefox.service import Service
 import urllib.parse
 import sys
 import time
+from os import path
 
 if (len(sys.argv) != 2):
     print("usage: {} domain".format(sys.argv[0]))

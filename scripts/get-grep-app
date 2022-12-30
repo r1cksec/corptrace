@@ -9,6 +9,7 @@ import datetime
 import sys
 import time
 import os
+from os import path
 
 # check amount of passed arguments
 if (len(sys.argv) != 2):
