@@ -15,8 +15,13 @@ if (len(sys.argv) != 2):
     sys.exit(1)
 
 options = FirefoxOptions()
+options.add_argument("--ignore-ssl-errors=yes")
+options.add_argument('--ignore-certificate-errors')
+options.set_preference("network.http.redirection-limit", 4)
 options.add_argument("--headless")
-driver = webdriver.Firefox(options=options)
+service = Service(log_path=path.devnull)
+driver = webdriver.Firefox(options=options, service=service)
+driver.set_page_load_timeout(6)
 
 url = "https://grep.app/search?q=" + urllib.parse.quote(sys.argv[1])
 driver.get(url)

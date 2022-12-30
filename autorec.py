@@ -278,7 +278,7 @@ Only execute modules that contains at least one of the given substring in their 
 ./autorec.py -o /tmp/output -d example.com -im amass -ir 192.168.1.3-9 -e
 
 Execute modules with higher risk level, use more threads and increase timeout:
-./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 900 -an AS8560
+./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 3000 -an AS8560
 
 """, formatter_class=RawTextHelpFormatter)
 

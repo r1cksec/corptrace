@@ -102,7 +102,7 @@
     {
         "name": "gitleaks",
         "riskLevel": "2",
-        "syntax": "gitleaks-linux-amd64 --repo-url=<githubRepository> -v > <outputFile> 2>&1"
+        "syntax": "gitleaks detect --source <githubRepositoryLocal> -v > <outputFile> 2>&1"
     },
     {
         "name": "hakrawler",
@@ -118,6 +118,11 @@
         "name": "hakrawler-ip-range",
         "riskLevel": "3",
         "syntax": "REPLACEME/scripts/hakrawler-ip-range <ipRange> > <outputFile> 2>&1"
+    },
+    {
+        "name": "letItGo",
+        "riskLevel": "3",
+        "syntax": "letItGo <domain> > <outputFile> 2>&1"
     },
     {
         "name": "massdns",
@@ -160,9 +165,9 @@
         "syntax": "REPLACEME/scripts/tld-discovery <domain> > <outputFile> 2>&1"
     },
     {
-        "name": "trufflehogs",
+        "name": "trufflehog",
         "riskLevel": "2",
-        "syntax": "trufflehog --regex --entropy=False <githubRepository> > <outputFile> 2>&1"
+        "syntax": "trufflehog git <githubRepository> --no-update > <outputFile> 2>&1"
     },
     {
         "name": "waybackurls",

@@ -65,9 +65,10 @@ For example, the following module would add the value `domain (-d)` to the Argpa
 
 ## Help
 ```
-usage: autorec.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES [EXCLUDEMODULES ...]]] [-im [INCLUDEMODULES [INCLUDEMODULES ...]]]
-                  [-an ASNUMBER] [-cn COMPANYNAME] [-d DOMAIN] [-df DOMAINFILE] [-grf GITHUBREPOSITORIESFILE] [-gr GITHUBREPOSITORY] [-grl GITHUBREPOSITORYLOCAL] [-gu GITHUBUSER]
-                  [-ir IPRANGE] [-w WORD]
+usage: autorec.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT]
+                  [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]] [-an ASNUMBER]
+                  [-cn COMPANYNAME] [-d DOMAIN] [-df DOMAINFILE] [-gr GITHUBREPOSITORY]
+                  [-grl GITHUBREPOSITORYLOCAL] [-gu GITHUBUSER] [-ir IPRANGE] [-w WORD]
 
 Automatic reconaissance.
 Use at your own risk.
@@ -84,9 +85,9 @@ Only execute modules that contains at least one of the given substring in their 
 ./autorec.py -o /tmp/output -d example.com -im amass -ir 192.168.1.3-9 -e
 
 Execute modules with higher risk level, use more threads and increase timeout:
-./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 900 -an AS8560
+./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 3000 -an AS8560
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -o OUTPUT, --output OUTPUT
                         path to output directory
@@ -98,15 +99,14 @@ optional arguments:
                         set maximal riskLevel for modules (possible values 1-4, 2 is default)
   -ta THREADAMOUNT, --threadAmount THREADAMOUNT
                         the amount of parallel running threads (default 5)
-  -em [EXCLUDEMODULES [EXCLUDEMODULES ...]], --exludeModules [EXCLUDEMODULES [EXCLUDEMODULES ...]]
+  -em [EXCLUDEMODULES ...], --exludeModules [EXCLUDEMODULES ...]
                         modules that will be excluded (exclude ovewrites include)
-  -im [INCLUDEMODULES [INCLUDEMODULES ...]], --includeModules [INCLUDEMODULES [INCLUDEMODULES ...]]
+  -im [INCLUDEMODULES ...], --includeModules [INCLUDEMODULES ...]
                         modules that will be included
   -an ASNUMBER, --asNumber ASNUMBER
   -cn COMPANYNAME, --companyName COMPANYNAME
   -d DOMAIN, --domain DOMAIN
   -df DOMAINFILE, --domainFile DOMAINFILE
-  -grf GITHUBREPOSITORIESFILE, --githubRepositoriesFile GITHUBREPOSITORIESFILE
   -gr GITHUBREPOSITORY, --githubRepository GITHUBREPOSITORY
   -grl GITHUBREPOSITORYLOCAL, --githubRepositoryLocal GITHUBREPOSITORYLOCAL
   -gu GITHUBUSER, --githubUser GITHUBUSER
@@ -162,6 +162,7 @@ out
 * <https://github.com/r1cksec/autorec/tree/master/scripts/north-scraper>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/search-google>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/tld-discovery>
+* <https://github.com/SecurityRiskAdvisors/letitgo>
 * <https://github.com/tomnomnom/waybackurls>
 * <https://github.com/trufflesecurity/truffleHog>
 * <https://github.com/UKHomeOffice/repo-security-scanner>
