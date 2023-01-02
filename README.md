@@ -142,7 +142,6 @@ out
 * <https://github.com/hakluke/hakrawler>
 * <https://github.com/OWASP/Amass>
 * <https://github.com/projectdiscovery/subfinder>
-* <https://github.com/r1cksec/autorec/tree/master/scripts/get-asn>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-cert-domains-from-ip-range>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-dns-records>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-github-repos>

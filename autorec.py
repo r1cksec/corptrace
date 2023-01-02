@@ -277,8 +277,8 @@ Execute modules for given domain:
 Only execute modules that contains at least one of the given substring in their name:
 ./autorec.py -o /tmp/output -d example.com -im amass -ir 192.168.1.3-9 -e
 
-Execute modules with higher risk level, use more threads and increase timeout:
-./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 3000 -an AS8560
+Execute modules up to risk level 4, use 8 threads and increase timeout to 35 minutes:
+./autorec.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 2100 -an AS8560
 
 """, formatter_class=RawTextHelpFormatter)
 
