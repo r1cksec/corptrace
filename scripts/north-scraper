@@ -34,11 +34,11 @@ time.sleep(4)
 # enter company name in search field
 textField = driver.find_element(By.CLASS_NAME, "prompt")
 textField.send_keys(sys.argv[1])
-time.sleep(2)
+time.sleep(15)
 textField.send_keys(Keys.ARROW_DOWN)
-time.sleep(2)
+time.sleep(4)
 textField.send_keys(Keys.RETURN)
-time.sleep(10)
+time.sleep(15)
 
 actions = ActionChains(driver)
 actions.send_keys(Keys.END).perform()
@@ -115,7 +115,7 @@ while 1:
             except:
                 print("Error getting " + h)
 
-            time.sleep(10)
+            time.sleep(20)
             actions.send_keys(Keys.END).perform()
 
             nodes = driver.find_elements(By.CLASS_NAME, "node")

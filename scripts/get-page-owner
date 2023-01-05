@@ -29,7 +29,7 @@ companyStrings = ["©", "&copy;", "GmbH", "AG", "Aktiengesellschaft", "gmbh", "G
 # characters that inclose the company name
 borderChars = ["'", "\"", "<", ">"]
 # strings that are a must have for the final result
-mustContainString = ["GmbH", " AG", "Aktiengesellschaft", "gmbh", "Gesellschaft mit beschränkter Haftung"]
+mustContainString = ["GmbH", " AG", "Aktiengesellschaft", "gmbh", "Gesellschaft mit beschränkter Haftung", "ag"]
 # strings that should not be part of the final resul
 shouldNotContain = ["http://", "https://"]
 # strings that will be removed from final result
@@ -44,7 +44,7 @@ options.set_preference("network.http.redirection-limit", 4)
 options.add_argument("--headless")
 service = Service(log_path=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
-driver.set_page_load_timeout(6)
+driver.set_page_load_timeout(15)
 
 with open(inputDomains) as fp:
     # save all domains in array
