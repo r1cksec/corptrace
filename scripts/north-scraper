@@ -24,7 +24,7 @@ options.set_preference("network.http.redirection-limit", 4)
 options.add_argument("--headless")
 service = Service(log_path=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
-driver.set_page_load_timeout(6)
+driver.set_page_load_timeout(45)
 
 driver.get("https://northdata.com")
 WebDriverWait(driver,8).until(EC.element_to_be_clickable((By.ID, "cmpbntyestxt"))).click()
@@ -47,12 +47,19 @@ nodeNames = []
 nodeHref = []
 nodeHrefDone = []
 
+# get initial URL of company to start crawl
 currentUrl = driver.current_url 
 startNodeSplit = currentUrl.split("/")
 startNodeName = startNodeSplit[3].split(",")
 cleanStartNodeName = urllib.parse.unquote(startNodeName[0]).replace("+" ," ")
 
-startNodeHref = startNodeSplit[3] + "/" + startNodeSplit[4]
+# url scheme: https://www.northdata.com/companyName/locationOfLaw
+# some companies do not habe locationOfLaw
+try:
+    startNodeHref = startNodeSplit[3] + "/" + startNodeSplit[4]
+except:
+    startNodeHref = startNodeSplit[3]
+
 nodeNames.append(cleanStartNodeName)
 nodeHref.append("/" + startNodeHref)
 nodeHrefDone.append("/" + startNodeHref)
@@ -103,7 +110,11 @@ while 1:
             allNodesDoneFlag = "0"
             nodeHrefDone.append(h)
 
-            driver.get("https://www.northdata.com" + h)
+            try:
+                driver.get("https://www.northdata.com" + h)
+            except:
+                print("Error getting " + h)
+
             time.sleep(10)
             actions.send_keys(Keys.END).perform()
 

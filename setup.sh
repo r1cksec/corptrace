@@ -170,12 +170,13 @@ then
         git clone https://github.com/devanshbatham/FavFreak.git /tmp/FavFreak
         cp /tmp/FavFreak/favfreak.py /usr/local/bin/favfreak
         chmod +x /usr/local/bin/favfreak
-        pip3 install mmh3
-        pip3 install selenium
         rm -r /tmp/FavFreak
     else
         echo "FavFreak is installed"
     fi
+
+    pip3 install mmh3
+    pip3 install selenium
 fi
 
 echo "Done"

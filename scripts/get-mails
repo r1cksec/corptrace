@@ -21,7 +21,7 @@ options.set_preference("network.http.redirection-limit", 4)
 options.add_argument("--headless")
 service = Service(log_path=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
-driver.set_page_load_timeout(6)
+driver.set_page_load_timeout(20)
 
 allMails = []
 
