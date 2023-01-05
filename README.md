@@ -5,6 +5,9 @@ Using multithreading, several tools are executed simultaneously.
 The use of different modules can be adapted on the fly by using module names or risk level as a filter.
 <br>
 <br>
+Note that running autorec repetitively in a short amount of time can lead to blocking of the IP address used, as autorec can access multiple APIs at the same time.
+<br>
+<br>
 The core is the `modules.json` file, which contains the syntax of the executable commands.
 Variables can also be stored in this configuration file, which are automatically included in the arguments of Argparse.
 
@@ -68,7 +71,6 @@ usage: autorec.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THR
 
 Automatic reconaissance.
 Use at your own risk.
-I do not take any responsibility for your actions!
 
 Basic usage:
 Print matching modules for a given domain:
@@ -142,6 +144,7 @@ out
 * <https://github.com/hakluke/hakrawler>
 * <https://github.com/OWASP/Amass>
 * <https://github.com/projectdiscovery/subfinder>
+* <https://github.com/r1cksec/autorec/tree/master/scripts/dork-linkedIn-employees>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-cert-domains-from-ip-range>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-dns-records>
 * <https://github.com/r1cksec/autorec/tree/master/scripts/get-github-repos>
