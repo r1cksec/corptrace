@@ -1,6 +1,6 @@
-# thothh
+# Thoth
 
-thothh is a very modular tool that automates the execution of tools during a reconnaissance assessment.
+Thoth is a very modular tool that automates the execution of tools during a reconnaissance assessment.
 Using multithreading, several tools are executed simultaneously.
 The use of different modules can be adapted on the fly by using module names or risk level as a filter.
 <br>
@@ -171,7 +171,7 @@ out
 
 #
 
-
+https://en.wikipedia.org/wiki/Thoth
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/77610058/211009168-4a1d9566-fb5c-444f-89ac-37b600d624e4.png"/>
