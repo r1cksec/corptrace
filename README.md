@@ -1,11 +1,11 @@
-# Thot
+# thothh
 
-Thot is a very modular tool that automates the execution of tools during a reconnaissance assessment.
+thothh is a very modular tool that automates the execution of tools during a reconnaissance assessment.
 Using multithreading, several tools are executed simultaneously.
 The use of different modules can be adapted on the fly by using module names or risk level as a filter.
 <br>
 <br>
-Note that running thot repetitively in a short amount of time can lead to blocking of the IP address used, as thot can access multiple APIs at the same time.
+Note that running thoth repetitively in a short amount of time can lead to blocking of the IP address used, as thoth can access multiple APIs at the same time.
 <br>
 <br>
 The core is the `modules.json` file, which contains the syntax of the executable commands.
@@ -22,7 +22,7 @@ sudo bash setup.sh
 ```
 
 ## Configuration
-The `modules.json` file contains all modules that can be executed by thot. <br>
+The `modules.json` file contains all modules that can be executed by thoth. <br>
 The modules have the following structure:
 
 ```
@@ -64,7 +64,7 @@ For example, the following module would add the value `domain (-d)` to the Argpa
 
 ## Help
 ```
-usage: thot.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT]
+usage: thoth.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT]
                   [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]] [-an ASNUMBER]
                   [-cn COMPANYNAME] [-d DOMAIN] [-df DOMAINFILE] [-gr GITHUBREPOSITORY]
                   [-grl GITHUBREPOSITORYLOCAL] [-gu GITHUBUSER] [-ir IPRANGE] [-w WORD]
@@ -74,16 +74,16 @@ Use at your own risk.
 
 Basic usage:
 Print matching modules for a given domain:
-./thot.py -o /tmp/output -d example.com
+./thoth.py -o /tmp/output -d example.com
 
 Execute modules for given domain:
-./thot.py -o /tmp/output -d example.com -e
+./thoth.py -o /tmp/output -d example.com -e
 
 Only execute modules that contains at least one of the given substring in their name:
-./thot.py -o /tmp/output -d example.com -im amass -ir 192.168.1.3-9 -e
+./thoth.py -o /tmp/output -d example.com -im amass -ir 192.168.1.3-9 -e
 
 Execute modules with higher risk level, use more threads and increase timeout:
-./thot.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 3000 -an AS8560
+./thoth.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 3000 -an AS8560
 
 options:
   -h, --help            show this help message and exit
@@ -114,7 +114,7 @@ options:
 
 ## Demo
 <p align="center">
-<img src="https://github.com/r1cksec/thot/blob/master/demo.gif"/>
+<img src="https://github.com/r1cksec/thoth/blob/master/demo.gif"/>
 </p>
 
 
@@ -147,22 +147,22 @@ out
 * <https://github.com/hakluke/hakrawler>
 * <https://github.com/OWASP/Amass>
 * <https://github.com/projectdiscovery/subfinder>
-* <https://github.com/r1cksec/thot/tree/master/scripts/dork-linkedIn-employees>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-cert-domains-from-ip-range>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-dns-records>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-github-repos>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-grep-app>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-ips-from-asn>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-mails>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-netblocks>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-page-owner>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-title>
-* <https://github.com/r1cksec/thot/tree/master/scripts/get-whois-hoster>
-* <https://github.com/r1cksec/thot/tree/master/scripts/grep-through-commits>
-* <https://github.com/r1cksec/thot/tree/master/scripts/hakrawler-ip-range>
-* <https://github.com/r1cksec/thot/tree/master/scripts/north-scraper>
-* <https://github.com/r1cksec/thot/tree/master/scripts/search-google>
-* <https://github.com/r1cksec/thot/tree/master/scripts/tld-discovery>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/dork-linkedIn-employees>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-cert-domains-from-ip-range>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-dns-records>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-github-repos>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-grep-app>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-ips-from-asn>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-mails>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-netblocks>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-page-owner>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-title>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-whois-hoster>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/grep-through-commits>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/hakrawler-ip-range>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/north-scraper>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/search-google>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/tld-discovery>
 * <https://github.com/SecurityRiskAdvisors/letitgo>
 * <https://github.com/tomnomnom/waybackurls>
 * <https://github.com/trufflesecurity/truffleHog>
@@ -170,6 +170,8 @@ out
 * <https://github.com/zricethezav/gitleaks>
 
 #
+
+
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/77610058/211009168-4a1d9566-fb5c-444f-89ac-37b600d624e4.png"/>

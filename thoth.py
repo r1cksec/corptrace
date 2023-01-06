@@ -269,16 +269,16 @@ I do not take any responsibility for your actions!
 
 Basic usage:
 Print matching modules for a given domain:
-./thot.py -o /tmp/output -d example.com
+./thoth.py -o /tmp/output -d example.com
 
 Execute modules for given domain:
-./thot.py -o /tmp/output -d example.com -e
+./thoth.py -o /tmp/output -d example.com -e
 
 Only execute modules that contains at least one of the given substring in their name:
-./thot.py -o /tmp/output -d example.com -im amass -ir 192.168.1.3-9 -e
+./thoth.py -o /tmp/output -d example.com -im amass -ir 192.168.1.3-9 -e
 
 Execute modules up to risk level 4, use 8 threads and increase timeout to 35 minutes:
-./thot.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 2100 -an AS8560
+./thoth.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 2100 -an AS8560
 
 """, formatter_class=RawTextHelpFormatter)
 
