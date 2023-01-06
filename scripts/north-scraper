@@ -21,27 +21,38 @@ options = FirefoxOptions()
 options.add_argument("--ignore-ssl-errors=yes")
 options.add_argument('--ignore-certificate-errors')
 options.set_preference("network.http.redirection-limit", 4)
-options.add_argument("--headless")
+#options.add_argument("--headless")
 service = Service(log_path=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
 driver.set_page_load_timeout(45)
 
 driver.get("https://northdata.com")
-WebDriverWait(driver,8).until(EC.element_to_be_clickable((By.ID, "cmpbntyestxt"))).click()
 
-time.sleep(4)
+# click allow cookies
+try:
+    WebDriverWait(driver,15).until(EC.element_to_be_clickable((By.ID, "cmpbntyestxt"))).click()
+except:
+    pass
 
 # enter company name in search field
+WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.CLASS_NAME, "prompt")))
 textField = driver.find_element(By.CLASS_NAME, "prompt")
 textField.send_keys(sys.argv[1])
-time.sleep(15)
+textField = driver.find_element(By.CLASS_NAME, "prompt")
+WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.CLASS_NAME, "result")))
 textField.send_keys(Keys.ARROW_DOWN)
-time.sleep(4)
+time.sleep(3)
 textField.send_keys(Keys.RETURN)
-time.sleep(15)
 
+# wait for page to load
+WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.ID, "print")))
+
+# scroll tu buttom
 actions = ActionChains(driver)
 actions.send_keys(Keys.END).perform()
+
+# wait for network graph
+WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.CLASS_NAME, "node")))
 
 nodeNames = []
 nodeHref = []
@@ -112,11 +123,16 @@ while 1:
 
             try:
                 driver.get("https://www.northdata.com" + h)
+                time.sleep(2)
             except:
                 print("Error getting " + h)
 
-            time.sleep(20)
+            # wait for page to load
+            WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.ID, "print")))
             actions.send_keys(Keys.END).perform()
+            
+            # wait for network graph
+            WebDriverWait(driver,60).until(EC.element_to_be_clickable((By.CLASS_NAME, "node")))
 
             nodes = driver.find_elements(By.CLASS_NAME, "node")
 
