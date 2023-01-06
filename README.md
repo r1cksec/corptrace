@@ -113,23 +113,26 @@ options:
 ```
 
 ## Demo
-![](https://github.com/r1cksec/thot/blob/master/demo.gif)
+<p align="center">
+<img src="https://github.com/r1cksec/thot/blob/master/demo.gif"/>
+</p>
+
 
 ## Result Structure 
 ```
 out
-├── dnsrecon-zonetransfer
-│   └── dnsrecon-zonetransfer_example.com
-├── dnsrecon-zonewalk
-│   └── dnsrecon-zonewalk_example.com
+├── csprecon
+│   └── csprecon_example.com
 ├── get-asn
 │   └── get-asn_example.com
-├── hakrawler
-│   └── hakrawler_example.com
-├── subfinder
-│   └── subfinder_example.com
-└── waybackurls
-    └── waybackurls_example.com
+├── get-dns-records
+│   └── get-dns-records_example.com
+├── get-mails
+│   └── get-mails_example.com
+├── letItGo
+│   └── letItGo_example.com
+└── subfinder
+    └── subfinder_example.com
 ```
 
 ## Currently included Modules
