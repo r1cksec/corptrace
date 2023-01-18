@@ -96,7 +96,6 @@ print("Results:")
 
 for u in uniqUrls:
     splittedUrl = u.split("/")
-    time.sleep(5)
     os.system("wget --quiet \"" + u + "\" -O \"" + tempDir + "/" + str(counter) + ".pdf\"")
     counter = counter + 1
 
