@@ -23,7 +23,7 @@ sed -i "s|REPLACEME|${pathToScriptDir}|g" "${pathToScriptDir}/modules.json"
 
 echo ""
 echo "### APT Install"
-apt install dnsrecon git wget python3 python3-pip whois curl nmap
+apt install dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl
 
 echo ""
 echo "### Wget precompiled binaries from: https://github.com/r1cksec/misc/tree/main/binaries"

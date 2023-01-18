@@ -156,6 +156,7 @@ out
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-mails>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-netblocks>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-page-owner>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/get-pdf-metadata>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-title>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-whois-hoster>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/grep-through-commits>

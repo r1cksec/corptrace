@@ -60,6 +60,11 @@
         "syntax": "REPLACEME/scripts/get-page-owner <domainFile> > <outputFile> 2>&1"
     },
     {
+        "name": "get-pdf-metadata",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/get-pdf-metadata <domain> > <outputFile> 2>&1"
+    },
+    {
         "name": "get-dns-records",
         "riskLevel": "1",
         "syntax": "REPLACEME/scripts/get-dns-records <domain> > <outputFile> 2>&1"
