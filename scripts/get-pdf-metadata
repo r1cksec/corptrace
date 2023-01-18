@@ -89,21 +89,23 @@ os.makedirs(tempDir)
 counter = 0
 
 # download pdf files
-print("Documents:")
 uniqUrls = sorted(set(urls))
 
 counter = 0
+print("Results:")
 
 for u in uniqUrls:
     splittedUrl = u.split("/")
     time.sleep(5)
     os.system("wget --quiet \"" + u + "\" -O \"" + tempDir + "/" + str(counter) + ".pdf\"")
-    print(u)
     counter = counter + 1
 
-print("\nResults:")
-os.system("exiftool " + tempDir + "/* | grep -i \"Producer\|Author\" | sort -u")
+os.system("cd " + tempDir + "; exiftool * | grep -i \"Producer\|Author\" | sort -u")
 
 # remove directory recursively
 os.system("rm -rf " + tempDir)
+
+print("\nDocuments:")
+for x in uniqUrls:
+    print(x)
 
