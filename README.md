@@ -179,5 +179,6 @@ out
 https://en.wikipedia.org/wiki/Thoth
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/77610058/211009168-4a1d9566-fb5c-444f-89ac-37b600d624e4.png"/>
+<img src="https://user-images.githubusercontent.com/77610058/224850581-5dcf9442-100b-4dcb-99e8-0de3df570415.png" width=50%/>
 </p>
+
