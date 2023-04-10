@@ -11,9 +11,6 @@ Note that running thoth repetitively in a short amount of time can lead to block
 The core is the `modules.json` file, which contains the syntax of the executable commands.
 Variables can also be stored in this configuration file, which are automatically included in the arguments of Argparse.
 
-## Requirements
-- Debian based operating system
-
 ## Install
 The setup script will install tool dependencies and insert the absolute path to the scripts into the `modules.json` file.
 
@@ -69,7 +66,7 @@ Once `git pull` has been executed, `bash setup.sh` should be launched again in o
 ## Help
 ```
 usage: thoth.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]] [-an ASNUMBER] [-cn COMPANYNAME] [-d DOMAIN]
-                [-df DOMAINFILE] [-gr GITHUBREPOSITORY] [-grl GITHUBREPOSITORYLOCAL] [-ir IPRANGE] [-u USER] [-w WORD]
+                [-df DOMAINFILE] [-gr GITHUBREPOSITORY] [-grl GITHUBREPOSITORYLOCAL] [-gai GOOGLEANALYTICSID] [-ir IPRANGE] [-u USER]
 
 Automatic reconaissance.
 Use at your own risk.
@@ -88,7 +85,7 @@ Only execute modules that contains at least one of the given substring in their 
 Execute modules up to risk level 4, use 8 threads and increase timeout to 35 minutes:
 ./thoth.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 2100 -an AS8560
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -o OUTPUT, --output OUTPUT
                         path to output directory
@@ -110,9 +107,9 @@ options:
   -df DOMAINFILE, --domainFile DOMAINFILE
   -gr GITHUBREPOSITORY, --githubRepository GITHUBREPOSITORY
   -grl GITHUBREPOSITORYLOCAL, --githubRepositoryLocal GITHUBREPOSITORYLOCAL
+  -gai GOOGLEANALYTICSID, --googleAnalyticsId GOOGLEANALYTICSID
   -ir IPRANGE, --ipRange IPRANGE
   -u USER, --user USER
-  -w WORD, --word WORD
 ```
 
 ## Demo
@@ -147,6 +144,7 @@ out
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
 * <https://github.com/dhn/spk>
+* <https://github.com/dhn/udon>
 * <https://github.com/edoardottt/csprecon>
 * <https://github.com/hakluke/hakrawler>
 * <https://github.com/MattKeeley/Spoofy>

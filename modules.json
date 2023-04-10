@@ -230,6 +230,11 @@
         "syntax": "trufflehog git <githubRepository> --no-update > <outputFile> 2>&1"
     },
     {
+        "name": "udon",
+        "riskLevel": "2",
+        "syntax": "udon -silent -json -s <googleAnalyticsId> > <outputFile> 2>&1"
+    },
+    {
         "name": "waybackurls",
         "riskLevel": "2",
         "syntax": "echo <domain> | waybackurls | awk -F 'http' '{print $2}' | cut -d '/' -f 3 | cut -d ':' -f 1 | sort -u > <outputFile> 2>&1"

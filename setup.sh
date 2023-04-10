@@ -45,7 +45,6 @@ then
     /tmp/go/bin/go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
     mv /tmp/bin/nuclei /usr/local/bin
     chmod +x /usr/local/bin/nuclei
-    nuclei -update -update-template-dir "${pathToNucleiTemplates}"
     nuclei -update-templates -update-template-dir "${pathToNucleiTemplates}"
     chown -R ${userName}:${userName} ${pathToNucleiTemplates}
 else
@@ -116,6 +115,15 @@ then
     chmod +x /usr/local/bin/subfinder
 else
     echo "subfinder is installed"
+fi
+
+if ! [ -x "$(command -v udon)" ]
+then
+    /tmp/go/bin/go install github.com/dhn/udon@latest
+    mv /tmp/bin/udon /usr/local/bin
+    chmod +x /usr/local/bin/udon
+else
+    echo "udon is installed"
 fi
 
 if ! [ -x "$(command -v waybackurls)" ]
