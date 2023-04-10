@@ -64,7 +64,7 @@ For example, the following module would add the value `domain (-d)` to the Argpa
 
 ## Update
 
-Once `git pull` has been executed, `bash setup.sh` should be launched again in order to update the configuration of the modes.json file.
+Once `git pull` has been executed, `bash setup.sh` should be launched again in order to update the configuration of the `modules.json` file.
 
 ## Help
 ```
@@ -143,6 +143,7 @@ out
 **Sources**
 
 * <https://github.com/blechschmidt/massdns>
+* <https://github.com/cipher387/juicyinfo-nuclei-templates>
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
 * <https://github.com/dhn/spk>
@@ -162,7 +163,6 @@ out
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-netblocks>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-page-owner>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-pdf-metadata>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/get-title>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-whois-hoster>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/grep-through-commits>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/hakrawler-ip-range>

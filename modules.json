@@ -51,12 +51,12 @@
     },
     {
         "name": "get-cert-domains-from-ip-range",
-        "riskLevel": "3",
+        "riskLevel": "2",
         "syntax": "REPLACEME/scripts/get-cert-domains-from-ip-range <ipRange> > <outputFile> 2>&1"
     },
     {
         "name": "get-page-owner",
-        "riskLevel": "2",
+        "riskLevel": "3",
         "syntax": "REPLACEME/scripts/get-page-owner <domainFile> > <outputFile> 2>&1"
     },
     {
@@ -93,11 +93,6 @@
         "name": "get-netblocks",
         "riskLevel": "1",
         "syntax": "REPLACEME/scripts/get-netblocks '<companyName>' > <outputFile> 2>&1"
-    },
-    {
-        "name": "get-title",
-        "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-title <domainFile> > <outputFile> 2>&1"
     },
     {
         "name": "get-whois-hoster",
@@ -152,7 +147,57 @@
     {
         "name": "nuclei-user-osint",
         "riskLevel": "3",
-        "syntax": "nuclei -tags osint -var user=<user> > <outputFile> 2>&1"
+        "syntax": "nuclei -tags osint -var user=<user> -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-email",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/email.yaml -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-facebook",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/facebook.yaml -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-GA_id",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/GA_id.yaml -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-github",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/github.yaml -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-nickname",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/nickname.yaml -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-phonenumber",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/phonenumber.yaml -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-telegram",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/telegram.yaml -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-title",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/title.yaml -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-twitter",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/twitter.yaml -silent > <outputFile> 2>&1"
+    },
+    {
+        "name": "nuclei-youtube",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/youtube.yaml -silent > <outputFile> 2>&1"
     },
     {
         "name": "scanrepo",

@@ -8,7 +8,7 @@ set -u
 
 if [ "$EUID" -ne 0 ]
 then
-    echo "Please run script as root"
+    echo "Please run script using sudo"
     exit
 fi
 
@@ -20,18 +20,72 @@ sleep 1
 # Write path to scripts into module.json file
 pathToScriptDir="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 sed -i "s|REPLACEME|${pathToScriptDir}|g" "${pathToScriptDir}/modules.json"
+pathToHomeDir=$(echo ${pathToScriptDir} | awk -F "/" '{print $1"/"$2"/"$3}')
+userName=$(echo ${pathToScriptDir} | awk -F "/" '{print $3}')
 
 echo ""
 echo "### APT Install"
 apt install -y dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl
 
 echo ""
-echo "### Wget precompiled binaries from: https://github.com/r1cksec/misc/tree/main/binaries"
+echo "### Install Golang tools."
 echo ""
+
+# Download golang
+wget https://golang.google.cn/dl/go1.20.3.linux-amd64.tar.gz -O /tmp/go.tar.gz
+tar -xf /tmp/go.tar.gz -C /tmp
+rm -r /tmp/go.tar.gz
+export GOPATH=/tmp
+
+pathToNucleiTemplates="${pathToHomeDir}/nuclei-templates"
+pathToJuicyTemplates="${pathToNucleiTemplates}/juicy_info"
+
+if ! [ -x "$(command -v nuclei)" ]
+then
+    /tmp/go/bin/go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+    mv /tmp/bin/nuclei /usr/local/bin
+    chmod +x /usr/local/bin/nuclei
+    nuclei -update -update-template-dir "${pathToNucleiTemplates}"
+    nuclei -update-templates -update-template-dir "${pathToNucleiTemplates}"
+    chown -R ${userName}:${userName} ${pathToNucleiTemplates}
+else
+    echo "nuclei is installed"
+fi
+
+if [ ! -d ${pathToJuicyTemplates} ]
+then
+    mkdir -p ${pathToJuicyTemplates}
+    chown -R ${userName}:${userName} ${pathToJuicyTemplates}
+fi
+
+declare -a customNucleiTemplates=(
+"email.yaml"
+"facebook.yaml"
+"GA_id.yaml"
+"github.yaml"
+"nickname.yaml"
+"phonenumber.yaml"
+"telegram.yaml"
+"title.yaml"
+"twitter.yaml"
+"youtube.yaml"
+)
+
+for ct in "${customNucleiTemplates[@]}"
+do
+    if [ ! -f "${pathToJuicyTemplates}/${ct}" ]
+    then
+        wget "https://github.com/cipher387/juicyinfo-nuclei-templates/raw/main/juicy_info/${ct}" -O "${pathToJuicyTemplates}/${ct}"
+        chown ${userName}:${userName} "$pathToJuicyTemplates/${ct}"
+    else
+        echo "${ct} is installed"
+    fi
+done
 
 if ! [ -x "$(command -v spk)" ]
 then
-    wget https://github.com/r1cksec/misc/raw/main/binaries/spk -O /usr/local/bin/spk
+    /tmp/go/bin/go install github.com/dhn/spk@latest
+    mv /tmp/bin/spk /usr/local/bin
     chmod +x /usr/local/bin/spk
 else
     echo "spk is installed"
@@ -39,7 +93,8 @@ fi
 
 if ! [ -x "$(command -v csprecon)" ]
 then
-    wget https://github.com/r1cksec/misc/raw/main/binaries/csprecon -O /usr/local/bin/csprecon
+    /tmp/go/bin/go install github.com/edoardottt/csprecon/cmd/csprecon@latest
+    mv /tmp/bin/csprecon /usr/local/bin
     chmod +x /usr/local/bin/csprecon
 else
     echo "csprecon is installed"
@@ -47,15 +102,35 @@ fi
 
 if ! [ -x "$(command -v hakrawler)" ]
 then
-    wget https://github.com/r1cksec/misc/raw/main/binaries/hakrawler -O /usr/local/bin/hakrawler
+    /tmp/go/bin/go install github.com/hakluke/hakrawler@latest
+    mv /tmp/bin/hakrawler /usr/local/bin
     chmod +x /usr/local/bin/hakrawler
 else
     echo "hakrawler is installed"
 fi
 
+if ! [ -x "$(command -v subfinder)" ]
+then
+    /tmp/go/bin/go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+    mv /tmp/bin/subfinder /usr/local/bin
+    chmod +x /usr/local/bin/subfinder
+else
+    echo "subfinder is installed"
+fi
+
+if ! [ -x "$(command -v waybackurls)" ]
+then
+    /tmp/go/bin/go install github.com/tomnomnom/waybackurls@latest
+    mv /tmp/bin/waybackurls /usr/local/bin
+    chmod +x /usr/local/bin/waybackurls
+else
+    echo "waybackurls is installed"
+fi
+
 echo ""
 echo "### Compile Binary from Git."
 echo ""
+
 if ! [ -x "$(command -v massdns)" ]
 then
     git clone https://github.com/blechschmidt/massdns.git /tmp/massdns
@@ -68,7 +143,7 @@ else
 fi
 
 echo ""
-echo "### Wget release binaries from corresponding repositories."
+echo "### Wget compiled binaries."
 echo ""
 
 if ! [ -x "$(command -v amass)" ]
@@ -82,17 +157,6 @@ else
     echo "amass is installed"
 fi
 
-if ! [ -x "$(command -v subfinder)" ]
-then
-    wget https://github.com/projectdiscovery/subfinder/releases/download/v2.5.7/subfinder_2.5.7_linux_amd64.zip -O /tmp/subfinder.zip
-    unzip /tmp/subfinder.zip -d /tmp/subfinder
-    mv /tmp/subfinder/subfinder /usr/local/bin
-    chmod +x /usr/local/bin/subfinder
-    rm -r /tmp/subfinder.zip /tmp/subfinder
-else
-    echo "subfinder is installed"
-fi
-
 if ! [ -x "$(command -v geckodriver)" ]
 then
     wget https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz -O /tmp/geckodriver.tar.gz
@@ -101,16 +165,6 @@ then
     rm /tmp/geckodriver.tar.gz
 else
     echo "geckodriver is installed"
-fi
-
-if ! [ -x "$(command -v waybackurls)" ]
-then
-    wget https://github.com/tomnomnom/waybackurls/releases/download/v0.1.0/waybackurls-linux-amd64-0.1.0.tgz -O /tmp/wayback.tgz
-    tar -xf /tmp/wayback.tgz -C /usr/local/bin
-    chmod +x /usr/local/bin/waybackurls
-    rm /tmp/wayback.tgz
-else
-    echo "waybackurls is installed"
 fi
 
 if ! [ -x "$(command -v gitleaks)" ]
@@ -153,22 +207,12 @@ else
     echo "scanrepo is installed"
 fi
 
-if ! [ -x "$(command -v nuclei)" ]
-then
-    wget https://github.com/projectdiscovery/nuclei/releases/download/v2.9.0/nuclei_2.9.0_linux_amd64.zip -O /tmp/nuclei.zip
-    unzip /tmp/nuclei.zip -d /usr/local/bin
-    nuclei -update-templates
-    rm /tmp/nuclei.zip
-else
-    echo "nuclei is installed"
-fi
-
 echo ""
 echo "### Install Python dependencies"
 echo ""
-echo "Install python dependencies as root..."
+echo "Install python dependencies as ${userName} without virtual environment ..."
 echo "Alternatively you have to install favfreak and spoofy yourself."
-echo "Do you want to install python dependencies as root (y/anything else n)?"
+echo "Do you want to install python dependencies without virtual environment (y/anything else n)?"
 
 read str
 
@@ -180,7 +224,7 @@ then
         git clone https://github.com/devanshbatham/FavFreak.git /tmp/FavFreak
         cp /tmp/FavFreak/favfreak.py /usr/local/bin/favfreak
         chmod +x /usr/local/bin/favfreak
-        pip3 install -r /tmp/FavFreak/requirements.txt
+        sudo -su ${userName} pip3 install -r /tmp/FavFreak/requirements.txt
         rm -r /tmp/FavFreak
     else
         echo "FavFreak is installed"
@@ -190,8 +234,8 @@ then
     then
         cd /tmp
         git clone https://github.com/MattKeeley/Spoofy
-        pip3 install -r /tmp/Spoofy/requirements.txt
-        pip3 install libs
+        sudo -su ${userName} pip3 install -r /tmp/Spoofy/requirements.txt
+        sudo -su ${userName} pip3 install libs
         cp /tmp/Spoofy/spoofy.py /usr/local/bin/spoofy
         cp -r /tmp/Spoofy/libs /usr/local/bin/libs
         chmod +x /usr/local/bin/spoofy
