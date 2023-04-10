@@ -142,16 +142,15 @@ out
 
 **Sources**
 
-* <https://github.com/projectdiscovery/nuclei>
-* <https://github.com/MattKeeley/Spoofy>
-* <>
 * <https://github.com/blechschmidt/massdns>
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
 * <https://github.com/dhn/spk>
 * <https://github.com/edoardottt/csprecon>
 * <https://github.com/hakluke/hakrawler>
+* <https://github.com/MattKeeley/Spoofy>
 * <https://github.com/OWASP/Amass>
+* <https://github.com/projectdiscovery/nuclei>
 * <https://github.com/projectdiscovery/subfinder>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/dork-linkedIn-employees>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-cert-domains-from-ip-range>
