@@ -2,7 +2,7 @@
 
 if [ ${#} -ne 1 ]
 then
-    echo "usage: githubRepository"
+    echo "usage: grep-through-commits.sh githubRepository"
     exit 1
 fi
 

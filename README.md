@@ -5,7 +5,7 @@ Using multithreading, several tools are executed simultaneously.
 The use of different modules can be adapted on the fly by using module names or risk level as a filter.
 <br>
 <br>
-Note that running thoth repetitively in a short amount of time can lead to blocking of the IP address used, as thoth can access multiple APIs at the same time.
+Note that running thoth repetitively in a short amount of time can lead to blocking of the IP address used, as thoth can query multiple APIs at the same time.
 <br>
 <br>
 The core is the `modules.json` file, which contains the syntax of the executable commands.
@@ -23,12 +23,12 @@ sudo bash setup.sh
 
 ## Configuration
 The `modules.json` file contains all modules that can be executed by thoth. <br>
-The modules have the following structure:
+A single module has the following structure:
 
 ```
 {
     "name": "nameOfModule",
-    "riskLevel": "riskLevelAsInteger",
+    "riskLevel": "riskLevelFrom1To4",
     "syntax": "commandSyntax <variable> > <outputFile> 2>&1",
 },
 ```
@@ -39,7 +39,7 @@ However, it should be noted that the modules cannot have the same name.
 <br>
 <br>
 Each module requires a risk level between 1 to 4.  <br>
-The higher the level, the higher the probability that the module can cause damage.
+The higher the level, the higher the probability that the module can cause damage or .
 <br>
 
 ### syntax - variables
@@ -58,19 +58,22 @@ For example, the following module would add the value `domain (-d)` to the Argpa
 {
     "name": "amass-intel-domain",
     "riskLevel": "2",
-    "syntax": "amass intel -d <domain> -whois > <outputFile> 2>&1"
+    "syntax": "amass intel -d <domain> > <outputFile> 2>&1"
 },
 ```
 
+## Update
+
+Once `git pull` has been executed, `bash setup.sh` should be launched again in order to update the configuration of the modes.json file.
+
 ## Help
 ```
-usage: thoth.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT]
-                  [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]] [-an ASNUMBER]
-                  [-cn COMPANYNAME] [-d DOMAIN] [-df DOMAINFILE] [-gr GITHUBREPOSITORY]
-                  [-grl GITHUBREPOSITORYLOCAL] [-gu GITHUBUSER] [-ir IPRANGE] [-w WORD]
+usage: thoth.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]] [-an ASNUMBER] [-cn COMPANYNAME] [-d DOMAIN]
+                [-df DOMAINFILE] [-gr GITHUBREPOSITORY] [-grl GITHUBREPOSITORYLOCAL] [-ir IPRANGE] [-u USER] [-w WORD]
 
 Automatic reconaissance.
 Use at your own risk.
+I do not take any responsibility for your actions!
 
 Basic usage:
 Print matching modules for a given domain:
@@ -82,8 +85,8 @@ Execute modules for given domain:
 Only execute modules that contains at least one of the given substring in their name:
 ./thoth.py -o /tmp/output -d example.com -im amass -ir 192.168.1.3-9 -e
 
-Execute modules with higher risk level, use more threads and increase timeout:
-./thoth.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 3000 -an AS8560
+Execute modules up to risk level 4, use 8 threads and increase timeout to 35 minutes:
+./thoth.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 2100 -an AS8560
 
 options:
   -h, --help            show this help message and exit
@@ -107,8 +110,8 @@ options:
   -df DOMAINFILE, --domainFile DOMAINFILE
   -gr GITHUBREPOSITORY, --githubRepository GITHUBREPOSITORY
   -grl GITHUBREPOSITORYLOCAL, --githubRepositoryLocal GITHUBREPOSITORYLOCAL
-  -gu GITHUBUSER, --githubUser GITHUBUSER
   -ir IPRANGE, --ipRange IPRANGE
+  -u USER, --user USER
   -w WORD, --word WORD
 ```
 
@@ -139,6 +142,9 @@ out
 
 **Sources**
 
+* <https://github.com/projectdiscovery/nuclei>
+* <https://github.com/MattKeeley/Spoofy>
+* <>
 * <https://github.com/blechschmidt/massdns>
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
@@ -162,7 +168,6 @@ out
 * <https://github.com/r1cksec/thoth/tree/master/scripts/grep-through-commits>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/hakrawler-ip-range>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/north-scraper>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/search-google>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/tld-discovery>
 * <https://github.com/SecurityRiskAdvisors/letitgo>
 * <https://github.com/tomnomnom/waybackurls>

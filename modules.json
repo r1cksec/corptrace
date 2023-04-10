@@ -11,7 +11,7 @@
     },
     {
         "name": "csprecon",
-        "riskLevel": "2",
+        "riskLevel": "1",
         "syntax": "csprecon -silent -u https://<domain> > <outputFile> 2>&1"
     },
     {
@@ -21,17 +21,17 @@
     },
     {
         "name": "dork-linkedIn-employees",
-        "riskLevel": "3",
+        "riskLevel": "2",
         "syntax": "REPLACEME/scripts/dork-linkedIn-employees '<companyName>' > <outputFile> 2>&1"
     },
     {
         "name": "dnsrecon-zonetransfer",
-        "riskLevel": "3",
+        "riskLevel": "1",
         "syntax": "dnsrecon -d <domain> -t axfr > <outputFile> 2>&1"
     },
     {
         "name": "dnsrecon-zonewalk",
-        "riskLevel": "3",
+        "riskLevel": "1",
         "syntax": "dnsrecon -d <domain> -t zonewalk > <outputFile> 2>&1"
     },
     {
@@ -46,7 +46,7 @@
     },
     {
         "name": "get-asn",
-        "riskLevel": "2",
+        "riskLevel": "1",
         "syntax": "ip=$(host <domain> | awk -F 'has address' '{print $2}' | sed 's/ //g' | head -n 1); whois $ip | grep -i origin | awk -F ' ' '{print $2}' > <outputFile> 2>&1"
     },
     {
@@ -66,17 +66,17 @@
     },
     {
         "name": "get-dns-records",
-        "riskLevel": "1",
+        "riskLevel": "2",
         "syntax": "REPLACEME/scripts/get-dns-records <domain> > <outputFile> 2>&1"
     },
     {
         "name": "get-github-repos",
         "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-github-repos <githubUser> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/get-github-repos <user> > <outputFile> 2>&1"
     },
     {
         "name": "get-grep-app",
-        "riskLevel": "2",
+        "riskLevel": "1",
         "syntax": "REPLACEME/scripts/get-grep-app '<companyName>' > <outputFile> 2>&1"
     },
     {
@@ -91,7 +91,7 @@
     },
     {
         "name": "get-netblocks",
-        "riskLevel": "2",
+        "riskLevel": "1",
         "syntax": "REPLACEME/scripts/get-netblocks '<companyName>' > <outputFile> 2>&1"
     },
     {
@@ -131,7 +131,7 @@
     },
     {
         "name": "letItGo",
-        "riskLevel": "2",
+        "riskLevel": "1",
         "syntax": "letItGo <domain> > <outputFile> 2>&1"
     },
     {
@@ -142,7 +142,7 @@
     {
         "name": "nmap-reverse-lookup-ranges",
         "riskLevel": "2",
-        "syntax": "nmap -sL <ipRange> | grep 'Nmap scan report for ' | awk -F 'Nmap scan report for ' '{print $2}' | grep '(' > <outputFile> 2>&1"
+        "syntax": "nmap -sL <ipRange> | awk -F 'Nmap scan report for ' '{print $2}' | grep '(' > <outputFile> 2>&1"
     },
     {
         "name": "north-scraper",
@@ -150,14 +150,14 @@
         "syntax": "REPLACEME/scripts/north-scraper \"<companyName>\" 10 > <outputFile> 2>&1"
     },
     {
+        "name": "nuclei-user-osint",
+        "riskLevel": "3",
+        "syntax": "nuclei -tags osint -var user=<user> > <outputFile> 2>&1"
+    },
+    {
         "name": "scanrepo",
         "riskLevel": "1",
         "syntax": "cd <githubRepositoryLocal> ; git log -p | scanrepo > <outputFile> 2>&1"
-    },
-    {
-        "name": "search-google",
-        "riskLevel": "1",
-        "syntax": "REPLACEME/scripts/search-google <word> > <outputFile> 2>&1"
     },
     {
         "name": "subfinder",
@@ -168,6 +168,11 @@
         "name": "spk",
         "riskLevel": "2",
         "syntax": "spk -silent -s '<companyName>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "spoofy",
+        "riskLevel": "2",
+        "syntax": "spoofy -d <domain> -o stdout > <outputFile> 2>&1"
     },
     {
         "name": "tld-discovery",

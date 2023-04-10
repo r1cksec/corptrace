@@ -23,7 +23,7 @@ sed -i "s|REPLACEME|${pathToScriptDir}|g" "${pathToScriptDir}/modules.json"
 
 echo ""
 echo "### APT Install"
-apt install dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl
+apt install -y dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl
 
 echo ""
 echo "### Wget precompiled binaries from: https://github.com/r1cksec/misc/tree/main/binaries"
@@ -54,7 +54,7 @@ else
 fi
 
 echo ""
-echo "### Compile Biary from Git."
+echo "### Compile Binary from Git."
 echo ""
 if ! [ -x "$(command -v massdns)" ]
 then
@@ -73,9 +73,9 @@ echo ""
 
 if ! [ -x "$(command -v amass)" ]
 then
-    wget https://github.com/OWASP/Amass/releases/download/v3.21.2/amass_linux_amd64.zip -O /tmp/amass.zip
+    wget https://github.com/OWASP/Amass/releases/download/v3.22.0/amass_linux_amd64.zip -O /tmp/amass.zip
     unzip /tmp/amass.zip -d /tmp/amass
-    cp /tmp/amass/amass_linux_amd64/amass /usr/local/bin
+    mv /tmp/amass/amass_linux_amd64/amass /usr/local/bin
     chmod +x /usr/local/bin/amass
     rm -rf /tmp/amass.zip /tmp/amass
 else
@@ -84,9 +84,9 @@ fi
 
 if ! [ -x "$(command -v subfinder)" ]
 then
-    wget https://github.com/projectdiscovery/subfinder/releases/download/v2.5.5/subfinder_2.5.5_linux_amd64.zip -O /tmp/subfinder.zip
+    wget https://github.com/projectdiscovery/subfinder/releases/download/v2.5.7/subfinder_2.5.7_linux_amd64.zip -O /tmp/subfinder.zip
     unzip /tmp/subfinder.zip -d /tmp/subfinder
-    cp /tmp/subfinder/subfinder /usr/local/bin
+    mv /tmp/subfinder/subfinder /usr/local/bin
     chmod +x /usr/local/bin/subfinder
     rm -r /tmp/subfinder.zip /tmp/subfinder
 else
@@ -153,11 +153,21 @@ else
     echo "scanrepo is installed"
 fi
 
+if ! [ -x "$(command -v nuclei)" ]
+then
+    wget https://github.com/projectdiscovery/nuclei/releases/download/v2.9.0/nuclei_2.9.0_linux_amd64.zip -O /tmp/nuclei.zip
+    unzip /tmp/nuclei.zip -d /usr/local/bin
+    nuclei -update-templates
+    rm /tmp/nuclei.zip
+else
+    echo "nuclei is installed"
+fi
+
 echo ""
 echo "### Install Python dependencies"
 echo ""
 echo "Install python dependencies as root..."
-echo "Alternatively you have to install favfreak yourself."
+echo "Alternatively you have to install favfreak and spoofy yourself."
 echo "Do you want to install python dependencies as root (y/anything else n)?"
 
 read str
@@ -170,12 +180,26 @@ then
         git clone https://github.com/devanshbatham/FavFreak.git /tmp/FavFreak
         cp /tmp/FavFreak/favfreak.py /usr/local/bin/favfreak
         chmod +x /usr/local/bin/favfreak
+        pip3 install -r /tmp/FavFreak/requirements.txt
         rm -r /tmp/FavFreak
     else
         echo "FavFreak is installed"
     fi
 
-    pip3 install mmh3
+    if ! [ -x "$(command -v spoofy)" ]
+    then
+        cd /tmp
+        git clone https://github.com/MattKeeley/Spoofy
+        pip3 install -r /tmp/Spoofy/requirements.txt
+        pip3 install libs
+        cp /tmp/Spoofy/spoofy.py /usr/local/bin/spoofy
+        cp -r /tmp/Spoofy/libs /usr/local/bin/libs
+        chmod +x /usr/local/bin/spoofy
+        rm -r /tmp/Spoofy
+    else
+        echo "spoofy is installed"
+    fi
+
     pip3 install selenium
 fi
 

@@ -47,12 +47,17 @@ textField.send_keys(Keys.RETURN)
 # wait for page to load
 WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.ID, "print")))
 
-# scroll tu buttom
+# scroll tu bottom
 actions = ActionChains(driver)
 actions.send_keys(Keys.END).perform()
 
 # wait for network graph
-WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.CLASS_NAME, "node")))
+try:
+    WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.CLASS_NAME, "node")))
+except:
+    # exit if not nodes returned as result
+    print("No further nodes found for: " + driver.current_url)
+    print("")
 
 nodeNames = []
 nodeHref = []
@@ -65,7 +70,7 @@ startNodeName = startNodeSplit[3].split(",")
 cleanStartNodeName = urllib.parse.unquote(startNodeName[0]).replace("+" ," ")
 
 # url scheme: https://www.northdata.com/companyName/locationOfLaw
-# some companies do not habe locationOfLaw
+# some companies do not have locationOfLaw
 try:
     startNodeHref = startNodeSplit[3] + "/" + startNodeSplit[4]
 except:
@@ -123,7 +128,7 @@ while 1:
 
             try:
                 driver.get("https://www.northdata.com" + h)
-                time.sleep(2)
+                time.sleep(6)
             except:
                 print("Error getting " + h)
 

@@ -1,13 +1,12 @@
-
 #!/bin/bash
 
 pathToResults="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+echo "This script sporadically greps the subdomains from the results"
 echo "Please enter path to result directory:"
 read pathToResults
 
 # grep subdomain results
-cat ${pathToResults}/amass-osint/* | grep -v "Querying\|has finished\|Discoveries are being" >> ${pathToResults}/all-domains.txt
 cat ${pathToResults}/nmap-reverse-lookup-ranges/nmap-reverse-lookup-ranges* >> ${pathToResults}/all-domains.txt
 cat ${pathToResults}/get-cert-domains-from-ip-range/* | grep -v "Final Domain" | grep -v nmap | sort -u >> ${pathToResults}/all-domains.txt
 cat ${pathToResults}/subfinder/* | grep -v "INF" | grep -v "WRN" | sort -u >> ${pathToResults}/all-domains.txt

@@ -398,7 +398,7 @@ executableModules = getMatchingModules()
 # create commands from template
 commandsToExecute = createCommandFromTemplate(executableModules)
 
-## will contain the running threads
+# will contain the running threads
 threads = []
 
 # count finished modules
