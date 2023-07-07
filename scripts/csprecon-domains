@@ -15,3 +15,5 @@ awk '{print "https://"$0}' ${1} > /tmp/${timeStamp}-new-csphosts.txt
 # get active hosts with webserver
 csprecon -silent -l /tmp/${timeStamp}-new-csphosts.txt 
 
+rm /tmp/${timeStamp}-new-csphosts.txt
+

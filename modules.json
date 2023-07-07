@@ -45,16 +45,6 @@
         "syntax": "cat <domainFile> | awk '{print \"https://\"$0}' | favfreak > <outputFile> 2>&1"
     },
     {
-        "name": "get-cert-domains-from-ip-range",
-        "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-cert-domains-from-ip-range <ipRange> > <outputFile> 2>&1"
-    },
-    {
-        "name": "get-pdf-metadata",
-        "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-pdf-metadata <domain> > <outputFile> 2>&1"
-    },
-    {
         "name": "get-dns-records",
         "riskLevel": "2",
         "syntax": "REPLACEME/scripts/get-dns-records <domain> > <outputFile> 2>&1"
@@ -65,9 +55,9 @@
         "syntax": "REPLACEME/scripts/get-github-repos <user> > <outputFile> 2>&1"
     },
     {
-        "name": "get-grep-app",
-        "riskLevel": "1",
-        "syntax": "REPLACEME/scripts/get-grep-app '<companyName>' > <outputFile> 2>&1"
+        "name": "get-tls-domains-from-ip-range",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/get-tls-domains-from-ip-range <ipRange> > <outputFile> 2>&1"
     },
     {
         "name": "get-ips-from-asn",
@@ -75,9 +65,9 @@
         "syntax": "whois -h whois.radb.net -- '-i origin <asNumber>' | grep -E '([0-9.]+){4}/[0-9]+' -C 1 > <outputFile> 2>&1"
     },
     {
-        "name": "get-mails",
+        "name": "get-pdf-metadata",
         "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-mails <domain> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/get-pdf-metadata <domain> > <outputFile> 2>&1"
     },
     {
         "name": "grep-through-commits",
@@ -120,14 +110,29 @@
         "syntax": "nmap -sL <ipRange> | awk -F 'Nmap scan report for ' '{print $2}' | grep '(' > <outputFile> 2>&1"
     },
     {
-        "name": "north-scraper",
-        "riskLevel": "3",
-        "syntax": "REPLACEME/scripts/north-scraper \"<companyName>\" 10 > <outputFile> 2>&1"
-    },
-    {
         "name": "scanrepo",
         "riskLevel": "1",
         "syntax": "cd <githubRepositoryLocal> ; git log -p | scanrepo > <outputFile> 2>&1"
+    },
+    {
+        "name": "scrape-grep-app",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/scrape-grep-app '<companyName>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "scrape-handelsregister",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/scrape-handelsregister \"<companyName>\" > <outputFile> 2>&1"
+    },
+    {
+        "name": "scrape-northdata",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/scrape-northdata \"<companyName>\" 10 > <outputFile> 2>&1"
+    },
+    {
+        "name": "scrape-mails",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/scrape-mails <domain> > <outputFile> 2>&1"
     },
     {
         "name": "subfinder",
