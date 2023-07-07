@@ -45,11 +45,14 @@ time.sleep(3)
 textField.send_keys(Keys.RETURN)
 
 # wait for page to load
-WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.ID, "print")))
+WebDriverWait(driver,45).until(EC.element_to_be_clickable((By.ID, "print")))
 
 # scroll tu bottom
 actions = ActionChains(driver)
 actions.send_keys(Keys.END).perform()
+time.sleep(1)
+actions.send_keys(Keys.ARROW_UP).perform()
+time.sleep(1)
 
 # wait for network graph
 try:
@@ -80,7 +83,7 @@ nodeNames.append(cleanStartNodeName)
 nodeHref.append("/" + startNodeHref)
 nodeHrefDone.append("/" + startNodeHref)
 
-print("Query /" + startNodeHref)
+print("Query https://northdata.com/" + startNodeHref)
 
 nodes = driver.find_elements(By.CLASS_NAME, "node")
 
@@ -90,13 +93,15 @@ for node in nodes:
         break
 
     if (node.text is None):
+        print("Break node text:" + node.text)
         break
 
-    icon = node.text[0].replace("\n","")
+    icon = node.text[0].encode('utf-8')
     name = node.text[1:]
     href = node.get_attribute("href")
 
-    if (icon == "\uf1ad"):
+    # check if the icon is a company, otherwise skip node
+    if (icon == b'\xef\x86\xad'):
         if (href not in nodeHref):
             if (href is not None):
                 nodeNames.append(urllib.parse.unquote(name).replace("+", " "))
@@ -112,7 +117,7 @@ while 1:
         if (h in nodeHrefDone):
             continue
         else:
-            print("Query " + h)
+            print("Query https://northdata.com/" + h)
             counter = counter + 1
 
             if (counter == int(sys.argv[2])):
@@ -135,9 +140,12 @@ while 1:
             # wait for page to load
             WebDriverWait(driver,20).until(EC.element_to_be_clickable((By.ID, "print")))
             actions.send_keys(Keys.END).perform()
+            time.sleep(1)
+            actions.send_keys(Keys.ARROW_UP).perform()
+            time.sleep(1)
             
             # wait for network graph
-            WebDriverWait(driver,60).until(EC.element_to_be_clickable((By.CLASS_NAME, "node")))
+            WebDriverWait(driver,45).until(EC.element_to_be_clickable((By.CLASS_NAME, "node")))
 
             nodes = driver.find_elements(By.CLASS_NAME, "node")
 

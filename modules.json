@@ -45,19 +45,9 @@
         "syntax": "cat <domainFile> | awk '{print \"https://\"$0}' | favfreak > <outputFile> 2>&1"
     },
     {
-        "name": "get-asn",
-        "riskLevel": "1",
-        "syntax": "ip=$(host <domain> | awk -F 'has address' '{print $2}' | sed 's/ //g' | head -n 1); whois $ip | grep -i origin | awk -F ' ' '{print $2}' > <outputFile> 2>&1"
-    },
-    {
         "name": "get-cert-domains-from-ip-range",
         "riskLevel": "2",
         "syntax": "REPLACEME/scripts/get-cert-domains-from-ip-range <ipRange> > <outputFile> 2>&1"
-    },
-    {
-        "name": "get-page-owner",
-        "riskLevel": "3",
-        "syntax": "REPLACEME/scripts/get-page-owner <domainFile> > <outputFile> 2>&1"
     },
     {
         "name": "get-pdf-metadata",
@@ -88,16 +78,6 @@
         "name": "get-mails",
         "riskLevel": "2",
         "syntax": "REPLACEME/scripts/get-mails <domain> > <outputFile> 2>&1"
-    },
-    {
-        "name": "get-netblocks",
-        "riskLevel": "1",
-        "syntax": "REPLACEME/scripts/get-netblocks '<companyName>' > <outputFile> 2>&1"
-    },
-    {
-        "name": "get-whois-hoster",
-        "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-whois-hoster <domainFile> > <outputFile> 2>&1"
     },
     {
         "name": "grep-through-commits",
@@ -145,61 +125,6 @@
         "syntax": "REPLACEME/scripts/north-scraper \"<companyName>\" 10 > <outputFile> 2>&1"
     },
     {
-        "name": "nuclei-user-osint",
-        "riskLevel": "3",
-        "syntax": "nuclei -tags osint -var user=<user> -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-email",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/email.yaml -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-facebook",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/facebook.yaml -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-GA_id",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/GA_id.yaml -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-github",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/github.yaml -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-nickname",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/nickname.yaml -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-phonenumber",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/phonenumber.yaml -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-telegram",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/telegram.yaml -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-title",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/title.yaml -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-twitter",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/twitter.yaml -silent > <outputFile> 2>&1"
-    },
-    {
-        "name": "nuclei-youtube",
-        "riskLevel": "2",
-        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | nuclei -t juicy_info/youtube.yaml -silent > <outputFile> 2>&1"
-    },
-    {
         "name": "scanrepo",
         "riskLevel": "1",
         "syntax": "cd <githubRepositoryLocal> ; git log -p | scanrepo > <outputFile> 2>&1"
@@ -228,16 +153,6 @@
         "name": "trufflehog",
         "riskLevel": "1",
         "syntax": "trufflehog git <githubRepository> --no-update > <outputFile> 2>&1"
-    },
-    {
-        "name": "udon",
-        "riskLevel": "2",
-        "syntax": "udon -silent -json -s <googleAnalyticsId> > <outputFile> 2>&1"
-    },
-    {
-        "name": "waybackurls",
-        "riskLevel": "2",
-        "syntax": "echo <domain> | waybackurls | awk -F 'http' '{print $2}' | cut -d '/' -f 3 | cut -d ':' -f 1 | sort -u > <outputFile> 2>&1"
     }
 ]
 

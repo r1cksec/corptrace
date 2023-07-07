@@ -13,7 +13,7 @@ then
 fi
 
 echo ""
-echo "### AMD Setup Script"
+echo "### Kali Setup Script"
 echo ""
 sleep 1
 
@@ -36,50 +36,6 @@ wget https://golang.google.cn/dl/go1.20.3.linux-amd64.tar.gz -O /tmp/go.tar.gz
 tar -xf /tmp/go.tar.gz -C /tmp
 rm -r /tmp/go.tar.gz
 export GOPATH=/tmp
-
-pathToNucleiTemplates="${pathToHomeDir}/nuclei-templates"
-pathToJuicyTemplates="${pathToNucleiTemplates}/juicy_info"
-
-if ! [ -x "$(command -v nuclei)" ]
-then
-    /tmp/go/bin/go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
-    mv /tmp/bin/nuclei /usr/local/bin
-    chmod +x /usr/local/bin/nuclei
-    nuclei -update-templates -update-template-dir "${pathToNucleiTemplates}"
-    chown -R ${userName}:${userName} ${pathToNucleiTemplates}
-else
-    echo "nuclei is installed"
-fi
-
-if [ ! -d ${pathToJuicyTemplates} ]
-then
-    mkdir -p ${pathToJuicyTemplates}
-    chown -R ${userName}:${userName} ${pathToJuicyTemplates}
-fi
-
-declare -a customNucleiTemplates=(
-"email.yaml"
-"facebook.yaml"
-"GA_id.yaml"
-"github.yaml"
-"nickname.yaml"
-"phonenumber.yaml"
-"telegram.yaml"
-"title.yaml"
-"twitter.yaml"
-"youtube.yaml"
-)
-
-for ct in "${customNucleiTemplates[@]}"
-do
-    if [ ! -f "${pathToJuicyTemplates}/${ct}" ]
-    then
-        wget "https://github.com/cipher387/juicyinfo-nuclei-templates/raw/main/juicy_info/${ct}" -O "${pathToJuicyTemplates}/${ct}"
-        chown ${userName}:${userName} "$pathToJuicyTemplates/${ct}"
-    else
-        echo "${ct} is installed"
-    fi
-done
 
 if ! [ -x "$(command -v spk)" ]
 then
@@ -115,24 +71,6 @@ then
     chmod +x /usr/local/bin/subfinder
 else
     echo "subfinder is installed"
-fi
-
-if ! [ -x "$(command -v udon)" ]
-then
-    /tmp/go/bin/go install github.com/dhn/udon@latest
-    mv /tmp/bin/udon /usr/local/bin
-    chmod +x /usr/local/bin/udon
-else
-    echo "udon is installed"
-fi
-
-if ! [ -x "$(command -v waybackurls)" ]
-then
-    /tmp/go/bin/go install github.com/tomnomnom/waybackurls@latest
-    mv /tmp/bin/waybackurls /usr/local/bin
-    chmod +x /usr/local/bin/waybackurls
-else
-    echo "waybackurls is installed"
 fi
 
 echo ""

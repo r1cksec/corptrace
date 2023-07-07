@@ -12,7 +12,7 @@ The core is the `modules.json` file, which contains the syntax of the executable
 Variables can also be stored in this configuration file, which are automatically included in the arguments of Argparse.
 
 ## Install
-The setup script will install tool dependencies and insert the absolute path to the scripts into the `modules.json` file.
+The setup script will install tool dependencies and insert the absolute path to the scripts into the `modules.json` file (tested on kali).
 
 ```
 sudo bash setup.sh
@@ -123,8 +123,6 @@ optional arguments:
 out
 ├── csprecon
 │   └── csprecon_example.com
-├── get-asn
-│   └── get-asn_example.com
 ├── get-dns-records
 │   └── get-dns-records_example.com
 ├── get-mails
@@ -140,16 +138,13 @@ out
 **Sources**
 
 * <https://github.com/blechschmidt/massdns>
-* <https://github.com/cipher387/juicyinfo-nuclei-templates>
 * <https://github.com/darkoperator/dnsrecon>
 * <https://github.com/devanshbatham/FavFreak>
 * <https://github.com/dhn/spk>
-* <https://github.com/dhn/udon>
 * <https://github.com/edoardottt/csprecon>
 * <https://github.com/hakluke/hakrawler>
 * <https://github.com/MattKeeley/Spoofy>
 * <https://github.com/OWASP/Amass>
-* <https://github.com/projectdiscovery/nuclei>
 * <https://github.com/projectdiscovery/subfinder>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/dork-linkedIn-employees>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-cert-domains-from-ip-range>
@@ -158,16 +153,12 @@ out
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-grep-app>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-ips-from-asn>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-mails>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/get-netblocks>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/get-page-owner>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-pdf-metadata>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/get-whois-hoster>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/grep-through-commits>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/hakrawler-ip-range>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/north-scraper>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/tld-discovery>
 * <https://github.com/SecurityRiskAdvisors/letitgo>
-* <https://github.com/tomnomnom/waybackurls>
 * <https://github.com/trufflesecurity/truffleHog>
 * <https://github.com/UKHomeOffice/repo-security-scanner>
 * <https://github.com/zricethezav/gitleaks>
