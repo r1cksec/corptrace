@@ -15,6 +15,7 @@ from os import path
 
 if (len(sys.argv) != 3):
     print("usage: {} companyName depth".format(sys.argv[0]))
+    print("Visit northdata.com and extract company names")
     sys.exit(1)
 
 options = FirefoxOptions()

@@ -3,6 +3,7 @@
 if [ ${#} -ne 1 ]
 then
     echo usage get-dns-records.sh domain
+    echo "Run dig command for different DNS record types"
     exit
 fi
 

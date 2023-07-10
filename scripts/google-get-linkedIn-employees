@@ -16,6 +16,7 @@ import urllib.parse
 # check amount of passed arguments
 if (len(sys.argv) != 2):
     print("usage: {} searchKey".format(sys.argv[0]))
+    print("Run Google dork and browse 4 first pages, repeat with Duck Duck Go")
     sys.exit(1)
 
 """FUNCTION

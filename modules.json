@@ -1,13 +1,18 @@
 [
     {
-        "name": "amass-intel-domain",
+        "name": "amass-get-subdomains",
+        "riskLevel": "2",
+        "syntax": "amass enum -passive -d <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "amass-get-rootdomains",
         "riskLevel": "2",
         "syntax": "amass intel -d <domain> -whois > <outputFile> 2>&1"
     },
     {
-        "name": "amass-osint",
+        "name": "completedns-get-ns-history",
         "riskLevel": "2",
-        "syntax": "amass enum -passive -d <domain> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/completedns-get-ns-history <domain> > <outputFile> 2>&1"
     },
     {
         "name": "csprecon",
@@ -15,23 +20,18 @@
         "syntax": "csprecon -silent -u https://<domain> > <outputFile> 2>&1"
     },
     {
-        "name": "csprecon-domain-file",
-        "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/csprecon-domains <domainFile> > <outputFile> 2>&1"
-    },
-    {
-        "name": "dork-linkedIn-employees",
-        "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/dork-linkedIn-employees '<companyName>' > <outputFile> 2>&1"
+        "name": "dnslytics-get-rootdomains",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/dnslytics-get-rootdomains '<googleID>' > <outputFile> 2>&1"
     },
     {
         "name": "dnsrecon-zonetransfer",
-        "riskLevel": "1",
+        "riskLevel": "2",
         "syntax": "dnsrecon -d <domain> -t axfr > <outputFile> 2>&1"
     },
     {
         "name": "dnsrecon-zonewalk",
-        "riskLevel": "1",
+        "riskLevel": "2",
         "syntax": "dnsrecon -d <domain> -t zonewalk > <outputFile> 2>&1"
     },
     {
@@ -50,24 +50,34 @@
         "syntax": "REPLACEME/scripts/get-dns-records <domain> > <outputFile> 2>&1"
     },
     {
-        "name": "get-github-repos",
+        "name": "github-get-repositories",
         "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-github-repos <user> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/github-get-repositories <user> > <outputFile> 2>&1"
     },
     {
-        "name": "get-tls-domains-from-ip-range",
-        "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-tls-domains-from-ip-range <ipRange> > <outputFile> 2>&1"
-    },
-    {
-        "name": "get-ips-from-asn",
+        "name": "gitleaks",
         "riskLevel": "1",
-        "syntax": "whois -h whois.radb.net -- '-i origin <asNumber>' | grep -E '([0-9.]+){4}/[0-9]+' -C 1 > <outputFile> 2>&1"
+        "syntax": "gitleaks detect --source <githubRepositoryLocal> -v > <outputFile> 2>&1"
     },
     {
-        "name": "get-pdf-metadata",
+        "name": "google-get-linkedIn-employees",
         "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-pdf-metadata <domain> > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/google-get-linkedIn-employees '<companyName>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "google-get-pdf-metadata",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/google-get-pdf-metadata <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "google-get-rootdomains",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/google-get-rootdomains '<copyRight>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "grepapp-get-github-users",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/grepapp-get-github-users '<companyName>' > <outputFile> 2>&1"
     },
     {
         "name": "grep-through-commits",
@@ -75,9 +85,9 @@
         "syntax": "REPLACEME/scripts/grep-through-commits <githubRepository> > <outputFile> 2>&1"
     },
     {
-        "name": "gitleaks",
-        "riskLevel": "1",
-        "syntax": "gitleaks detect --source <githubRepositoryLocal> -v > <outputFile> 2>&1"
+        "name": "hackertarget-get-rootdomains",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/hackertarget-get-rootdomains <googleID> > <outputFile> 2>&1"
     },
     {
         "name": "hakrawler",
@@ -95,6 +105,11 @@
         "syntax": "REPLACEME/scripts/hakrawler-ip-range <ipRange> > <outputFile> 2>&1"
     },
     {
+        "name": "handelsregister-get-company-names",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/handelsregister-get-company-names \"<companyName>\" > <outputFile> 2>&1"
+    },
+    {
         "name": "letItGo",
         "riskLevel": "1",
         "syntax": "letItGo <domain> > <outputFile> 2>&1"
@@ -105,9 +120,19 @@
         "syntax": "cat REPLACEME/wordlists/subdomains-top1million-110000.txt | awk -F \" \" '{print $1\".<domain>\"}' | massdns -r REPLACEME/wordlists/resolvers.txt -t A -o S -w <outputFile> > /dev/null 2>&1"
     },
     {
-        "name": "nmap-reverse-lookup-ranges",
+        "name": "nmap-get-tls-alternative-names",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/nmap-get-tls-alternative-names <ipRange> > <outputFile> 2>&1"
+    },
+    {
+        "name": "nmap-reverse-lookup",
         "riskLevel": "2",
         "syntax": "nmap -sL <ipRange> | awk -F 'Nmap scan report for ' '{print $2}' | grep '(' > <outputFile> 2>&1"
+    },
+    {
+        "name": "northdata-get-company-names",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/northdata-get-company-names \"<companyName>\" 10 > <outputFile> 2>&1"
     },
     {
         "name": "scanrepo",
@@ -115,29 +140,19 @@
         "syntax": "cd <githubRepositoryLocal> ; git log -p | scanrepo > <outputFile> 2>&1"
     },
     {
-        "name": "scrape-grep-app",
-        "riskLevel": "1",
-        "syntax": "REPLACEME/scripts/scrape-grep-app '<companyName>' > <outputFile> 2>&1"
+        "name": "skymem-get-mails",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/skymem-get-mails <domain> > <outputFile> 2>&1"
     },
     {
-        "name": "scrape-handelsregister",
-        "riskLevel": "1",
-        "syntax": "REPLACEME/scripts/scrape-handelsregister \"<companyName>\" > <outputFile> 2>&1"
-    },
-    {
-        "name": "scrape-northdata",
+        "name": "sort-domains",
         "riskLevel": "3",
-        "syntax": "REPLACEME/scripts/scrape-northdata \"<companyName>\" 10 > <outputFile> 2>&1"
+        "syntax": "REPLACEME/scripts/sort-domains '<domainFile>' > <outputFile> 2>&1"
     },
     {
-        "name": "scrape-mails",
-        "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/scrape-mails <domain> > <outputFile> 2>&1"
-    },
-    {
-        "name": "subfinder",
-        "riskLevel": "2",
-        "syntax": "subfinder --silent -d <domain> > <outputFile> 2>&1"
+        "name": "sort-rootdomains",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/sort-rootdomains '<domainFile>' > <outputFile> 2>&1"
     },
     {
         "name": "spk",
@@ -150,14 +165,44 @@
         "syntax": "spoofy -d <domain> -o stdout > <outputFile> 2>&1"
     },
     {
+        "name": "spyonweb-get-rootdomains",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/spyonweb-get-rootdomains <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "subfinder",
+        "riskLevel": "2",
+        "syntax": "subfinder --silent -d <domain> > <outputFile> 2>&1"
+    },
+    {
         "name": "tld-discovery",
         "riskLevel": "2",
         "syntax": "REPLACEME/scripts/tld-discovery <domain> > <outputFile> 2>&1"
     },
     {
+        "name": "tmdb-get-company-names",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/tmdb-get-company-names '<companyName>' > <outputFile> 2>&1"
+    },
+    {
         "name": "trufflehog",
         "riskLevel": "1",
         "syntax": "trufflehog git <githubRepository> --no-update > <outputFile> 2>&1"
+    },
+    {
+        "name": "viewdns-get-rootdomains-ip-ns",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/viewdns-get-rootdomains-ip-ns <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "viewdns-get-rootdomains-whois",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/viewdns-get-rootdomains-whois '<companyName>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "whois-get-ips",
+        "riskLevel": "1",
+        "syntax": "whois -h whois.radb.net -- '-i origin <asNumber>' | grep -E '([0-9.]+){4}/[0-9]+' -C 1 > <outputFile> 2>&1"
     }
 ]
 

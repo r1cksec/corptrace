@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service
+from os import path
+from selenium import webdriver                        
+from selenium.webdriver.common.by import By
+import sys
+import time
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
+from lxml import etree
+import string
+import random
+import os
+
+# check amount of passed arguments
+if (len(sys.argv) != 2):
+    print("usage: {} domain".format(sys.argv[0]))
+    print("Visit viewdns.info and extract reverse ip and nameserver lookups")
+    sys.exit(1)
+
+options = FirefoxOptions()
+
+# headless mode
+options.add_argument("--headless")
+
+# certificate errors
+options.add_argument("--ignore-ssl-errors=yes")
+options.add_argument('--ignore-certificate-errors')
+
+# user agent
+options.set_preference("general.useragent.override", "Safari: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/605.1.3 (KHTML, like Gecko) Version/11.1 Safari/605.1.3")
+
+# prevent creation of geckodriver.log
+service = Service(log_path=path.devnull)
+driver = webdriver.Firefox(options=options, service=service)
+
+# 6 seconds timeout
+driver.set_page_load_timeout(10)
+
+# 10 seconds default wait for element to be clickable
+driver.implicitly_wait(10)
+
+
+"""FUNCTION
+Browse to a given url and return source code
+
+url = The url to browse
+"""
+def browseViewdns(url):
+    # browse to viewdns
+    driver.get(url)
+    
+    # scroll to bottom
+    time.sleep(2)
+    actions = ActionChains(driver)
+    actions.send_keys(Keys.END).perform()
+    time.sleep(2)
+    
+    return driver.page_source
+
+# reverse lookup for ip address
+rootdomain = sys.argv[1]
+url = "https://viewdns.info/reverseip/?host=" + rootdomain + "&t=1"
+sourceCode = browseViewdns(url)
+
+# parse results of reverse ip
+tree = etree.HTML(sourceCode)
+
+# print each column
+allTrs = tree.xpath("//tr")
+
+for tr in allTrs:
+    allTds = tr.xpath(".//td")
+    column = []
+    
+    # get domain and last resolved date of each collumn
+    if (len(tr) == 2):
+        for td in allTds:
+            if td.text is not None:
+                column.append(td.text.strip())
+            else:
+                column.append("")
+
+        # skip empty columns
+        isEmpty = all(elem.strip() == '' for elem in column)
+        
+        if not isEmpty:
+            for cell in column:
+                print(cell, end = " ; ")
+            print("")
+
+print("")
+
+# get all nameserver
+letters = string.ascii_lowercase
+randStr = ""
+
+for l in range(8):
+    randStr = randStr + random.choice(letters)
+
+tempFile = "/tmp/viewdns-nameserver-lookup-" + randStr
+os.system("dig +short NS " + rootdomain + " > " + tempFile)
+
+# reverse lookup for each nameserver
+with open(tempFile) as fp:
+    for nameserver in fp:
+        nameserver = nameserver.replace("\n","")
+        nameserver = nameserver[:-1]
+
+        print("\nNameserver: " + nameserver)
+        
+        url = "https://viewdns.info/reversens/?ns=" + nameserver
+        sourceCode = browseViewdns(url)
+        
+        # parse results of reverse ip
+        tree = etree.HTML(sourceCode)
+        
+        # print each column
+        allTds = tree.xpath("//td")
+
+        if (len(allTds) > 1000):
+            print("To many results, looks unlikely..")
+
+            counter = 0
+            for td in allTds:
+                if (td.text is not None and td.text != "Domain" and td.text != ""):
+                    # only print the first 20 results if there is to many
+                    if (counter == 20):
+                        break
+
+                    print(td.text.strip())
+                    counter = counter + 1 
+
+        else:
+            for td in allTds:
+                if (td.text is not None and td.text != "Domain" and td.text != ""):
+                    print(td.text.strip())
+
+driver.close()
+

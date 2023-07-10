@@ -12,6 +12,7 @@ from os import path
 
 if (len(sys.argv) != 2):
     print("usage: {} domain".format(sys.argv[0]))
+    print("Visit skymem.info and extract e-mail addresses")
     sys.exit(1)
 
 options = FirefoxOptions()

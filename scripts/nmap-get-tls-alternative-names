@@ -6,6 +6,7 @@ import os
 # check amount of passed arguments
 if (len(sys.argv) != 2):
     print("usage: {} ipRange ".format(sys.argv[0]))
+    print("Run nmap on IP Range for port 443 and extract Subject Alternative Name")
     sys.exit(1)
 
 print("Start nmap scan on port 443 for " + sys.argv[1])

@@ -8,6 +8,7 @@ import sys
 # check amount of passed arguments
 if (len(sys.argv) != 2):
     print("usage: {} top-level-domain".format(sys.argv[0]))
+    print("Run host command for different top level domains")
     sys.exit(1)
 
 domain = sys.argv[1]

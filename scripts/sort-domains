@@ -1,0 +1,221 @@
+#!/usr/bin/env python3
+import re
+import os
+import csv
+import random
+import shutil
+import string
+import sys
+import threading
+import time
+
+# check amount of passed arguments
+if (len(sys.argv) != 2):
+    print("usage: {} domainFile".format(sys.argv[0]))
+    print("Run host and whois commands for each domain and sort the results")
+    print("Could need a little longer for larger domain lists")
+    sys.exit(1)
+
+def timeoutHandler(signum, frame):
+    raise TimeoutError("Timeout occurred")
+
+"""FUNCTION
+
+Return random string
+
+"""
+def getRanStr():
+    randStr = ""
+    letters = string.ascii_lowercase
+    for l in range(16):
+        randStr = randStr + random.choice(letters)
+    return randStr
+
+
+"""FUNCTION
+
+Execute bash command
+
+"""
+class executeCommand(threading.Thread):
+   def __init__(self, command):
+       threading.Thread.__init__(self)
+       self.command = command
+
+   def run(self):
+       commandStatus = os.system(self.command)
+
+       if (commandStatus == 0):
+           # save resolvable hosts into lists for later use
+           splittedCommand = self.command.split(" ")
+           hostname = splittedCommand[1]
+           resolveableHosts.append(hostname)
+
+
+"""FUNCTION
+Insert values into dictionary
+
+dictHost = Hostname of current csv line
+rowContent = Content of the current csv cell
+dictionaryObj = Dictionary obect where csv result will be inserted
+"""
+def insertIntoDictionary(dictHost, rowContent, dictionaryObj):
+    if (rowContent):
+        # skip empty rows
+        if (rowContent.isspace()):
+            return
+
+        if rowContent in dictionaryObj:
+            dictionaryObj[rowContent].append(dictHost)
+        else:
+            dictionaryObj[rowContent] = [dictHost]
+
+
+"""FUNCTION
+Print sorted results if at least two duplicates found
+
+printDict = The dictionaryObj that will be printed
+header = String that will be printed as headline
+"""
+def printDictionary(printDict, header):
+    headerPrintedFlag = "0"
+
+    for field1, field2 in printDict.items():
+        if len(field2) > 1:
+            if (headerPrintedFlag == "0"):
+                print("\n########## " + header + " ##########\n")
+                headerPrintedFlag = "1"
+
+            print(field1)
+            print(field2)
+            print("")
+
+
+# read all domains into list (used to run host command as thread)
+fp = open(sys.argv[1], "r")
+allDomains = fp.readlines()
+fp.close()
+
+# used to to sort the final results
+resolveableHosts = []
+
+# create temporary directory
+tempDir = "/tmp/get-ip-ranges-" + getRanStr() + "/"
+if (os.path.isdir(tempDir)):
+    shutil.rmtree(tempDir)
+
+os.makedirs(tempDir)
+
+# run 7 threads in parallel and resolve all domains
+while allDomains:
+    if (threading.active_count() <= 7):
+        randInt = random.randint(0,len(allDomains)-1)
+
+        # write each host result into individual file
+        currentDomain = allDomains[randInt].replace("\n","")
+        tempHostDir = tempDir + currentDomain
+        os.makedirs(tempHostDir)
+        tempWhoisFile =  tempHostDir + "/domain-host"
+        hostCommand = "ip=$(host " + currentDomain + " | awk -F 'has address' '{print $2}' | sed 's/ //g' | head -n 1); whois $ip >> " + tempWhoisFile + "  2>&1 "
+        currentThread = executeCommand(hostCommand)
+        del(allDomains[randInt])
+        currentThread.start()
+
+currentThread.join()
+time.sleep(2)
+
+finalCsv = []
+finalCsv.append("Domain ; IP Range ; Name ; Organisation ; ASN ")
+
+
+# parse each host file and run whois on ipv4 address
+for host in resolveableHosts:
+    # used to store the result for the current host
+    resultCsvLine = {"host": "", "inetnum": "", "netname": "", "organisation": "", "origin": ""}
+
+    # insert domain
+    resultCsvLine["host"] = host
+
+    # parse whois response
+    pathToWhoisFile = tempDir + host + "/domain-host"
+
+    with open(pathToWhoisFile) as fp:
+        for line in fp:
+            line = line.replace(";","")
+            line = line.lower()
+
+            # inetnum
+            if ("inetnum: " in line and resultCsvLine["inetnum"] == ""):
+                splitInetnum = line.split("inetnum: ")
+                resultCsvLine["inetnum"] = splitInetnum[1].strip()
+
+            # netrange
+            if ("netrange: " in line and resultCsvLine["inetnum"] == ""):
+                splitInetnum = line.split("netrange: ")
+                resultCsvLine["inetnum"] = splitInetnum[1].strip()
+
+            # netname
+            elif ("netname: " in line and resultCsvLine["netname"] == ""):
+                splitNetname = line.split("netname: ")
+                resultCsvLine["netname"] = splitNetname[1].strip()
+        
+            # org
+            elif ("org: " in line and resultCsvLine["organisation"] == ""):
+                splitOrg = line.split("org: ")
+                resultCsvLine["organisation"] = splitOrg[1].strip()
+
+            # org-name
+            elif ("org-name: " in line and resultCsvLine["organisation"] == ""):
+                splitOrgname = line.split("org-name: ")
+                resultCsvLine["organisation"] = splitOrgname[1].strip()
+
+            # orgname
+            elif ("orgname: " in line and resultCsvLine["organisation"] == ""):
+                splitOrgname = line.split("orgname: ")
+                resultCsvLine["organisation"] = splitOrgname[1].strip()
+
+            # origin
+            elif ("origin: " in line and resultCsvLine["origin"] == ""):
+                splitOrigin = line.split("origin: ")
+                resultCsvLine["origin"] = splitOrigin[1].strip()
+        
+        currentCsvLine = resultCsvLine["host"] + " ; " + resultCsvLine["inetnum"] + " ; " + resultCsvLine["netname"] + " ; " + resultCsvLine["organisation"] + " ; " + resultCsvLine["origin"]
+        finalCsv.append(currentCsvLine)
+
+# sort results
+reader = csv.DictReader(finalCsv, delimiter=';')
+
+# dictionaries used to sort results
+ipRanges = {}
+names = {}
+organisations = {}
+asNumbers = {}
+
+# collect duplicates inside csv results
+for row in reader:
+    csvDomain = row["Domain "]
+    csvIprange = row[" IP Range "]
+    csvName = row[" Name "]
+    csvOrganisation = row[" Organisation "]
+    csvAsn = row[" ASN "]
+
+    insertIntoDictionary(csvDomain, csvIprange, ipRanges)
+    insertIntoDictionary(csvDomain, csvName, names)
+    insertIntoDictionary(csvDomain, csvOrganisation, organisations)
+    insertIntoDictionary(csvDomain, csvAsn, asNumbers)
+
+# print results
+for c in finalCsv:
+    print(c)
+
+print("\n")
+printDictionary(ipRanges, "IP Range")
+printDictionary(names, "Name")
+printDictionary(organisations, "Organisation")
+printDictionary(asNumbers, "ASN")
+
+# remove directory recursively
+shutil.rmtree(tempDir)
+
+exit(0)
+

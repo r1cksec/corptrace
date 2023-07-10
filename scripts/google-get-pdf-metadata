@@ -17,6 +17,7 @@ import datetime
 # check amount of passed arguments
 if (len(sys.argv) != 2):
     print("usage: {} domain".format(sys.argv[0]))
+    print("Run Google dork and browse 3 first pages, wget all pdf files and run exiftool")
     sys.exit(1)
 
 options = FirefoxOptions()

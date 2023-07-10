@@ -2,7 +2,8 @@
 
 if [ ${#} -ne 1 ]
 then
-    echo usage hakrawler-on-range ipRange
+    echo "usage hakrawler-on-range ipRange"
+	echo "Run nmap on IP Range and hakrawler for open port 80, 443"
     exit
 fi
 

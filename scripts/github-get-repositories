@@ -7,7 +7,8 @@ set -u
 
 if [ ${#} -ne 1 ]
 then
-    echo usage ${0} githubUser
+    echo "usage ${0} githubUser"
+    echo "Visit github.com/username and extract github repositories"
     exit
 fi
 

@@ -3,6 +3,7 @@
 if [ ${#} -ne 1 ]
 then
     echo "usage: grep-through-commits.sh githubRepository"
+	echo "Git clone repository and run multple grep and git log commands"
     exit 1
 fi
 

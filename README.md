@@ -1,8 +1,9 @@
 # Thoth
 
-Thoth is a very modular tool that automates the execution of tools during a reconnaissance assessment.
-Using multithreading, several tools are executed simultaneously.
+Thoth is a modular framewok that automates the execution of tools during a reconnaissance assessment.
+Using multithreading, several tasks are executed simultaneously.
 The use of different modules can be adapted on the fly by using module names or risk level as a filter.
+I wrote this tool primarily to automate my workflow, so I'm sure it's still buggy for some corner cases.
 <br>
 <br>
 Note that running thoth repetitively in a short amount of time can lead to blocking of the IP address used, as thoth can query multiple APIs at the same time.
@@ -12,11 +13,14 @@ The core is the `modules.json` file, which contains the syntax of the executable
 Variables can also be stored in this configuration file, which are automatically included in the arguments of Argparse.
 
 ## Install
-The setup script will install tool dependencies and insert the absolute path to the scripts into the `modules.json` file (tested on kali).
+The setup script will install tool dependencies and insert the absolute path to the scripts into the `modules.json` file (only tested on kali).
 
 ```
 sudo bash setup.sh
 ```
+
+There is **no** update feature.
+To update thoth, remove the old repository, git clone the current version and re-run the `setup.sh` file.
 
 ## Configuration
 The `modules.json` file contains all modules that can be executed by thoth. <br>
@@ -59,14 +63,10 @@ For example, the following module would add the value `domain (-d)` to the Argpa
 },
 ```
 
-## Update
-
-Once `git pull` has been executed, `bash setup.sh` should be launched again in order to update the configuration of the `modules.json` file.
-
 ## Help
 ```
-usage: thoth.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]] [-an ASNUMBER] [-cn COMPANYNAME] [-d DOMAIN]
-                [-df DOMAINFILE] [-gr GITHUBREPOSITORY] [-grl GITHUBREPOSITORYLOCAL] [-gai GOOGLEANALYTICSID] [-ir IPRANGE] [-u USER]
+usage: thoth.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]] [-an ASNUMBER] [-cn COMPANYNAME] [-cr COPYRIGHT] [-d DOMAIN] [-df DOMAINFILE]
+                [-gr GITHUBREPOSITORY] [-grl GITHUBREPOSITORYLOCAL] [-gid GOOGLEID] [-ir IPRANGE] [-u USER]
 
 Automatic reconaissance.
 Use at your own risk.
@@ -85,7 +85,7 @@ Only execute modules that contains at least one of the given substring in their 
 Execute modules up to risk level 4, use 8 threads and increase timeout to 35 minutes:
 ./thoth.py -o /tmp/output -d example.com -rl 4 -ta 8 -t 2100 -an AS8560
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -o OUTPUT, --output OUTPUT
                         path to output directory
@@ -103,32 +103,35 @@ optional arguments:
                         modules that will be included
   -an ASNUMBER, --asNumber ASNUMBER
   -cn COMPANYNAME, --companyName COMPANYNAME
+  -cr COPYRIGHT, --copyRight COPYRIGHT
   -d DOMAIN, --domain DOMAIN
   -df DOMAINFILE, --domainFile DOMAINFILE
   -gr GITHUBREPOSITORY, --githubRepository GITHUBREPOSITORY
   -grl GITHUBREPOSITORYLOCAL, --githubRepositoryLocal GITHUBREPOSITORYLOCAL
-  -gai GOOGLEANALYTICSID, --googleAnalyticsId GOOGLEANALYTICSID
+  -gid GOOGLEID, --googleID GOOGLEID
   -ir IPRANGE, --ipRange IPRANGE
   -u USER, --user USER
 ```
 
-## Demo
+## Demo (old)
+
 <p align="center">
 <img src="https://github.com/r1cksec/thoth/blob/master/demo.gif"/>
 </p>
 
-
-## Result Structure 
+## Result Structure (old)
 ```
 out
 ├── csprecon
-│   └── csprecon_example.com
+│   └── csprecon_example.com
+├── get-asn
+│   └── get-asn_example.com
 ├── get-dns-records
-│   └── get-dns-records_example.com
+│   └── get-dns-records_example.com
 ├── get-mails
-│   └── get-mails_example.com
+│   └── get-mails_example.com
 ├── letItGo
-│   └── letItGo_example.com
+│   └── letItGo_example.com
 └── subfinder
     └── subfinder_example.com
 ```
@@ -146,19 +149,27 @@ out
 * <https://github.com/MattKeeley/Spoofy>
 * <https://github.com/OWASP/Amass>
 * <https://github.com/projectdiscovery/subfinder>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/dork-linkedIn-employees>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/completedns-get-ns-history>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/dnslytics-get-rootdomains>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-dns-records>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-github-repos>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-ips-from-asn>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/get-pdf-metadata>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/get-tls-domains-from-ip-range>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/google-get-linkedIn-employees>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/google-get-pdf-metadata>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/google-get-rootdomains>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/grepapp-get-github-users>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/grep-through-commits>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/hackertarget-get-rootdomains>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/hakrawler-ip-range>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/scrape-handelsregister>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/scrape-northdata>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/scrape-grep-app>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/scrape-mails>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/handelsregister-get-company-names>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/nmap-get-tls-alternative-names>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/northdata-get-company-names>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/skymem-get-mails>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/sort-domains>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/sort-rootdomains>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/spyonweb-get-rootdomains>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/tld-discovery>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/tmdb-get-company-names>
 * <https://github.com/SecurityRiskAdvisors/letitgo>
 * <https://github.com/trufflesecurity/truffleHog>
 * <https://github.com/UKHomeOffice/repo-security-scanner>
