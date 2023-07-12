@@ -209,6 +209,9 @@ def createCommandFromTemplate(allExecutableModules):
 
         # insert outputFile
         modOutput = modOutput.replace(" ","-")
+        modOutput = modOutput.replace("|","-")
+        modOutput = modOutput.replace("<","-")
+        modOutput = modOutput.replace(">","-")
         exeString = exeString.replace("<outputFile>", modOutput)
 
         # check if tool has already been executed
