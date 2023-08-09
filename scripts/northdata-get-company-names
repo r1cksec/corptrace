@@ -23,7 +23,7 @@ options.add_argument("--ignore-ssl-errors=yes")
 options.add_argument('--ignore-certificate-errors')
 options.set_preference("network.http.redirection-limit", 4)
 options.add_argument("--headless")
-service = Service(log_path=path.devnull)
+service = Service(log_output=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
 driver.set_page_load_timeout(45)
 

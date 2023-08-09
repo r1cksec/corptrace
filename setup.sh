@@ -25,14 +25,14 @@ userName=$(echo ${pathToScriptDir} | awk -F "/" '{print $3}')
 
 echo ""
 echo "### APT Install"
-apt install -y dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl
+apt install -y dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq
 
 echo ""
 echo "### Install Golang tools."
 echo ""
 
 # Download golang
-wget https://golang.google.cn/dl/go1.20.3.linux-amd64.tar.gz -O /tmp/go.tar.gz
+wget https://golang.google.cn/dl/go1.20.6.linux-amd64.tar.gz -O /tmp/go.tar.gz
 tar -xf /tmp/go.tar.gz -C /tmp
 rm -r /tmp/go.tar.gz
 export GOPATH=/tmp
@@ -94,7 +94,7 @@ echo ""
 
 if ! [ -x "$(command -v amass)" ]
 then
-    wget https://github.com/OWASP/Amass/releases/download/v3.22.0/amass_linux_amd64.zip -O /tmp/amass.zip
+    wget https://github.com/owasp-amass/amass/releases/download/v4.0.1/amass_Linux_amd64.zip -O /tmp/amass.zip
     unzip /tmp/amass.zip -d /tmp/amass
     mv /tmp/amass/amass_linux_amd64/amass /usr/local/bin
     chmod +x /usr/local/bin/amass
@@ -106,6 +106,7 @@ fi
 if ! [ -x "$(command -v geckodriver)" ]
 then
     wget https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz -O /tmp/geckodriver.tar.gz
+    wget https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz -O /tmp/geckodriver.tar.gz
     tar -xf /tmp/geckodriver.tar.gz -C /usr/local/bin
     chmod +x /usr/local/bin/geckodriver
     rm /tmp/geckodriver.tar.gz
@@ -115,7 +116,7 @@ fi
 
 if ! [ -x "$(command -v gitleaks)" ]
 then
-    wget https://github.com/zricethezav/gitleaks/releases/download/v8.15.2/gitleaks_8.15.2_linux_x64.tar.gz -O /tmp/gitleaks.tar.gz
+    wget https://github.com/gitleaks/gitleaks/releases/download/v8.17.0/gitleaks_8.17.0_linux_x64.tar.gz -O /tmp/gitleaks.tar.gz
     tar -xf /tmp/gitleaks.tar.gz -C /tmp
     mv /tmp/gitleaks /usr/local/bin
     chmod +x /usr/local/bin/gitleaks
@@ -126,7 +127,7 @@ fi
 
 if ! [ -x "$(command -v trufflehog)" ]
 then
-    wget https://github.com/trufflesecurity/trufflehog/releases/download/v3.21.0/trufflehog_3.21.0_linux_amd64.tar.gz -O /tmp/truffleHog.tar.gz
+    wget https://github.com/trufflesecurity/trufflehog/releases/download/v3.44.0/trufflehog_3.44.0_linux_amd64.tar.gz -O /tmp/truffleHog.tar.gz
     tar -xf /tmp/truffleHog.tar.gz -C /tmp
     mv /tmp/trufflehog /usr/local/bin
     chmod +x /usr/local/bin/trufflehog
@@ -145,7 +146,7 @@ fi
 
 if ! [ -x "$(command -v scanrepo)" ]
 then
-    wget https://github.com/UKHomeOffice/repo-security-scanner/releases/download/0.4.0/scanrepo-0.4.0-linux-amd64.tar.gz -O /tmp/scanrepo.tar.gz
+    wget https://github.com/techjacker/repo-security-scanner/releases/download/0.4.0/scanrepo-0.4.0-linux-amd64.tar.gz -O /tmp/scanrepo.tar.gz
     tar -xf /tmp/scanrepo.tar.gz -C /usr/local/bin
     chmod +x /usr/local/bin/scanrepo
     rm /tmp/scanrepo.tar.gz
@@ -153,11 +154,19 @@ else
     echo "scanrepo is installed"
 fi
 
+if ! [ -x "$(command -v noseyparker)" ]
+then
+    wget https://github.com/praetorian-inc/noseyparker/releases/download/v0.13.0/noseyparker-v0.13.0-x86_64-unknown-linux-gnu -O /usr/local/bin/noseyparker
+    chmod +x /usr/local/bin/noseyparker
+else
+    echo "noseyparker is installed"
+fi
+
 echo ""
 echo "### Install Python dependencies"
 echo ""
 echo "Install python dependencies as ${userName} without virtual environment ..."
-echo "Alternatively you have to install favfreak and spoofy yourself."
+echo "Alternatively you have to install favfreak, spoofy and selenium yourself."
 echo "Do you want to install python dependencies without virtual environment (y/anything else n)?"
 
 read str
@@ -193,5 +202,6 @@ then
     pip3 install selenium
 fi
 
+rm -rf /tmp/go
 echo "Done"
 

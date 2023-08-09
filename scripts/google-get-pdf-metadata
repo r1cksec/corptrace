@@ -22,7 +22,7 @@ if (len(sys.argv) != 2):
 
 options = FirefoxOptions()
 options.add_argument("--headless")
-service = Service(log_path=path.devnull)
+service = Service(log_output=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
 
 searchKey = 'inurl:"' + sys.argv[1] + '" filetype:pdf'
@@ -97,7 +97,7 @@ for u in uniqUrls:
     os.system("wget --quiet \"" + u + "\" -O \"" + tempDir + "/" + str(counter) + ".pdf\"")
     counter = counter + 1
 
-os.system("cd " + tempDir + "; exiftool * | grep -i \"Producer\|Author\" | sort -u")
+os.system("cd " + tempDir + "; exiftool * | grep -i \"Producer\|Author\|Creator\|Email\" | sort -u")
 
 # remove directory recursively
 os.system("rm -rf " + tempDir)

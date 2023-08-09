@@ -20,7 +20,7 @@ options.add_argument("--ignore-ssl-errors=yes")
 options.add_argument('--ignore-certificate-errors')
 options.set_preference("network.http.redirection-limit", 4)
 options.add_argument("--headless")
-service = Service(log_path=path.devnull)
+service = Service(log_output=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
 driver.set_page_load_timeout(20)
 
@@ -54,6 +54,7 @@ time.sleep(5)
 
 elems = driver.find_elements(By.XPATH, "//a[@href]")
 allSkymemMails = []
+domainLink = ""
 
 for elem in elems:
     href = elem.get_attribute("href")
@@ -66,6 +67,11 @@ for elem in elems:
 
 # get amount of pages
 pageCounterLink = domainLink.split("=")
+
+if (domainLink == ""):
+    print("No results found for: " + sys.argv[1])
+    exit(0)
+
 driver.get(domainLink)
 time.sleep(5)
 

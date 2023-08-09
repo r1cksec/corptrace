@@ -2,55 +2,94 @@
 
 if [ ${#} -ne 1 ]
 then
-    echo "usage: grep-through-commits.sh githubRepository"
-	echo "Git clone repository and run multple grep and git log commands"
+    echo "usage: grep-through-commits.sh repositoryFile"
+    echo "Run multiple grep and git log commands for github repository"
     exit 1
 fi
+
+function searchCommits()
+{
+    # replace unwanted char
+    clearRepoDir=${1//./-}
+    tmpRepoDir="/tmp/${clearRepoDir}"
+
+    # clone repository
+    if [ ! -d ${tmpRepoDir} ]
+    then
+        git clone --quiet ${repo} ${tmpRepoDir}
+    fi
+    
+    timeStamp=$(date +"%Y-%m-%d_%T")
+    tempDir="${tmpRepoDir}-grep-inside-repo"
+    commitFile="${tempDir}-commits"
+    tempFinds="${tempDir}-finds"
+    tempGreps="${tempDir}-greps"
+    
+    cd ${tmpRepoDir}
+
+    # get each commit
+    git checkout --quiet origin
+    git log --quiet | grep commit | cut -d " " -f 2 > ${commitFile}
+    printf "    ${Y}########## Commit messages ########## ${N}\n"
+    git log | grep "    "
+    git checkout --quiet origin
+    
+    # search for this keywords and file extensions
+    declare -a allKeyWords=("ssh .*@.*" "ftp .*@.*" "-AsPlainText" "passwor[t,d]=" "access[-_]token" "api[-_]key" "private[-_]key")
+    declare -a allFileExtensions=("*.conf" "*.cnf" "*.cfg" "*.config" "*.kdb" "*.kdbx" "*.key" "*.p12" "*.pem" "*.rdp" "*.pfx" "*.remmina" "*.vdi" ".ini")
+    
+    # iterate through each commit and grep and search for values inside arrays
+    while read -r commitId || [[ -n "${commitId}" ]]
+    do
+        git checkout --quiet ${commitId}
+        
+        for k in "${allKeyWords[@]}"
+        do
+                grep --color=always -IEiRo ".{0,20}${k}.{0,20}" * >> ${tempGreps} 2> /dev/null
+        done
+    
+        for f in "${allFileExtensions[@]}"
+        do
+            find . -iname "${f}" | cut -c2- | awk -v g="${1}" -v c="${commitId}" '{print g"/blob/"c$1}' >> ${tempFinds}
+        done
+        
+    done < ${commitFile}
+    
+    echo ""
+    printf "    ${Y}########## Grep results ########## ${N}\n"
+    sort -u ${tempGreps}
+    echo ""
+    printf "    ${Y}########## Find results ########## ${N}\n"
+    sort -u ${tempFinds}
+    
+    echo ""
+    echo ""
+
+    # remove temporary files
+    cd /tmp
+    rm -rf ${tempDir}
+    rm ${commitFile}
+    rm ${tempFinds}
+    rm ${tempGreps}
+}
 
 Y='\033[0;33m'
 N='\033[0m'
 
-timeStamp=$(date +"%Y-%m-%d_%T")
-tempDir="/tmp/${timeStamp}-grep-inside-repo"
-commitFile="${tempDir}-commits"
-tempFinds="${tempDir}-finds"
-tempGreps="${tempDir}-greps"
-git clone --quiet ${1} ${tempDir}
-echo ""
-cd ${tempDir}
-git log --quiet | grep commit | cut -d " " -f 2 > ${commitFile}
-printf "${Y}########## Commit messages ########## ${N}\n"
-git log | grep "    "
-
-declare -a allKeyWords=("ssh .*@.*" "ftp .*@.*" "-AsPlainText" "passwor[t,d]=" "access[-_]token" "api[-_]key" "private[-_]key")
-declare -a allFileExtensions=("*.conf" "*.cnf" "*.cfg" "*.config" "*.kdb" "*.kdbx" "*.key" "*.p12" "*.pem" "*.rdp" "*.pfx" "*.remmina" "*.vdi" ".ini")
-
-# iterate through each commit and grep and search for values inside arrays
-while read -r commitId || [[ -n "${commitId}" ]]
-do
-    git checkout --quiet ${commitId}
-    
-    for k in "${allKeyWords[@]}"
+# check if argument is a file or single github repository
+if [ ! -f ${1} ]
+then
+    # clone repository
+    repo=${1}
+    repoDir=$(echo ${repo} | awk -F "/" '{print $4"-"$5}')
+    searchCommits "${repoDir}"
+else
+    # run for each repository in file
+    while read -r repo || [[ -n "${repo}" ]]
     do
-            grep --color=always -IEiRo ".{0,20}${k}.{0,20}" * >> ${tempGreps} 2> /dev/null
-    done
-
-    for f in "${allFileExtensions[@]}"
-    do
-        find . -iname ${f} | cut -c2- | awk -v g="${1}" -v c="${commitId}" '{print g"/blob/"c$1}' >> ${tempFinds}
-    done
-    
-done < ${commitFile}
-
-echo ""
-printf "${Y}########## Grep results ########## ${N}\n"
-sort -u ${tempGreps}
-echo ""
-printf "${Y}########## Find results ########## ${N}\n"
-sort -u ${tempFinds}
-
-rm -rf ${tempDir}
-rm ${commitFile}
-rm ${tempFinds}
-rm ${tempGreps}
+        repoDir=$(echo ${repo} | awk -F "/" '{print $4"-"$5}')
+        printf "${Y}########## ${repoDir} ########## ${N}\n\n"
+        searchCommits "${repoDir}"
+    done < ${1}
+fi
 

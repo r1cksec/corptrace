@@ -20,15 +20,12 @@ def loadModules(pathToModuleConfig):
 """Return a list of strings.
 Each string in this list represents a <variable> of the syntax string.
 These syntax strings are read from the modules.json file.
-Furthermore it is possible to skip an exceptional string.
-This exceptional string: 'outputFile'
-will not be added to the list of strings.
 
 syntax = The syntax of the command of the given module.
-removeExpArgs = If this value is set to 1, it will be checked
-whether string belongs to the exceptional strings.
+removeOutFile = If this value is set to 1, the list will not contain:
+<outputFile>
 """
-def getVariablesFromString(syntax, removeExpArgs):
+def getVariablesFromString(syntax, removeOutFile):
     possRequiredVars = []
     splittedSyntax = syntax.split("<")
 
@@ -49,13 +46,12 @@ def getVariablesFromString(syntax, removeExpArgs):
         except:
             requiredVars.append(var)
 
-    if (removeExpArgs == 1):
-        # define exceptional arguments
-        exceptionalArgument = "outputFile"
+    if (removeOutFile == 1):
+        if ("outputFile" in requiredVars):
+            requiredVars.remove("outputFile")
 
-        # remove exceptional variables from json arguments
-        if (exceptionalArgument in requiredVars):
-            requiredVars.remove(exceptionalArgument)
+        if ("outputDirectory" in requiredVars):
+            requiredVars.remove("outputDirectory")
 
     return requiredVars
 
@@ -72,6 +68,7 @@ def getArgsOfJson():
     allJsonArgs = []
     
     for currModule in availableModules:
+        # get all undefined arguments of module (do not include <outputFile> and <outputDirectory>)
         allRequiredVars = getVariablesFromString(currModule["syntax"], 1)
     
         for currArg in allRequiredVars:
@@ -140,7 +137,7 @@ def getMatchingModules():
             if (skipModule == "1"):
                 continue
 
-        # get all undefined arguments of current module
+        # get all undefined arguments of current module (do not include <outputFile> and <outputDirectory>)
         requiredArgsOfModule = getVariablesFromString(module["syntax"], 1)
         skipModule = "0"
 
@@ -184,38 +181,46 @@ def createCommandFromTemplate(allExecutableModules):
 
         # the command that will be appended to list of commands
         exeString = thisModule["syntax"]
+        
+        # used to create the name of the output
+        moduleOutName = thisModule["name"]
 
-        # add additional arguments given by to the output path
-        modOutput = pathToModDir + "/" + thisModule["name"]
-
+        # replace each argument of current module
         for currArg in argumentsOfModule:
-            # skip <outputFile>
-            if (currArg == "outputFile"):
-                continue
-
-            # special case for path variables
-            if ("file" in currArg.lower()):
-                basenameOfFile = os.path.basename(vars(args)[currArg])
+            # skip <outputFile> and <outputDirectory>
+            if (currArg != "outputFile" and currArg != "outputDirectory"):
+                # replace argument in syntax
                 exeString = exeString.replace("<" + currArg + ">", 
                                               vars(args)[currArg])
-                modOutput = modOutput + "_" + basenameOfFile.replace(":","-")
+                moduleOutName = moduleOutName + "-" + vars(args)[currArg]
 
-            else:
-                # replace remaining arguments
-                exeString = exeString.replace("<" + currArg + ">", 
-                                              vars(args)[currArg])
-                bufModOut = vars(args)[currArg].replace("/","")
-                modOutput = modOutput + "_" + bufModOut.replace(":","-")
+        # remove unwanted chars from output
+        moduleOutName = moduleOutName.replace(" ","-")
+        moduleOutName = moduleOutName.replace("|","-")
+        moduleOutName = moduleOutName.replace("<","-")
+        moduleOutName = moduleOutName.replace(">","-")
+        moduleOutName = moduleOutName.replace(":","-")
+        moduleOutName = moduleOutName.replace("&","-")
+        moduleOutName = moduleOutName.replace("/","-")
 
-        # insert outputFile
-        modOutput = modOutput.replace(" ","-")
-        modOutput = modOutput.replace("|","-")
-        modOutput = modOutput.replace("<","-")
-        modOutput = modOutput.replace(">","-")
-        exeString = exeString.replace("<outputFile>", modOutput)
+        # full path to module output
+        moduleOutPath = pathToModDir + "/" + moduleOutName 
+        moduleOutFile = pathToModDir + "/" + moduleOutName 
 
+        # create additional directory if module uses <outputDirectory>
+        if ("<outputDirectory>" in exeString):
+            if (not os.path.isdir(moduleOutPath)):
+                os.makedirs(moduleOutPath)
+ 
+            # replace <outputDirectory> in syntax
+            exeString = exeString.replace("<outputDirectory>", moduleOutPath)
+            moduleOutFile = moduleOutPath + ".txt" 
+        
+        # replace <outputFile> in syntax
+        exeString = exeString.replace("<outputFile>", moduleOutFile)
+        
         # check if tool has already been executed
-        if (os.path.exists(modOutput)):
+        if (os.path.exists(moduleOutFile)):
             print(f"{bcolor.yellow}###[DUPLICATE]###\t{bcolor.ends} "
                   + thisModule["name"])
         else:
@@ -249,17 +254,9 @@ class threadForModule(threading.Thread):
                 return(0)
 
             except subprocess.CalledProcessError as exc:
-                # skip error code 1
-                # since trufflehog and gitleaks return code 1 on success
-                if (exc.returncode == 1):
-                    print(f"{bcolor.green}###[DONE]###\t{bcolor.ends} "
-                          + self.moduleName)
-                    return(0)
-
-                else:
-                    print(f"{bcolor.red}###[ERROR]###\t{bcolor.ends} " 
-                      + self.command)
-                    return(1)
+                print(f"{bcolor.red}###[ERROR]###\t{bcolor.ends} " 
+                  + self.command)
+                return(0)
 
 
 """MAIN
@@ -401,10 +398,10 @@ executableModules = getMatchingModules()
 # create commands from template
 commandsToExecute = createCommandFromTemplate(executableModules)
 
-# will contain the running threads
+# this variable will contain the running threads
 threads = []
 
-# count finished modules
+# used to print amount of modules count finished modules
 amountOfExecModules = len(commandsToExecute)
 counter = 1
 

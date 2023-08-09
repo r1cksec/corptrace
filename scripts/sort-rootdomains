@@ -229,6 +229,7 @@ for host in resolveableHosts:
     
     if aliasMatch:
         alias = aliasMatch.group(0).replace("\n","").replace(";","")
+        alias = alias.replace("is an alias for ", "")
         currentCsvLine = currentCsvLine + alias.strip() + " ; "
     else:
         currentCsvLine = currentCsvLine + " ; "

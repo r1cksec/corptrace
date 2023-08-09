@@ -66,7 +66,7 @@ For example, the following module would add the value `domain (-d)` to the Argpa
 ## Help
 ```
 usage: thoth.py [-h] -o OUTPUT [-e] [-v] [-t TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]] [-an ASNUMBER] [-cn COMPANYNAME] [-cr COPYRIGHT] [-d DOMAIN] [-df DOMAINFILE]
-                [-gr GITHUBREPOSITORY] [-grl GITHUBREPOSITORYLOCAL] [-gid GOOGLEID] [-ir IPRANGE] [-u USER]
+                [-gf GITHUBFILE] [-gr GITHUBREPOSITORY] [-gu GITHUBUSER] [-gid GOOGLEID] [-ir IPRANGE]
 
 Automatic reconaissance.
 Use at your own risk.
@@ -106,11 +106,11 @@ options:
   -cr COPYRIGHT, --copyRight COPYRIGHT
   -d DOMAIN, --domain DOMAIN
   -df DOMAINFILE, --domainFile DOMAINFILE
+  -gf GITHUBFILE, --githubFile GITHUBFILE
   -gr GITHUBREPOSITORY, --githubRepository GITHUBREPOSITORY
-  -grl GITHUBREPOSITORYLOCAL, --githubRepositoryLocal GITHUBREPOSITORYLOCAL
+  -gu GITHUBUSER, --githubUser GITHUBUSER
   -gid GOOGLEID, --googleID GOOGLEID
   -ir IPRANGE, --ipRange IPRANGE
-  -u USER, --user USER
 ```
 
 ## Demo (old)
@@ -148,16 +148,16 @@ out
 * <https://github.com/hakluke/hakrawler>
 * <https://github.com/MattKeeley/Spoofy>
 * <https://github.com/OWASP/Amass>
+* <https://github.com/praetorian-inc/noseyparker>
 * <https://github.com/projectdiscovery/subfinder>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/completedns-get-ns-history>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/dnslytics-get-rootdomains>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-dns-records>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/get-github-repos>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/get-ips-from-asn>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/github-get-users>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/google-get-linkedIn-employees>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/google-get-pdf-metadata>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/google-get-rootdomains>
-* <https://github.com/r1cksec/thoth/tree/master/scripts/grepapp-get-github-users>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/grepapp-get-users>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/grep-through-commits>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/hackertarget-get-rootdomains>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/hakrawler-ip-range>
@@ -167,6 +167,7 @@ out
 * <https://github.com/r1cksec/thoth/tree/master/scripts/skymem-get-mails>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/sort-domains>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/sort-rootdomains>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/sourcegraph-get-users>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/spyonweb-get-rootdomains>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/tld-discovery>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/tmdb-get-company-names>

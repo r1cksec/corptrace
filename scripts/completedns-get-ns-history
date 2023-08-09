@@ -50,7 +50,7 @@ options.set_preference("network.http.redirection-limit", 4)
 options.set_preference("general.useragent.override", "Safari: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/605.1.3 (KHTML, like Gecko) Version/11.1 Safari/605.1.3")
 
 # prevent creation of geckodriver.log
-service = Service(log_path=path.devnull)
+service = Service(log_output=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
 
 # 10 seconds timeout
@@ -139,6 +139,11 @@ for ns in uniqNameserver:
     hostCommand = "host " + ns + " | awk -F 'has address' '{print $2}' | sed 's/ //g' | head -n 1 > " + tempDir + "/" + ns + "-host.txt"
     hostCommands.append(hostCommand)
 
+# check if host command return any result
+if (not hostCommands):
+    print("No nameserver found")
+    exit(0)
+
 # run all host commands
 while hostCommands:
     if (threading.active_count() <= 8):
@@ -152,7 +157,10 @@ time.sleep(2)
 
 for ns in uniqNameserver:
     hostFile = open(tempDir + "/" + ns + "-host.txt", "r")
-    ipAddress = hostFile.readlines()[0].replace("\n","")
+    try:
+        ipAddress = hostFile.readlines()[0].replace("\n","")
+    except:
+        ipAddress = ""
     hostFile.close()
 
     # only append resolvable nameserver

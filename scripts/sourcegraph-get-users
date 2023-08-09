@@ -13,8 +13,7 @@ import time
 
 # check amount of passed arguments
 if (len(sys.argv) != 2):
-    print("usage: {} companyName".format(sys.argv[0]))
-    print("Visit viewdns.info and extract reverse whois lookups")
+    print("usage: {} companyName ".format(sys.argv[0]))
     sys.exit(1)
 
 options = FirefoxOptions()
@@ -33,48 +32,45 @@ options.set_preference("general.useragent.override", "Safari: Mozilla/5.0 (Macin
 service = Service(log_output=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
 
-# 6 seconds timeout
+# 10 seconds timeout
 driver.set_page_load_timeout(10)
 
-# 10 seconds default wait for element to be clickable
-driver.implicitly_wait(10)
+# 15 seconds default wait for element to be clickable
+driver.implicitly_wait(15)
 
-# browse to viewdns
-companyName = sys.argv[1].replace(" ", "+")
-url = "https://viewdns.info/reversewhois/?q=" + companyName
+url = "https://sourcegraph.com/search?q=" + sys.argv[1]
 driver.get(url)
 
 # scroll to bottom
-time.sleep(2)
-actions = ActionChains(driver)
-actions.send_keys(Keys.END).perform()
-time.sleep(2)
+time.sleep(5)
+
+for i in range(8):
+    actions = ActionChains(driver)              
+    actions.send_keys(Keys.END).perform()
+    time.sleep(2)
 
 sourceCode = driver.page_source
 
-# parse results
 tree = etree.HTML(sourceCode)
 
-# print each column
-allTrs = tree.xpath("//tr")
+allUrls = []
 
-for tr in allTrs:
-    allTds = tr.xpath(".//td")
-    column = []
+for element in tree.iterdescendants():
+    # print repository url
+    if (element.tag == "a"):
+        className = element.get("class")
     
-    # get all cells of each column
-    if (len(tr) == 3):
-        for td in allTds:
-            if td.text is not None:
-                column.append(td.text.strip())
-            else:
-                column.append(" ")
+        if (className is not None and "AnchorLink-module__anchor-link_sKGAI" in className):
+            href = element.get("href")
+            if (href is not None and "github.com" in href):
+                splitHref = href.split("/")
+                currentUrl = "https://github.com/" + splitHref[2] + "/" + splitHref[3]
+                allUrls.append(currentUrl)
 
-        for cell in column:
-            cell = cell.replace(";"," ")
-            print(cell, end = " ; ")
-        print("")
+uniqUrls = sorted(set(allUrls))
+
+for u in uniqUrls:
+    print(u)
 
 driver.close()
-
 
