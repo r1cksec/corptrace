@@ -94,9 +94,9 @@ echo ""
 
 if ! [ -x "$(command -v amass)" ]
 then
-    wget https://github.com/owasp-amass/amass/releases/download/v4.0.1/amass_Linux_amd64.zip -O /tmp/amass.zip
+    wget https://github.com/owasp-amass/amass/releases/download/v3.23.3/amass_Linux_amd64.zip -O /tmp/amass.zip
     unzip /tmp/amass.zip -d /tmp/amass
-    mv /tmp/amass/amass_linux_amd64/amass /usr/local/bin
+    mv /tmp/amass/amass_Linux_amd64/amass /usr/local/bin
     chmod +x /usr/local/bin/amass
     rm -rf /tmp/amass.zip /tmp/amass
 else
