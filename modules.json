@@ -40,6 +40,11 @@
         "syntax": "dnsrecon -d <domain> -t zonewalk > <outputFile> 2>&1"
     },
     {
+        "name": "dnstwist",
+        "riskLevel": "4",
+        "syntax": "dnstwist -r <domain> > <outputFile> 2>&1"
+    },
+    {
         "name": "favfreak_http",
         "riskLevel": "2",
         "syntax": "cat <domainFile> | awk '{print \"http://\"$0}' | favfreak > <outputFile> 2>&1"

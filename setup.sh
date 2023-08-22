@@ -26,7 +26,7 @@ userName=$(echo ${pathToScriptDir} | awk -F "/" '{print $3}')
 
 echo ""
 echo "### APT Install"
-apt install -y dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq
+apt install -y dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist
 
 echo ""
 echo "### Install Golang tools."

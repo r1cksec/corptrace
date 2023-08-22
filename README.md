@@ -145,11 +145,13 @@ out
 * <https://github.com/devanshbatham/FavFreak>
 * <https://github.com/dhn/spk>
 * <https://github.com/edoardottt/csprecon>
+* <https://github.com/elceef/dnstwist>
 * <https://github.com/hakluke/hakrawler>
 * <https://github.com/MattKeeley/Spoofy>
 * <https://github.com/OWASP/Amass>
 * <https://github.com/praetorian-inc/noseyparker>
 * <https://github.com/projectdiscovery/subfinder>
+* <https://github.com/punk-security/dnsReaper>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/completedns-get-ns-history>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/dnslytics-get-rootdomains>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/get-dns-records>
