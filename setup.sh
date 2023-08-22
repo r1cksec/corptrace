@@ -21,6 +21,7 @@ sleep 1
 pathToScriptDir="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 sed -i "s|REPLACEME|${pathToScriptDir}|g" "${pathToScriptDir}/modules.json"
 pathToHomeDir=$(echo ${pathToScriptDir} | awk -F "/" '{print $1"/"$2"/"$3}')
+pathToGit="${pathToHomeDir}/git"
 userName=$(echo ${pathToScriptDir} | awk -F "/" '{print $3}')
 
 echo ""
@@ -83,6 +84,7 @@ then
     cd /tmp/massdns && make
     mv /tmp/massdns/bin/massdns /usr/local/bin
     chmod +x /usr/local/bin/massdns
+    cd -
     rm -r /tmp/massdns
 else
     echo "massdns is installed"
@@ -173,33 +175,46 @@ read str
 
 if [ "${str}" == "y" ]
 then
+    if [ ! -d ${pathToGit} ]
+    then
+        sudo -Esu ${userName} mkdir ${pathToGit}
+    fi
+
+    if ! [ -x "$(command -v dnsreaper)" ]
+    then
+        sudo -su ${userName} mkdir -p ${pathToGit}/dnsreaper
+        sudo -su ${userName} git clone https://github.com/punk-security/dnsreaper ${pathToGit}/dnsreaper
+        sudo -su ${userName} pip3 install -r ${pathToGit}/dnsreaper/requirements.txt
+        echo "cd ${pathToGit}/dnsreaper && python3 main.py \$@" > /usr/local/bin/dnsreaper
+        chmod +x /usr/local/bin/dnsreaper
+    else
+        echo "dnsreaper is installed"
+    fi
+
     if ! [ -x "$(command -v favfreak)" ]
     then
-        cd /tmp
-        git clone https://github.com/devanshbatham/FavFreak.git /tmp/FavFreak
-        cp /tmp/FavFreak/favfreak.py /usr/local/bin/favfreak
+        sudo -su ${userName} mkdir -p ${pathToGit}/favfreak
+        sudo -su ${userName} git clone https://github.com/devanshbatham/FavFreak.git ${pathToGit}/FavFreak
+        sudo -su ${userName} pip3 install -r ${pathToGit}/FavFreak/requirements.txt
+        cp ${pathToGit}/FavFreak/favfreak.py /usr/local/bin/favfreak
         chmod +x /usr/local/bin/favfreak
-        sudo -su ${userName} pip3 install -r /tmp/FavFreak/requirements.txt
-        rm -r /tmp/FavFreak
     else
         echo "FavFreak is installed"
     fi
 
     if ! [ -x "$(command -v spoofy)" ]
     then
-        cd /tmp
-        git clone https://github.com/MattKeeley/Spoofy
-        sudo -su ${userName} pip3 install -r /tmp/Spoofy/requirements.txt
+        sudo -su ${userName} mkdir -p ${pathToGit}/Spoofy
+        sudo -su ${userName} git clone https://github.com/MattKeeley/Spoofy ${pathToGit}/Spoofy
+        sudo -su ${userName} pip3 install -r ${pathToGit}/Spoofy/requirements.txt
         sudo -su ${userName} pip3 install libs
-        cp /tmp/Spoofy/spoofy.py /usr/local/bin/spoofy
-        cp -r /tmp/Spoofy/libs /usr/local/bin/libs
-        chmod +x /usr/local/bin/spoofy
-        rm -r /tmp/Spoofy
+        ln -s ${pathToGit}/Spoofy/spoofy.py /usr/local/bin/spoofy
+        chmod +x ${pathToGit}/Spoofy/spoofy.py
     else
         echo "spoofy is installed"
     fi
 
-    pip3 install selenium
+    sudo -su ${userName} pip3 install selenium
 fi
 
 rm -rf /tmp/go

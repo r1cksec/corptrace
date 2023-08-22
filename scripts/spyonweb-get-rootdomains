@@ -3,9 +3,7 @@
 from lxml import etree
 from os import path
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service
 import os
@@ -37,10 +35,10 @@ service = Service(log_output=path.devnull)
 driver = webdriver.Firefox(options=options, service=service)
 
 # 10 seconds timeout
-driver.set_page_load_timeout(10)
+driver.set_page_load_timeout(15)
 
 # 10 seconds default wait for element to be clickable
-driver.implicitly_wait(10)
+driver.implicitly_wait(15)
 
 # browse spyonweb
 rootdomain = sys.argv[1]
@@ -49,10 +47,9 @@ url = "https://spyonweb.com/" + rootdomain
 driver.get(url)
 
 # scroll to bottom
-time.sleep(2)
-actions = ActionChains(driver)
-actions.send_keys(Keys.END).perform()
-time.sleep(2)
+time.sleep(4)
+driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+time.sleep(4)
 
 sourceCode = driver.page_source
 tree = etree.HTML(sourceCode)
@@ -115,9 +112,9 @@ with open(tempFile) as fp:
         driver.get(url)
         
         # scroll to bottom
-        time.sleep(2)
+        time.sleep(4)
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(2)
+        time.sleep(4)
         
         sourceCode = driver.page_source
         tree = etree.HTML(sourceCode)

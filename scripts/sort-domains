@@ -96,6 +96,8 @@ fp = open(sys.argv[1], "r")
 allDomains = fp.readlines()
 fp.close()
 
+allUniqDomains = sorted(set(allDomains))
+
 # used to to sort the final results
 resolveableHosts = []
 
@@ -107,18 +109,18 @@ if (os.path.isdir(tempDir)):
 os.makedirs(tempDir)
 
 # run 7 threads in parallel and resolve all domains
-while allDomains:
+while allUniqDomains:
     if (threading.active_count() <= 7):
-        randInt = random.randint(0,len(allDomains)-1)
+        randInt = random.randint(0,len(allUniqDomains)-1)
 
         # write each host result into individual file
-        currentDomain = allDomains[randInt].replace("\n","")
+        currentDomain = allUniqDomains[randInt].replace("\n","")
         tempHostDir = tempDir + currentDomain
         os.makedirs(tempHostDir)
         tempWhoisFile =  tempHostDir + "/domain-host"
         hostCommand = "ip=$(host " + currentDomain + " | awk -F 'has address' '{print $2}' | sed 's/ //g' | head -n 1); whois $ip >> " + tempWhoisFile + "  2>&1 "
         currentThread = executeCommand(hostCommand)
-        del(allDomains[randInt])
+        del(allUniqDomains[randInt])
         currentThread.start()
 
 currentThread.join()

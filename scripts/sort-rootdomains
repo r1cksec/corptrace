@@ -103,6 +103,8 @@ fp = open(sys.argv[1], "r")
 allDomains = fp.readlines()
 fp.close()
 
+allUniqDomains = sorted(set(allDomains))
+
 # used to run threading commands for whois requests
 resolveableWhoisHosts = []
 
@@ -120,18 +122,18 @@ if (os.path.isdir(tempDir)):
 os.makedirs(tempDir)
 
 # run 11 threads in parallel and resolve all domains
-while allDomains:
+while allUniqDomains:
     if (threading.active_count() <= 11):
-        randInt = random.randint(0,len(allDomains)-1)
+        randInt = random.randint(0,len(allUniqDomains)-1)
 
         # write each host result into individual file
-        currentDomain = allDomains[randInt].replace("\n","")
+        currentDomain = allUniqDomains[randInt].replace("\n","")
         tempHostDir = tempDir + currentDomain
         os.makedirs(tempHostDir)
         tempHostFile =  tempHostDir + "/rootdomain-host"
         hostCommand = "host " + currentDomain + " >> " + tempHostFile
         currentThread = executeCommand(hostCommand)
-        del(allDomains[randInt])
+        del(allUniqDomains[randInt])
         currentThread.start()
 
 currentThread.join()

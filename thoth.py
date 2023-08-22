@@ -202,6 +202,7 @@ def createCommandFromTemplate(allExecutableModules):
         moduleOutName = moduleOutName.replace(":","-")
         moduleOutName = moduleOutName.replace("&","-")
         moduleOutName = moduleOutName.replace("/","-")
+        moduleOutName = moduleOutName.replace(".","-")
 
         # full path to module output
         moduleOutPath = pathToModDir + "/" + moduleOutName 
@@ -254,9 +255,16 @@ class threadForModule(threading.Thread):
                 return(0)
 
             except subprocess.CalledProcessError as exc:
-                print(f"{bcolor.red}###[ERROR]###\t{bcolor.ends} " 
-                  + self.command)
-                return(0)
+                # amass returns 1 if no domain found - catch error handling
+                if (exc.returncode == 1 and "amass " in self.command):
+                    print(f"{bcolor.green}###[DONE]###\t{bcolor.ends} "
+                          + self.moduleName)
+                    return(0)
+
+                else:
+                    print(f"{bcolor.red}###[ERROR]###\t{bcolor.ends} " 
+                      + self.command)
+                    return(1)
 
 
 """MAIN

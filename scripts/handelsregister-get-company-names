@@ -35,13 +35,14 @@ driver = webdriver.Firefox(options=options, service=service)
 # 10 seconds default wait for element to be clickable
 driver.implicitly_wait(10)
 
-url = "https://www.handelsregister.de/rp_web/welcome.xhtml"
+url = "https://www.handelsregister.de"
 driver.get(url)
+time.sleep(5)
 
 # get current language settings
 greetingsElement = driver.find_elements(By.ID, "zeile1")
 greetings = greetingsElement[0].get_attribute("innerHTML")
-time.sleep(1)
+time.sleep(2)
 
 if ("Common register portal" in greetings):
    searchButton = "Advanced search"
