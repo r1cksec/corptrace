@@ -1,7 +1,7 @@
 [
     {
         "name": "amass_get_subdomains",
-        "riskLevel": "2",
+        "riskLevel": "3",
         "syntax": "amass enum -passive -d <domain> > <outputFile> 2>&1"
     },
     {
@@ -61,13 +61,8 @@
     },
     {
         "name": "get_github_secrets_repo",
-        "riskLevel": "1",
+        "riskLevel": "3",
         "syntax": "REPLACEME/scripts/get-github-secrets '<githubRepository>' <outputDirectory> > <outputFile> 2>&1"
-    },
-    {
-        "name": "get_github_secrets_repo_file",
-        "riskLevel": "2",
-        "syntax": "REPLACEME/scripts/get-github-secrets <githubFile> <outputDirectory> > <outputFile> 2>&1"
     },
     {
         "name": "github_get_users",
@@ -98,11 +93,6 @@
         "name": "grep_through_commits_repo",
         "riskLevel": "1",
         "syntax": "REPLACEME/scripts/grep-through-commits '<githubRepository>' > <outputFile> 2>&1"
-    },
-    {
-        "name": "grep_through_commits_repo_file",
-        "riskLevel": "1",
-        "syntax": "REPLACEME/scripts/grep-through-commits <githubFile> > <outputFile> 2>&1"
     },
     {
         "name": "hackertarget_get_rootdomains",

@@ -28,5 +28,6 @@ do
     fi
 done < /tmp/${timeStamp}-grep-out
 
+rm /tmp/${timeStamp}-nmap-out
 rm /tmp/${timeStamp}-grep-out
 

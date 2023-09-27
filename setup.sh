@@ -214,7 +214,7 @@ then
         echo "spoofy is installed"
     fi
 
-    sudo -su ${userName} pip3 install selenium
+    sudo -su ${userName} pip3 install -U selenium
 fi
 
 rm -rf /tmp/go

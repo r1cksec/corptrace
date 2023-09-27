@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-import shutil
-from selenium.webdriver.firefox.service import Service
-from os import path
-from selenium import webdriver                        
-from selenium.webdriver.common.by import By
-import sys
-from selenium.webdriver.common.keys import Keys
-import time
 from lxml import etree
-import threading
-import subprocess
-import random
-import string
+from os import path
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service
 import os
+import random
+import shutil
+import string
+import subprocess
+import sys
+import threading
+import time
 
 # check amount of passed arguments
 if (len(sys.argv) != 2):
@@ -50,7 +50,7 @@ options.set_preference("network.http.redirection-limit", 4)
 options.set_preference("general.useragent.override", "Safari: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/605.1.3 (KHTML, like Gecko) Version/11.1 Safari/605.1.3")
 
 # prevent creation of geckodriver.log
-service = Service(log_output=path.devnull)
+service = Service(log_output="/dev/null")
 driver = webdriver.Firefox(options=options, service=service)
 
 # 10 seconds timeout
