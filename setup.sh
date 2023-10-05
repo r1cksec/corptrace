@@ -107,7 +107,6 @@ fi
 
 if ! [ -x "$(command -v geckodriver)" ]
 then
-    wget https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz -O /tmp/geckodriver.tar.gz
     wget https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz -O /tmp/geckodriver.tar.gz
     tar -xf /tmp/geckodriver.tar.gz -C /usr/local/bin
     chmod +x /usr/local/bin/geckodriver
