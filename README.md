@@ -173,6 +173,7 @@ out
 * <https://github.com/r1cksec/thoth/tree/master/scripts/spyonweb-get-rootdomains>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/tld-discovery>
 * <https://github.com/r1cksec/thoth/tree/master/scripts/tmdb-get-company-names>
+* <https://github.com/r1cksec/thoth/tree/master/scripts/zoomeye-get-rootdomains>
 * <https://github.com/SecurityRiskAdvisors/letitgo>
 * <https://github.com/trufflesecurity/truffleHog>
 * <https://github.com/UKHomeOffice/repo-security-scanner>

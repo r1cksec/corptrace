@@ -213,6 +213,11 @@
         "name": "whois_get_ips",
         "riskLevel": "1",
         "syntax": "whois -h whois.radb.net -- '-i origin <asNumber>' | grep -E '([0-9.]+){4}/[0-9]+' -C 1 > <outputFile> 2>&1"
+    },
+    {
+        "name": "zoomeye_get_rootdomains",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/zoomeye-get-rootdomains '<companyName>' > <outputFile> 2>&1"
     }
 ]
 
