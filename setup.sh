@@ -22,7 +22,7 @@ pathToScriptDir="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 sed -i "s|REPLACEME|${pathToScriptDir}|g" "${pathToScriptDir}/modules.json"
 pathToHomeDir=$(echo ${pathToScriptDir} | awk -F "/" '{print $1"/"$2"/"$3}')
 pathToGit="${pathToHomeDir}/git"
-userName=$(echo ${pathToScriptDir} | awk -F "/" '{print $3}')
+userName=$(echo $USER)
 
 echo ""
 echo "### APT Install"
