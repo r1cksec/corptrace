@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ ${#} -ne 1 ]
+then
+    echo "usage hakrawler-on-range ipRange"
+	echo "Run nmap on IP Range and hakrawler for open port 80, 443"
+    exit
+fi
+
+timeAndDate=$(date "+%F %T")
+timeAndDate=$(echo ${timeAndDate} | sed 's/ /-T-/g')
+timeStamp=$(echo ${timeAndDate} | sed 's/:/-/g')
+
+nmap -sT -Pn ${1} -n -p 80,443 --open -oG "/tmp/${timeStamp}-nmap-out" > /dev/null
+
+# get active hosts with webserver
+grep "Ports" /tmp/${timeStamp}-nmap-out | awk -F " " '{print $2" "$5}' | cut -d "/" -f 1 > /tmp/${timeStamp}-grep-out
+ 
+while read -r line 
+do
+    ip=$(echo ${line} | cut -d " " -f 1)
+
+    if [[ ${line} == *" 80"* ]]
+    then
+        echo "http://${ip}" | hakrawler -u -s -insecure
+    else
+        echo "https://${ip}" | hakrawler -u -s -insecure
+    fi
+done < /tmp/${timeStamp}-grep-out
+
+rm /tmp/${timeStamp}-nmap-out
+rm /tmp/${timeStamp}-grep-out
+

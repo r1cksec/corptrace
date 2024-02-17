@@ -1,0 +1,379 @@
+#!/usr/bin/env python3
+import csv
+import os
+import pathlib
+import random
+import re
+import shutil
+import signal
+import string
+import sys
+import threading
+import time
+
+# check amount of passed arguments
+if (len(sys.argv) != 2):
+    print("usage: {} domainFile".format(sys.argv[0]))
+    print("Run host, whois and curl command for each domain and sort results")
+    print("Could need a little longer for larger domain lists")
+    sys.exit(1)
+
+def timeoutHandler(signum, frame):
+    raise TimeoutError("Timeout occurred")
+
+
+"""FUNCTION
+
+Return random string
+
+"""
+def getRanStr():
+    randStr = ""
+    letters = string.ascii_lowercase
+    for l in range(16):
+        randStr = randStr + random.choice(letters)
+    return randStr
+
+
+"""FUNCTION
+
+Execute bash command
+
+"""
+class executeCommand(threading.Thread):
+   def __init__(self, command):
+       threading.Thread.__init__(self)
+       self.command = command
+
+   def run(self):
+       commandStatus = os.system(self.command)
+
+       # only use this function if host command is used
+       if ("host " in self.command):
+
+           if (commandStatus == 0):
+               # save resolvable hosts into lists for later use
+               splittedCommand = self.command.split(" ")
+               hostname = splittedCommand[1]
+               resolveableHosts.append(hostname)
+               resolveableWhoisHosts.append(hostname)
+               resolveableCurlHosts.append(hostname)
+
+
+"""FUNCTION
+Insert values into dictionary
+
+dictHost = Hostname of current csv line
+rowContent = Content of the current csv cell
+dictionaryObj = Dictionary obect where csv result will be inserted
+"""
+def insertIntoDictionary(dictHost, rowContent, dictionaryObj):
+    # skip empty rows
+    if (not rowContent or rowContent.isspace()):
+        return
+
+    if rowContent in dictionaryObj:
+        dictionaryObj[rowContent].append(dictHost)
+    else:
+        dictionaryObj[rowContent] = [dictHost]
+
+
+"""FUNCTION
+Print sorted results if at least two duplicates found
+
+printDict = The dictionaryObj that will be printed
+header = String that will be printed as headline
+"""
+def printDictionary(printDict, header):
+    headerPrintedFlag = "0"
+
+    for field1, field2 in printDict.items():
+        if len(field2) > 1:
+            if (headerPrintedFlag == "0"):
+                print("\n########## " + header + " ##########\n")
+                headerPrintedFlag = "1"
+
+            print(field1)
+            print(field2)
+            print("")
+
+
+# read all domains into list (used to run host command as thread)
+fp = open(sys.argv[1], "r")
+allDomains = fp.readlines()
+fp.close()
+
+allUniqDomains = sorted(set(allDomains))
+
+# used to run threading commands for whois requests
+resolveableWhoisHosts = []
+
+# used to run threading commands for curl get requests
+resolveableCurlHosts = []
+
+# used to to sort the final results
+resolveableHosts = []
+
+# create temporary directory
+tempDir = "/tmp/categorize-rootdomains-" + getRanStr() + "/"
+if (os.path.isdir(tempDir)):
+    shutil.rmtree(tempDir)
+
+os.makedirs(tempDir)
+
+# run 11 threads in parallel and resolve all domains
+while allUniqDomains:
+    if (threading.active_count() <= 11):
+        randInt = random.randint(0,len(allUniqDomains)-1)
+
+        # write each host result into individual file
+        currentDomain = allUniqDomains[randInt].replace("\n","")
+        tempHostDir = tempDir + currentDomain
+        os.makedirs(tempHostDir)
+        tempHostFile =  tempHostDir + "/rootdomain-host"
+        hostCommand = "host " + currentDomain + " >> " + tempHostFile
+        currentThread = executeCommand(hostCommand)
+        del(allUniqDomains[randInt])
+        currentThread.start()
+
+currentThread.join()
+time.sleep(2)
+
+# run 7 threads in parallel and run whois for all domains
+while resolveableWhoisHosts:
+    if (threading.active_count() <= 7):
+        randInt = random.randint(0,len(resolveableWhoisHosts)-1)
+
+        # write each host result into individual file
+        currentDomain = resolveableWhoisHosts[randInt].replace("\n","")
+        tempWhoisDir = tempDir + currentDomain
+        tempWhoisFile =  tempWhoisDir + "/rootdomain-whois"
+        whoisCommand = "whois " + currentDomain + " >> " + tempWhoisFile + " 2>&1 "
+        currentThread = executeCommand(whoisCommand)
+        del(resolveableWhoisHosts[randInt])
+        currentThread.start()
+
+currentThread.join()
+time.sleep(2)
+
+# run 9 threads in parallel and send GET requests to resolved domains
+while resolveableCurlHosts:
+    if (threading.active_count() <= 9):
+        randInt = random.randint(0,len(resolveableCurlHosts)-1)
+        splitHostResult = resolveableCurlHosts[randInt].split(";")
+
+        # create temporary directory for current domain
+        currentTempFile = tempDir + splitHostResult[0]
+        curlHtmlResultFile = currentTempFile + "/rootdomain-html"
+        curlOutResultFile = currentTempFile + "/rootdomain-out"
+        curlCommand = "curl --connect-timeout 10 --max-time 10 -s -L -o " + curlHtmlResultFile + " --write-out '%{url_effective}' " + splitHostResult[0] + " > " + curlOutResultFile 
+        currentThread = executeCommand(curlCommand)
+        del(resolveableCurlHosts[randInt])
+        currentThread.start()
+
+currentThread.join(timeout=10)
+time.sleep(2)
+
+finalCsv = []
+finalCsv.append("Hostname ; Whois Organization ; Effective URL ; Alias ; Mailserver ; Copyright ; Title ; Google Adsense ; Google Analytics ; Social Media")
+
+# parse each host html and out file
+for host in resolveableHosts:
+    # used to store the result for the current host
+    currentCsvLine = host + " ; "
+
+    # parse whois response
+    pathToWhoisFile = tempDir + host + "/rootdomain-whois"
+    whoisFile = open(pathToWhoisFile, "r", encoding="utf-8")
+    whoisContent = whoisFile.read()
+
+    # grep organization
+    orgaPattern = r"Registrant Organization: (\S+)"
+    orgaMatch = re.search(orgaPattern, whoisContent)
+    
+    if orgaMatch:
+        organization = orgaMatch.group(1).replace("\n","").replace(";","")
+        # do not save redacted organisation
+        if ("REDACTED" in organization):
+            currentCsvLine = currentCsvLine + " ; "
+        else:
+            currentCsvLine = currentCsvLine + organization.strip() + " ; "
+    else:
+        currentCsvLine = currentCsvLine + " ; "
+
+    # parse out file
+    pathToOutFile = tempDir + host + "/rootdomain-out"
+
+    # check if file or directory exists
+    if (os.path.exists(pathToOutFile)):
+        outFile = open(pathToOutFile, "r", encoding="utf-8")
+
+        # extract effective url
+        try:
+            effectiveUrl = outFile.readlines()[0]
+            effectiveUrl = effectiveUrl.replace("\n","").replace(";","")
+        except:
+            effectiveUrl = " "
+
+        currentCsvLine = currentCsvLine + effectiveUrl.strip()+ " ; "
+        outFile.close()
+    else:
+        currentCsvLine = currentCsvLine + " ; "
+
+    # parse host response
+    pathToHostFile = tempDir + host + "/rootdomain-host"
+    hostFile = open(pathToHostFile, "r", encoding="utf-8")
+    hostContent = hostFile.read()
+
+    # grep alias
+    aliasPattern = r" is an alias for ([^\s.]+)\."
+    aliasMatch = re.search(aliasPattern, hostContent)
+    
+    if aliasMatch:
+        alias = aliasMatch.group(0).replace("\n","").replace(";","")
+        alias = alias.replace("is an alias for ", "")
+        currentCsvLine = currentCsvLine + alias.strip() + " ; "
+    else:
+        currentCsvLine = currentCsvLine + " ; "
+
+    # grep mailserver
+    mailPattern = r"mail is handled by \d+ (.*\.)[^.]*$"
+    mailMatch = re.search(mailPattern, hostContent)
+    
+    if mailMatch:
+        mailserver = mailMatch.group(1).replace("\n","").replace(";","")
+        currentCsvLine = currentCsvLine + mailserver.strip() + " ; "
+    else:
+        currentCsvLine = currentCsvLine + " ; "
+
+    # parse html source code
+    pathToHtmlFile = tempDir + host + "/rootdomain-html"
+
+    # set timeout to 120 seconds 
+    timeoutDuration = 120
+    signal.signal(signal.SIGALRM, timeoutHandler)
+    signal.alarm(timeoutDuration)
+
+    try:
+       if (os.path.exists(pathToHtmlFile)):
+
+        # read file
+           curlHtmlFile = open(pathToHtmlFile, "rb")
+           rawData = curlHtmlFile.read()
+
+           try:
+               htmlCode = rawData.decode('utf-8')
+           except UnicodeDecodeError:
+               htmlCode = rawData.decode('utf-8', errors='ignore')
+
+           # grep copyright
+           copyPattern = r"[^<>\"']*©[^<>\"']*"
+           copyMatch = re.search(copyPattern, htmlCode)
+           
+           if copyMatch:
+               copy = copyMatch.group(0).replace("\n","").replace(";","")
+               currentCsvLine = currentCsvLine + copy.strip() + " ; "
+           else:
+               currentCsvLine = currentCsvLine + " ; "
+
+           # grep title
+           titlePattern = r"<title>(.*?)</title>"
+           titleMatch = re.search(titlePattern, htmlCode, re.IGNORECASE | re.DOTALL)
+           
+           if titleMatch:
+               title = titleMatch.group(1).replace("\n","").replace(";","")
+               currentCsvLine = currentCsvLine + title.strip() + " ; "
+           else:
+               currentCsvLine = currentCsvLine + " ; "
+
+           # grep google adsense ids
+           adsensePattern = r"pub-\d{16}"
+           adsenseMatch = re.search(adsensePattern, htmlCode, re.IGNORECASE)
+           
+           if adsenseMatch:
+               adsense = adsenseMatch.group(0).replace("\n","").replace(";","")
+               currentCsvLine = currentCsvLine + adsense.strip() + " ; "
+           else:
+               currentCsvLine = currentCsvLine + " ; "
+
+           # grep google analytics ids
+           analyticsPattern = r"UA-\d{9}-\d"
+           analyticsMatch = re.search(analyticsPattern, htmlCode, re.IGNORECASE)
+           
+           if analyticsMatch:
+               analytics = analyticsMatch.group(0).replace("\n","").replace(";","")
+               currentCsvLine = currentCsvLine + analytics.strip() + " ; "
+           else:
+               currentCsvLine = currentCsvLine + " ; "
+           
+           # grep social media urls
+           socialMedia = ["youtube.com", "facebook.com", "twitter.com", "github.com", "xing.com", "linkedin.com"]
+
+           for sm in socialMedia:
+               socialPattern = fr"({re.escape(sm)}/(?:.|\n)*?)(\s|\"|\]|\,)"
+               socialMatch = re.findall(socialPattern, htmlCode)
+               socialUrls = ""
+
+               for match in socialMatch:
+                   social = f"{sm}/{match[0]}".replace("\n","").replace(";","")
+                   socialUrls = socialUrls + social
+           
+           currentCsvLine = currentCsvLine + socialUrls.strip() + " ; "
+
+           curlHtmlFile.close()
+       else:
+           currentCsvLine = currentCsvLine + " ; ; ; "
+
+    except TimeoutError:
+        print("Timeout reached for " + host)
+        currentCsvLine = " ; ; ; ; ; "
+            
+    # remove unwanted chars
+    currentCsvLine = currentCsvLine.replace("\t","")
+    currentCsvLine = currentCsvLine.replace("\r","")
+    currentCsvLine = currentCsvLine.replace("\n","")
+    currentCsvLine = currentCsvLine.replace("\\","")
+    currentCsvLine = currentCsvLine.replace("$","")
+    currentCsvLine = currentCsvLine.replace("'","")
+    finalCsv.append(currentCsvLine)
+
+# dictionaries used to sort results
+orgaResults = {}
+urlResults = {}
+mailResults = {}
+copyrightResults = {}
+titleResults = {}
+
+reader = csv.DictReader(finalCsv, delimiter=";")
+
+# collect duplicates inside csv results
+for row in reader:
+    csvHostname = row["Hostname "]
+    csvWhoisOrga = row[" Whois Organization "]
+    csvUrl = row[" Effective URL "]
+    csvMail = row[" Mailserver "]
+    csvCopy = row[" Copyright "]
+    csvTitle = row[" Title "]
+
+    insertIntoDictionary(csvHostname, csvWhoisOrga, orgaResults)
+    insertIntoDictionary(csvHostname, csvUrl, urlResults)
+    insertIntoDictionary(csvHostname, csvMail, mailResults)
+    insertIntoDictionary(csvHostname, csvCopy, copyrightResults)
+    insertIntoDictionary(csvHostname, csvTitle, titleResults)
+
+# print results
+for c in finalCsv: 
+    print(c)
+
+print("\n")
+printDictionary(orgaResults, "Whois Organisation")
+printDictionary(urlResults, "Effective URLs")
+printDictionary(copyrightResults, "Copyright")
+printDictionary(mailResults, "Mailserver")
+printDictionary(titleResults, "Title")
+
+# remove directory recursively
+shutil.rmtree(tempDir)
+
+exit(0)
+

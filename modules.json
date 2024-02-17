@@ -1,0 +1,223 @@
+[
+    {
+        "name": "amass_get_subdomains",
+        "riskLevel": "3",
+        "syntax": "amass enum -passive -d <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "amass_get_rootdomains",
+        "riskLevel": "2",
+        "syntax": "amass intel -d <domain> -whois > <outputFile> 2>&1"
+    },
+    {
+        "name": "completedns_get_ns_history",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/completedns-get-ns-history <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "csprecon",
+        "riskLevel": "1",
+        "syntax": "csprecon -silent -u https://<domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "dnslytics_get_rootdomains",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/dnslytics-get-rootdomains '<googleID>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "dnsreaper",
+        "riskLevel": "2",
+        "syntax": "dnsreaper file --filename <domainFile> > <outputFile> 2>&1"
+    },
+    {
+        "name": "dnsrecon_zonetransfer",
+        "riskLevel": "2",
+        "syntax": "dnsrecon -d <domain> -t axfr > <outputFile> 2>&1"
+    },
+    {
+        "name": "dnsrecon_zonewalk",
+        "riskLevel": "2",
+        "syntax": "dnsrecon -d <domain> -t zonewalk > <outputFile> 2>&1"
+    },
+    {
+        "name": "dnstwist",
+        "riskLevel": "4",
+        "syntax": "dnstwist -r <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "favfreak_http",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk '{print \"http://\"$0}' | favfreak > <outputFile> 2>&1"
+    },
+    {
+        "name": "favfreak_https",
+        "riskLevel": "2",
+        "syntax": "cat <domainFile> | awk '{print \"https://\"$0}' | favfreak > <outputFile> 2>&1"
+    },
+    {
+        "name": "get_dns_records",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/get-dns-records <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "get_github_secrets_repo",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/get-github-secrets '<githubRepository>' <outputDirectory> > <outputFile> 2>&1"
+    },
+    {
+        "name": "github_get_users",
+        "riskLevel": "1",
+        "syntax": "curl -s 'https://api.github.com/search/repositories?q=<companyName>' | jq '.items[] | .html_url' | sed 's/\"//g' > <outputFile> 2>&1"
+    },
+    {
+        "name": "google_get_linkedIn_employees",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/google-get-linkedIn-employees '<companyName>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "google_get_pdf_metadata",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/google-get-pdf-metadata <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "google_get_rootdomains",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/google-get-rootdomains '<copyRight>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "grepapp_get_users",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/grepapp-get-users '<companyName>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "grep_through_commits_repo",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/grep-through-commits '<githubRepository>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "hackertarget_get_rootdomains",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/hackertarget-get-rootdomains <googleID> > <outputFile> 2>&1"
+    },
+    {
+        "name": "hakrawler",
+        "riskLevel": "3",
+        "syntax": "echo \"https://www.<domain>\" | hakrawler -insecure > <outputFile> 2>&1"
+    },
+    {
+        "name": "hakrawler_domain_file",
+        "riskLevel": "4",                                                                                           
+        "syntax": "cat <domainFile> | awk -F ' ' '{print \"https://\"$1}' | hakrawler -insecure > <outputFile> 2>&1"
+    },  
+    {
+        "name": "hakrawler_ip_range",
+        "riskLevel": "4",
+        "syntax": "REPLACEME/scripts/hakrawler-ip-range <ipRange> > <outputFile> 2>&1"
+    },
+    {
+        "name": "handelsregister_get_company_names",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/handelsregister-get-company-names \"<companyName>\" > <outputFile> 2>&1"
+    },
+    {
+        "name": "letItGo",
+        "riskLevel": "1",
+        "syntax": "letItGo <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "massdns",
+        "riskLevel": "4",
+        "syntax": "cat REPLACEME/wordlists/subdomains-top1million-110000.txt | awk -F \" \" '{print $1\".<domain>\"}' | massdns -r REPLACEME/wordlists/resolvers.txt -t A -o S -w <outputFile> > /dev/null 2>&1"
+    },
+    {
+        "name": "nmap_get_tls_alternative_names",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/nmap-get-tls-alternative-names <ipRange> > <outputFile> 2>&1"
+    },
+    {
+        "name": "nmap_reverse_lookup",
+        "riskLevel": "2",
+        "syntax": "nmap -sL <ipRange> | awk -F 'Nmap scan report for ' '{print $2}' > <outputFile> 2>&1"
+    },
+    {
+        "name": "noseyparker_get_repositories",
+        "riskLevel": "1",
+        "syntax": "noseyparker github repos list --user <githubUser> > <outputFile> 2>&1"
+    },
+    {
+        "name": "northdata_get_company_names",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/northdata-get-company-names \"<companyName>\" 10 > <outputFile> 2>&1"
+    },
+    {
+        "name": "skymem_get_mails",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/skymem-get-mails <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "sort_domains",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/sort-domains '<domainFile>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "sort_rootdomains",
+        "riskLevel": "3",
+        "syntax": "REPLACEME/scripts/sort-rootdomains '<domainFile>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "sourcegraph_get_users",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/sourcegraph-get-users '<companyName>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "spk",
+        "riskLevel": "2",
+        "syntax": "spk -silent -s '<companyName>' | sort -u > <outputFile> 2>&1"
+    },
+    {
+        "name": "spoofy",
+        "riskLevel": "2",
+        "syntax": "spoofy -d <domain> -o stdout > <outputFile> 2>&1"
+    },
+    {
+        "name": "spyonweb_get_rootdomains",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/spyonweb-get-rootdomains <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "subfinder",
+        "riskLevel": "2",
+        "syntax": "subfinder --silent -d <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "tld_discovery",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/tld-discovery <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "tmdb_get_company_names",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/tmdb-get-company-names '<companyName>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "viewdns_get_rootdomains_ip_ns",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/viewdns-get-rootdomains-ip-ns <domain> > <outputFile> 2>&1"
+    },
+    {
+        "name": "viewdns_get_rootdomains_whois",
+        "riskLevel": "2",
+        "syntax": "REPLACEME/scripts/viewdns-get-rootdomains-whois '<companyName>' > <outputFile> 2>&1"
+    },
+    {
+        "name": "whois_get_ips",
+        "riskLevel": "1",
+        "syntax": "whois -h whois.radb.net -- '-i origin <asNumber>' | grep -E '([0-9.]+){4}/[0-9]+' -C 1 > <outputFile> 2>&1"
+    },
+    {
+        "name": "zoomeye_get_rootdomains",
+        "riskLevel": "1",
+        "syntax": "REPLACEME/scripts/zoomeye-get-rootdomains '<companyName>' > <outputFile> 2>&1"
+    }
+]
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+pathToResults="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+echo "This script sporadically greps the subdomains from the results"
+echo "Please enter path to result directory:"
+read pathToResults
+
+# grep subdomain results
+cat ${pathToResults}/amass-osint/* | grep -v "The enumeration has finished" | grep -v "Discoveries are being migrated into " | sort -u >> ${pathToResults}/all-domains.txt
+cat ${pathToResults}/nmap-reverse-lookup-ranges/nmap-reverse-lookup-ranges* | cut -d " " -f 1 >> ${pathToResults}/all-domains.txt
+cat ${pathToResults}/get-cert-domains-from-ip-range/* | grep -v " Final Domains " | grep -v "Start nmap " | sort -u >> ${pathToResults}/all-domains.txt
+cat ${pathToResults}/subfinder/* | grep -v "INF" | grep -v "WRN" | sort -u >> ${pathToResults}/all-domains.txt
+cat ${pathToResults}/csprecon/* | grep -v "*" | sed 's/\///g' | sort -u >> ${pathToResults}/all-domains.txt
+cat ${pathToResults}/massdns/* | cut -d "A" -f 1 | awk -F ". " '{print $1}' >> ${pathToResults}/all-domains.txt
+sort -u ${pathToResults}/all-domains.txt > ${pathToResults}/final-domains.txt
+rm ${pathToResults}/all-domains.txt
+
