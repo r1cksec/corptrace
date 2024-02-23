@@ -26,7 +26,7 @@ userName=$(echo $USER)
 
 echo ""
 echo "### APT Install"
-apt install -y dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist
+apt install -y dnsrecon git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist unzip
 
 echo ""
 echo "### Install Golang tools."
