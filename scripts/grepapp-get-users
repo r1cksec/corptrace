@@ -21,7 +21,7 @@ options.add_argument("--ignore-ssl-errors=yes")
 options.add_argument('--ignore-certificate-errors')
 options.set_preference("network.http.redirection-limit", 4)
 options.add_argument("--headless")
-service = Service(log_output="/dev/null")
+service = Service(log_output="/dev/null", executable_path="/usr/local/bin/geckodriver")
 driver = webdriver.Firefox(options=options, service=service)
 driver.set_page_load_timeout(15)
 

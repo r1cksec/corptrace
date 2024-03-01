@@ -27,7 +27,7 @@ options.add_argument('--ignore-certificate-errors')
 options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36")
 
 # prevent creation of geckodriver.log
-service = Service(log_output="/dev/null")
+service = Service(log_output="/dev/null", executable_path="/usr/local/bin/geckodriver")
 driver = webdriver.Firefox(options=options, service=service)
 
 # seconds timeout
