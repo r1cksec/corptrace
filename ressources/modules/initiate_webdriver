@@ -1,0 +1,39 @@
+import os
+
+currentPosition = os.path.realpath(__file__)
+dn = os.path.dirname(currentPosition)         
+
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service
+from selenium import webdriver                        
+import random
+
+options = FirefoxOptions()
+
+# headless mode
+options.add_argument("--headless")
+
+# certificate errors
+options.add_argument("--ignore-ssl-errors=yes")
+options.add_argument('--ignore-certificate-errors')
+
+# get random user agent
+uaPointer = open(dn + "/../wordlists/user-agents.txt", "r")
+uas = uaPointer.readlines()
+randomUa = uas[random.randint(0,len(uas) - 1)].replace("\n","")
+uaPointer.close()
+options.set_preference("general.useragent.override", randomUa)
+
+# prevent creation of geckodriver.log
+service = Service(log_output="/dev/null")
+driver = webdriver.Firefox(options=options, service=service)
+
+# redirect
+options.set_preference("network.http.redirection-limit", 5)
+
+# 10 seconds default wait for element to be clickable
+driver.implicitly_wait(10)
+
+# 60 seconds timeout
+driver.set_page_load_timeout(60)
+
