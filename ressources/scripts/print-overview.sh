@@ -18,9 +18,16 @@ echo ""
 
 function collectResults()
 {
+    # path to module directory
     pathToDir=${1}
+
+    # name of the result file
     nameScheme1=${2}
+    
+    # file extension
     nameScheme2=${3}
+    
+    # type of result (rootdomain, subdomain, email)
     resultType=${4}
     allFiles=""
 
@@ -42,23 +49,33 @@ function collectResults()
                 domainName=$(echo ${f} | awk -F "${2}" '{print $2}' | awk -F "${3}" '{print $1}')
             fi
  
+            # remove lines that should not be included in results
             if [[ "${f}" == *"letItGo-"* ]]
             then
                 cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | sed -n '/------/,/Stats:/{//!p}' | grep -v "These domains \|DOMAIN \|---" | awk -F ' ' '{print $1}' | grep -v 'onmicrosoft.com' >> "${resultDir}/${resultType}_${domainName}"
+
+            elif [[ "${f}" == *"subfinder"* ]]
+            then
+                cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | grep -v "Current subfinder version" >> "${resultDir}/${resultType}_${domainName}"
+
             elif [[ "${f}" == *"dnstwist-"* ]]
             then
                 cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | awk -F ' ' '{print $2}' >> "${resultDir}/${resultType}_${domainName}"
+
             elif [[ "${f}" == *"nmap_reverse_lookup-"* ]]
             then
                 cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | awk -F ' ' '{print $1}' >> "${resultDir}/${resultType}_${domainName}"
+
             elif [[ "${f}" == *"massdns-"* ]]
             then
                 cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | awk -F '. ' '{print $1}' >> "${resultDir}/${resultType}_${domainName}"
+
             else
                 cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" >> "${resultDir}/${resultType}_${domainName}"
             fi
 
-            sort -u "${resultDir}/${resultType}_${domainName}" > "${resultDir}/${resultType}_${domainName}-temp"
+            # remove jq errors from results
+            sort -u "${resultDir}/${resultType}_${domainName}" | grep -v "jq: error \|parse error: " > "${resultDir}/${resultType}_${domainName}-temp"
             mv "${resultDir}/${resultType}_${domainName}-temp" "${resultDir}/${resultType}_${domainName}"
         fi
     done
@@ -111,11 +128,13 @@ collectResults "${resultDir}/spk" "spk-" "" "iprange"
 # print overview
 shopt -s nullglob
 
+# collect all rootdomains that contains subdomains
 if [ "$(echo "${resultDir}"/subdomains_*)" != "" ]
 then
     allSubdomains=$(ls "${resultDir}"/subdomains_* | awk -F 'subdomains_' '{print $2}' 2> /dev/null)
 fi
 
+# collect all rootdomains that contains email addresses
 if [ "$(echo "${resultDir}"/emails_*)" != "" ]
 then
     allEmails=$(ls "${resultDir}"/emails_* | awk -F 'emails_' '{print $2}' 2> /dev/null)
@@ -124,19 +143,22 @@ fi
 allSpoofys=""
 allTeams=""
 
+# collect all rootdomains where spf has been scanned
 if [ -d "${resultDir}/spoofy" ]
 then
     allSpoofys=$(ls "${resultDir}/spoofy" | awk -F 'spoofy-' '{print $2}')
 fi
 
+# collect all rootdomains where ms teams collab configuration has been scanned
 if [ -d "${resultDir}/msteams_phishing" ]
 then
     allTeams=$(ls "${resultDir}/msteams_phishing" | awk -F 'msteams_phishing-' '{print $2}')
 fi
 
+# merge all rootdomains for table overview
 allResults="${allSubdomains} ${allEmails} ${allSpoofys} ${allTeams}"
 printDomains=$(echo "${allResults}" | tr ' ' '\n' | sort -u)
-printf "%-20s %-20s %-20s %-20s %-20s\n" "Domain" "Subdomains" "Emails" "SPF" "MsTeams"
+printf "%-40s %-30s %-30s %-30s %-30s\n" "Domain" "Subdomains" "Emails" "SPF" "MsTeams"
 
 for domain in ${printDomains}
 do
@@ -145,7 +167,7 @@ do
     spoofable="?"
     collab="?"
 
-    if [ -f ${resultDir}/rootdomains_${domain} ]
+    if [ -f ${resultDir}/subdomains_${domain} ]
     then
         countSubdomains=$(cat "${resultDir}/subdomains_${domain}" | wc -l)
     fi 
@@ -177,6 +199,6 @@ do
         fi
     fi
 
-    printf "%-20s %-20s %-20s %-20s %-20s\n" "${domain}" "${countSubdomains}" "${countEmails}" "${spoofable}" "${collab}"
+    printf "%-40s %-30s %-30s %-30s %-30s\n" "${domain}" "${countSubdomains}" "${countEmails}" "${spoofable}" "${collab}"
 done
 

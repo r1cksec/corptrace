@@ -1,6 +1,5 @@
 [
     {"name": "columbus_get_subdomains", "riskLevel": "1", "syntax": "columbus_get_subdomains <domain> > <outputFile> 2>&1"},
-    {"name": "completedns_get_ns_history", "riskLevel": "3", "syntax": "completedns_get_ns_history <domain> > <outputFile> 2>&1"},
     {"name": "crtsh_get_rootdomains", "riskLevel": "1", "syntax": "crtsh_get_rootdomains '<company>' > <outputFile> 2>&1"},
     {"name": "csprecon", "riskLevel": "1", "syntax": "csprecon -silent -u https://<domain> > <outputFile> 2>&1"},
     {"name": "dns_get_records", "riskLevel": "2", "syntax": "dns_get_records <domain> > <outputFile> 2>&1"},
@@ -55,6 +54,6 @@
     {"name": "whois_get_ips", "riskLevel": "1", "syntax": "whois -h whois.radb.net -- '-i origin <asn>' | grep -E '([0-9.]+){4}/[0-9]+' -C 1 > <outputFile> 2>&1"},
     {"name": "xing_get_employees", "riskLevel": "2", "syntax": "xing_get_employees <domain> 'REPLACE-XING-USER' 'REPLACE-XING-PASSWORD' > <outputFile> 2>&1"},
     {"name": "zoomeye_get_ports_from_cidr", "riskLevel": "1", "syntax": "zoomeye_get_ports_from_cidr <ipcidr> <outputDirectory> 'REPLACE-ZOOMEYE-APIKEY' > <outputFile> 2>&1"},
-    {"name": "zoomeye_get_rootdomains_from_domain", "riskLevel": "1", "syntax": "zoomeye_get_rootdomains_from_domain '<domain>' <outputDirectory> 'REPLACE-ZOOMEYE-APIKEY' > <outputFile> 2>&1"},
+    {"name": "zoomeye_get_rootdomains_from_domain", "riskLevel": "3", "syntax": "zoomeye_get_rootdomains_from_domain '<domain>' <outputDirectory> 'REPLACE-ZOOMEYE-APIKEY' > <outputFile> 2>&1"},
     {"name": "whoxy_get_rootdomains", "riskLevel": "1", "syntax": "whoxy_get_rootdomains '<company>' > <outputFile> 2>&1"}
 ]

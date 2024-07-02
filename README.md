@@ -99,7 +99,6 @@ options:
 ## Modules
 
 - columbus_get_subdomains
-- completedns_get_ns_history
 - crtsh_get_rootdomains
 - csprecon
 - dns_get_records

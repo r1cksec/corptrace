@@ -2,19 +2,19 @@
 
 if [ ${#} -eq 2 ]
 then
-    read -p "Enter zoomeye.org ApiKey: " apiKey
+    read -p "Enter zoomeye.hk ApiKey: " apiKey
 elif [ ${#} -eq 3 ]
 then
     apiKey=${3}
 else
     echo "usage: ${0} ipRangeCidr outputDirectory [apiKey]"
-    echo "Run curl command on zoomeye.org and retrieve open ports"
+    echo "Run curl command on zoomeye.hk and retrieve open ports"
     exit 1
 fi
 
 cidr=${1}
 outPath=${2}
-result=$(curl -s -X GET "https://api.zoomeye.org/host/search?query=cidr:${cidr}" -H "API-KEY:${apiKey}")
+result=$(curl -s -X GET "https://api.zoomeye.hk/host/search?query=cidr:${cidr}" -H "API-KEY:${apiKey}")
 
 # write json output to file
 saveFile="$(echo ${cidr} | sed 's/[^[:alnum:]]/_/g')"

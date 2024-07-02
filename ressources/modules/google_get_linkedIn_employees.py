@@ -16,7 +16,7 @@ import os
 # check amount of passed arguments
 if (len(sys.argv) != 2):
     print("usage: {} searchKey".format(sys.argv[0]))
-    print("Run Google dork and colelct linkedin employees")
+    print("Run Google dork and collect linkedin employees")
     sys.exit(1)
 
 

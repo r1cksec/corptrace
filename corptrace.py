@@ -202,7 +202,6 @@ def createCommandFromTemplate(allExecutableModules):
         moduleOutName = moduleOutName.replace(":","-")
         moduleOutName = moduleOutName.replace("&","-")
         moduleOutName = moduleOutName.replace("/","-")
-        moduleOutName = moduleOutName.replace(".","-")
 
         # full path to module output
         moduleOutPath = pathToModDir + "/" + moduleOutName 
@@ -279,6 +278,9 @@ python3 corptrace.py -o /tmp/out -u r1cksec -e
 Print syntax of modules for given file containing domains:
 python3 corptrace.py -o /tmp/out -f /tmp/domains -v
 
+Print overview of results:
+python3 corptrace.py -o /tmp/out -p
+
 Only execute modules that contain at least one of the given substring in their name:
 python3 corptrace.py -o /tmp/out -c 'companyName' -im shodan -e
 
@@ -293,7 +295,6 @@ argumentParser.add_argument("-o",
                             help = "path to output directory",
                             required = "true")
 
-
 argumentParser.add_argument("-e",
                             "--execute", 
                             dest = "execute",
@@ -304,6 +305,12 @@ argumentParser.add_argument("-v",
                             "--verbose",
                             dest = "verbose",
                             help = "print full command",
+                            action = "store_true")
+
+argumentParser.add_argument("-p",
+                            "--print", 
+                            dest = "printOverview",
+                            help = "print overview of results",
                             action = "store_true")
 
 argumentParser.add_argument("-to",
@@ -372,6 +379,11 @@ for currJsonArg in argsFromJsonConf:
 
 args = argumentParser.parse_args()
 
+# print overview
+if (args.printOverview):
+    os.system("bash " + pathToScriptDir + "/ressources/scripts/print-overview.sh " + args.output)
+    exit(0)
+
 # if set to 0 passed arguments of user are wrong
 argumentFlag = "0"
 
@@ -382,6 +394,9 @@ for currArg in argsFromJsonConf:
 
 if (argumentFlag == "0"):
     print("Error, at least one of the following arguments is required:")
+
+    # add print option to required arguments
+    allCapitalLetters.append("-p/--print")
     print(allCapitalLetters)
     exit(1)
 
@@ -450,7 +465,4 @@ if (args.execute):
     for directory in os.scandir(args.output):
         if os.path.isdir(directory) and not os.listdir(directory):
             os.rmdir(directory)
-
-# print overview
-os.system("bash " + pathToScriptDir + "/ressources/scripts/print-overview.sh " + args.output)
 
