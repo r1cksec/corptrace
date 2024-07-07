@@ -23,7 +23,7 @@ Depending on the input, some modules may take very long to terminate.
 To prevent timeouts of the individual modules, the duration of the timeout window can be adjusted during execution.
 <br>
 <br>
-The following command executes all available modules for a domain:
+The following command executes all available modules for a domain up to risk level 2:
 
 ```
 python3 corptrace.py -o /tmp/out -d r1cksec.de -e
