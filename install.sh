@@ -98,10 +98,23 @@ validinKey=$(jq -r '.validin_com' ${pathToConfig})
 virustotalKey=$(jq -r '.virustotal_com' ${pathToConfig})
 xingPassword=$(jq -r '.xing_com_password' ${pathToConfig})
 xingUser=$(jq -r '.xing_com_user' ${pathToConfig})
-zoomeyeKey=$(jq -r '.zoomeye_org' ${pathToConfig})
+zoomeyeKey=$(jq -r '.zoomeye_hk' ${pathToConfig})
+
+# ' inside xing and teams password
+if [[ "${teamsPassword}" == *"'"* ]]
+then
+    echo "No ' inside teams password allowed."
+    exit 1
+fi
+
+if [[ "${xingPassword}" == *"'"* ]]
+then
+    echo "No ' inside xing password allowed."
+    exit 1
+fi
 
 # write config for subfinder
-cat >> ${pathToBuild}/subfinder.config << EOL
+cat > ${pathToBuild}/subfinder.config << EOL
 bevigil: [${bevigilKey}]
 binaryedge: [${binaryedgeKey}]
 bufferover: [${bufferoverKey}]
@@ -144,7 +157,7 @@ sed -e "s|REPLACE-GITHUB-APIKEY|${githubKey}|g" \
     -e "s|REPLACE-ZOOMEYE-APIKEY|${zoomeyeKey}|g" \
        "${pathToTemplates}/modules.json" > "${pathToTemp}/modules.json"
 
-# if api key not in config.json remove module 
+# last line in modules.json should not contain an API key, because if key is empty, the line will be removed and the JSON syntax is broken
 grep -v " '' " "${pathToTemp}/modules.json" > ${pathToBuild}/modules.json
 
 echo ""
@@ -197,9 +210,9 @@ echo ""
 echo "### Compile Binary from Git."
 echo ""
 
+git clone https://github.com/blechschmidt/massdns.git ${pathToTemp}/massdns
 if ! [ -x "$(command -v massdns)" ] || [ "${force}" == "1" ]
 then
-    git clone https://github.com/blechschmidt/massdns.git ${pathToTemp}/massdns
     cd ${pathToTemp}/massdns && make
     chmod +x ${pathToTemp}/massdns/bin/massdns
     sudo mv ${pathToTemp}/massdns/bin/massdns /usr/local/bin
@@ -299,9 +312,9 @@ else
     mkdir ${pathToGit}
 fi
 
+git clone https://github.com/punk-security/dnsreaper ${pathToGit}/dnsreaper
 if ! [ -x "$(command -v dnsreaper)" ] || [ "${force}" == "1" ]
 then
-    git clone https://github.com/punk-security/dnsreaper ${pathToGit}/dnsreaper
     ${pathToPython}/bin/pip3 install -r ${pathToGit}/dnsreaper/requirements.txt
     echo "cd ${pathToGit}/dnsreaper && ${pathToPython}/bin/python3 main.py \"\$@\"" > ${pathToTemp}/dnsreaper
     chmod +x ${pathToTemp}/dnsreaper
@@ -310,9 +323,9 @@ else
     echo "dnsreaper is installed"
 fi
 
+git clone https://github.com/MattKeeley/Spoofy ${pathToGit}/Spoofy
 if ! [ -x "$(command -v spoofy)" ] || [ "${force}" == "1" ]
 then
-    git clone https://github.com/MattKeeley/Spoofy ${pathToGit}/Spoofy
     ${pathToPython}/bin/pip3 install -r ${pathToGit}/Spoofy/requirements.txt
     echo "cd ${pathToGit}/Spoofy && ${pathToPython}/bin/python3 spoofy.py \"\$@\"" > ${pathToTemp}/spoofy
     chmod +x ${pathToTemp}/spoofy
@@ -321,9 +334,9 @@ else
     echo "spoofy is installed"
 fi
 
+git clone https://github.com/devanshbatham/FavFreak.git ${pathToGit}/FavFreak
 if ! [ -x "$(command -v favfreak)" ] || [ "${force}" == "1" ]
 then
-    git clone https://github.com/devanshbatham/FavFreak.git ${pathToGit}/FavFreak
     ${pathToPython}/bin/pip3 install -r ${pathToGit}/FavFreak/requirements.txt
     echo "cd ${pathToGit}/FavFreak && ${pathToPython}/bin/python3 favfreak.py \"\$@\"" > ${pathToTemp}/favfreak
     chmod +x ${pathToTemp}/favfreak
@@ -332,9 +345,9 @@ else
     echo "favfreak is installed"
 fi
 
+git clone https://github.com/sse-secure-systems/TeamsEnum ${pathToGit}/TeamsEnum
 if ! [ -x "$(command -v TeamsEnum)" ] || [ "${force}" == "1" ]
 then
-    git clone https://github.com/sse-secure-systems/TeamsEnum ${pathToGit}/TeamsEnum
     ${pathToPython}/bin/pip3 install -r ${pathToGit}/TeamsEnum/requirements.txt
     echo "cd ${pathToGit}/TeamsEnum && ${pathToPython}/bin/python3 TeamsEnum.py \"\$@\"" > ${pathToTemp}/TeamsEnum
     chmod +x ${pathToTemp}/TeamsEnum

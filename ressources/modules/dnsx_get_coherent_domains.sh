@@ -17,8 +17,6 @@ tempDir=$(echo "/tmp/curl-results-"$(date +"%Y-%m-%d_%T"))
 tempResult="${tempDir}/result.csv"
 mkdir -p ${tempDir}
 
-echo "Hostname ; Whois Domain ; Whois IP ; Mailserver ; NS Server ; ASN ; Effective URL ; Copyright ; Title ; Google Adsense ; Google Analytics ; Social Media ; Favicon"
-
 for domain in ${hosts}
 do
     # reset values
@@ -40,7 +38,7 @@ do
  
     # get whois of IP
     hostResolveAble=$(echo "${asNumbers}" | grep "${domain}")
-    ipWhois=$(echo "${asNumbers}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d "," -f 2)
+    ipWhois=$(echo "${asNumbers}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d "," -f 2 | tr '\n' ' ')
  
     # get mailserver
     mxHost=$(echo -e "${mailServer}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | tr '\n' ',')
@@ -49,7 +47,7 @@ do
     nsHost=$(echo -e "${nsServer}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | tr '\n' ',')
  
     # get ASN
-    asn=$(echo "${asNumbers}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d "," -f 1)
+    asn=$(echo "${asNumbers}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d "," -f 1 | tr '\n' ' ')
  
     # check if host can be resolved to ip address
     if grep -q "${domain}" <<< "${hostResolveAble}" 
@@ -111,22 +109,25 @@ do
     fi
 
     # print csv results
-    echo "${domain} ; ${domainWhois} ; ${ipWhois} ; ${mxHost} ; ${nsHost} ; ${asn} ; ${effectiveUrl} ; ${copyright} ; ${httpTitle} ; ${googleAdsense} ; ${googleAnalytics} ; ${socialMedia} ; ${mdHashFavicon}"
     echo "${domain} ; ${domainWhois} ; ${ipWhois} ; ${mxHost} ; ${nsHost} ; ${asn} ; ${effectiveUrl} ; ${copyright} ; ${httpTitle} ; ${googleAdsense} ; ${googleAnalytics} ; ${socialMedia} ; ${mdHashFavicon}" >> "${tempResult}"
 done
+
+echo "Hostname ; Whois Domain ; Whois IP ; Mailserver ; NS Server ; ASN ; Effective URL ; Copyright ; Title ; Google Adsense ; Google Analytics ; Social Media ; Favicon"
+cat ${tempResult}
 
 echo ""
 echo ""
 
 # print coherent domains
 awkResult=$(awk -F ";" '{ for (i=1; i<=NF; i++) count[$i]++ } END { for (word in count) if (count[word] > 1) print word}' "${tempResult}")
-
 while IFS= read -r line
 do
-    # skip empty lines
-    if [ "${line}" != "  " ] && [ "${line}" != " " ]
+    # skip empty lines, whitespace and control charactes
+    if ! echo "${line}" | grep -qP '^[[:space:][:cntrl:],]*$'
     then
-        echo "##### ${line}"
+        PURPLE='\033[0;35m'
+        NC='\033[0m'
+        printf "${PURPLE}${line}${NC}\n"
         grep "$line" "${tempResult}" | cut -d ";" -f 1
         echo ""
     fi

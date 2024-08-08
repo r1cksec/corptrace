@@ -198,13 +198,11 @@ then
     echo ""
 fi
 
-zoomeye=$(echo "${apiKeys}" | jq -r '.zoomeye_org')
+zoomeye=$(echo "${apiKeys}" | jq -r '.zoomeye_hk')
 if [[ ! -z ${zoomeye} ]]
 then
     echo "# zoomeye.hk"
-    zoomeyeLeft=$(curl -s -X GET "https://api.zoomeye.hk/resources-info" -H "API-KEY:${zoomeye}" | jq -r '.resources .search')
-    zoomeyeUsage=$(echo "(10000 - ${zoomeyeLeft}) / 20" | bc)
-    echo "${zoomeyeUsage}/500 -> 500/month"
+    curl -s -X GET "https://api.zoomeye.hk/resources-info" -H "API-KEY:${zoomeye}" | jq -r '"Free: \(.quota_info .remain_free_quota) (renewed monthly) \nPay:  \(.quota_info .remain_pay_quota) (per account registration)"'
     echo ""
 fi
 

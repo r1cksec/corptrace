@@ -74,8 +74,8 @@ function collectResults()
                 cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" >> "${resultDir}/${resultType}_${domainName}"
             fi
 
-            # remove jq errors from results
-            sort -u "${resultDir}/${resultType}_${domainName}" | grep -v "jq: error \|parse error: " > "${resultDir}/${resultType}_${domainName}-temp"
+            # remove jq errors and no results found strings from results
+            sort -u "${resultDir}/${resultType}_${domainName}" | grep -v "jq: error \|parse error: \|No results found for: " > "${resultDir}/${resultType}_${domainName}-temp"
             mv "${resultDir}/${resultType}_${domainName}-temp" "${resultDir}/${resultType}_${domainName}"
         fi
     done
