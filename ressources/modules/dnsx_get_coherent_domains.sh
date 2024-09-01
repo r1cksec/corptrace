@@ -1,21 +1,23 @@
 #!/bin/bash
 
-if [ ${#} -ne 1 ]
+if [ ${#} -ne 2 ]
 then
-    echo "usage: ${0} filedomains"
-    echo "filedomains: File containing domains, one per line"
+    echo "usage: ${0} filedomain outputDirectory"
+    echo "filedomain: File containing domains, one per line"
     exit 1
 fi
 
 domainFile=${1}
 hosts=$(cat ${domainFile} | sort -u)
-mailServer=$(dnsx -silent -l ${domainFile} -mx -resp)
-nsServer=$(dnsx -silent -l ${domainFile} -ns -resp)
-asNumbers=$(dnsx -silent -l ${domainFile} -asn)
+mailServer=$(dnsx -j -silent -l ${domainFile} -mx -resp)
+nsServer=$(dnsx -j -silent -l ${domainFile} -ns -resp)
+asNumbers=$(dnsx -j -silent -l ${domainFile} -asn)
 
 tempDir=$(echo "/tmp/curl-results-"$(date +"%Y-%m-%d_%T"))
 tempResult="${tempDir}/result.csv"
 mkdir -p ${tempDir}
+
+echo "Hostname ; Whois Domain ; Whois IP ; Mailserver ; NS Server ; ASN ; Effective URL ; Copyright ; Title ; Google Adsense ; Google Analytics ; Social Media ; Favicon" > "${tempResult}"
 
 for domain in ${hosts}
 do
@@ -36,35 +38,35 @@ do
     mdHashFavicon=""
     domainWhois=""
  
-    # get whois of IP
+    # get whois of IP (remove non printable characters)
     hostResolveAble=$(echo "${asNumbers}" | grep "${domain}")
-    ipWhois=$(echo "${asNumbers}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d "," -f 2 | tr '\n' ' ')
+    ipWhois=$(echo "${asNumbers}" | jq -r --arg domain "${domain}" 'select(.host == $domain) | .asn["as-name"]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g')
  
     # get mailserver
-    mxHost=$(echo -e "${mailServer}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | tr '\n' ',')
+    mxHost=$(echo "${mailServer}" | jq -r --arg dom "$domain" 'select(.host == $dom) | .mx[]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g')
 
     # get nameserver
-    nsHost=$(echo -e "${nsServer}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | tr '\n' ',')
+    nsHost=$(echo "${nsServer}" | jq -r --arg dom "$domain" 'select(.host == $dom) | .ns[]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g')
  
-    # get ASN
-    asn=$(echo "${asNumbers}" | grep "${domain}" | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d "," -f 1 | tr '\n' ' ')
+    # get ASN (replace null by empty value)
+    asn=$(echo "${asNumbers}" | jq -r --arg domain "${domain}" 'select(.host == $domain) | .asn["as-number"]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g' | grep -v "jq: error ")
  
     # check if host can be resolved to ip address
     if grep -q "${domain}" <<< "${hostResolveAble}" 
     then 
         # run curl
         tmpFile="${tempDir}/${domain}.html"
-        curlOut=$(curl --connect-timeout 10 --max-time 10 -s -L -o "${tmpFile}" --write-out '%{http_code} %{url_effective}' "${domain}")
+        curlOut=$(curl --connect-timeout 10 --max-time 10 -s -L -A "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36" -o "${tmpFile}" --write-out '%{http_code} %{url_effective}' "${domain}")
         httpStatus=$(echo ${curlOut} | cut -d " " -f 1)
-        effectiveUrl=$(echo ${curlOut} | cut -d " " -f 2)
+        effectiveUrl=$(echo ${curlOut} | cut -d " " -f 2 | tr '\n' -d | sed 's/;//g')
 
         if [ -f ${tmpFile} ]
         then
-            # grep copyright
-            copyright=$(cat ${tmpFile} | grep -Eio "[^<>\"']*©[^<>\"']*" | tail -n 1 | tr '\n' -d | sed 's/;//g')
+            # grep copyright (remove non printable characters)
+            copyright=$(cat ${tmpFile} | grep -Eio "[^<>\"']*©[^<>\"']*" | tail -n 1 | tr '\n' -d | sed 's/[;*]//g' | sed 's/[^[:print:]]//g')
  
             # grep title
-            httpTitle=$(cat ${tmpFile} | grep -Eio "<title>(.*)</title>" | cut -d ">" -f 2 | cut -d "<" -f1 | tr '\n' -d | sed 's/;//g')
+            httpTitle=$(cat ${tmpFile} | grep -Eio "<title>(.*)</title>" | cut -d ">" -f 2 | cut -d "<" -f1 | tr '\n' -d | sed 's/[;*]//g' | sed 's/[^[:print:]]//g')
  
             # grep Google Adsense
             googleAdsense=$(cat ${tmpFile} | grep -Eio "pub-[0-9]{16}" | tr '\n' ',')
@@ -73,11 +75,11 @@ do
             googleAnalytics=$(cat ${tmpFile} | grep -Eio "UA-[0-9]{9}-[0-9]" | tr '\n' ',')
  
             # grep social media profiles
-            socialMedia=$(cat ${tmpFile} | grep -Eio "(linkedin\.com|youtube\.com|facebook\.com|github\.com|xing\.com)/[^?<>'\" ]*" | tr '\n' ',' | sed 's/;//g')
+            socialMedia=$(cat ${tmpFile} | grep -Eio "(linkedin\.com|youtube\.com|facebook\.com|github\.com|xing\.com)/[^?<>'\" ]*" | tr '\n' ',' | sed 's/;//g' | sed 's/[^[:print:]]//g')
  
             # get favicon hash
             tmpFileIco="${tempDir}/${domain}.ico"
-            faviconStatus=$(curl -s -o "${tmpFileIco}" --write-out "%{http_code}" "${effectiveUrl}/favicon.ico")
+            faviconStatus=$(curl -s -o "${tmpFileIco}" --write-out "%{http_code}" "${effectiveUrl}/favicon.ico" 2> /dev/null)
 
             if [[ "${faviconStatus}" -eq 200 ]]
             then
@@ -89,9 +91,9 @@ do
                 # if href contains https
                 if [[ ${faviconHref} == *"https://"* ]]
                 then
-                    mdHashFavicon=$(curl --connect-timeout 10 --max-time 10 -s -L "${faviconHref}" | md5sum | awk -F ' ' '{print $1}')
+                    mdHashFavicon=$(curl --connect-timeout 10 --max-time 10 -s -L "${faviconHref}" | md5sum | awk -F ' ' '{print $1}' 2> /dev/null)
                 else
-                    mdHashFavicon=$(curl --connect-timeout 10 --max-time 10 -s -L "${effectiveUrl}/${faviconHref}" | md5sum | awk -F ' ' '{print $1}')
+                    mdHashFavicon=$(curl --connect-timeout 10 --max-time 10 -s -L "${effectiveUrl}/${faviconHref}" | md5sum | awk -F ' ' '{print $1}' 2> /dev/null)
                 fi
 
                 rm ${tmpFile}
@@ -100,22 +102,23 @@ do
     fi
 
     # get whois of domain
-    domainWhois=$(whois ${domain} | grep "^Registrant Organization: " | awk -F ": " '{print $2}' 2> /dev/null)
+    domainWhois=$(whois ${domain} | grep "^Registrant Organization: " | awk -F ": " '{print $2}' | sed 's/[^[:print:]]//g' 2> /dev/null)
 
     # rerun whois command using another source, if rate limit reached
     if [ ${$?} -ne 0 ]
     then
-        domainWhois=$(curl -s "https://www.whois.com/whois/${domain}" | grep -i "Registrant Organization: " | awk -F ": " '{print $2}' 2> /dev/null)
+        domainWhois=$(curl -s "https://www.whois.com/whois/${domain}" | grep -i "Registrant Organization: " | awk -F ": " '{print $2}' | sed 's/[^[:print:]]//g' 2> /dev/null)
     fi
 
     # print csv results
     echo "${domain} ; ${domainWhois} ; ${ipWhois} ; ${mxHost} ; ${nsHost} ; ${asn} ; ${effectiveUrl} ; ${copyright} ; ${httpTitle} ; ${googleAdsense} ; ${googleAnalytics} ; ${socialMedia} ; ${mdHashFavicon}" >> "${tempResult}"
 done
 
-echo "Hostname ; Whois Domain ; Whois IP ; Mailserver ; NS Server ; ASN ; Effective URL ; Copyright ; Title ; Google Adsense ; Google Analytics ; Social Media ; Favicon"
-cat ${tempResult}
+# copy result csv to output directory
+resultFileName=$(echo "${domainFile}" | sed 's/\//_/g' | sed 's/.txt//g')
+cp ${tempResult} ${2}/${resultFileName}.csv
 
-echo ""
+echo "Results:"
 echo ""
 
 # print coherent domains

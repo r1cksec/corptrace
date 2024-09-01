@@ -1,0 +1,304 @@
+
+                // count rootdomains and display inside toolbox
+                const rootDomains = data.map(item => item.Rootdomain.trim());
+                const amountOfRootdomains = rootDomains.length;
+                d3.select("#infoboxContent").html(`Total Rootdomains: ${amountOfRootdomains}`).attr("class", "toolBoxText");
+
+                // import JSON data into D3.js
+                const nodes = data.map(item => ({
+                    id: item.Rootdomain.trim(),
+                    Subdomains: item.Subdomains,
+                    Emails: item.Emails
+                }));
+
+                // create edges
+                const links = [];
+
+                function createLinksFromRelations(domain, relationKey, links, type)
+                {
+                    if (domain[relationKey] && Array.isArray(domain[relationKey]))
+                    {
+                        domain[relationKey].forEach(relatedDomain => {
+                            // check if there is already an existing link between 2 nodes
+                            const existingLink = links.find(link => link.source === domain.Rootdomain.trim() && link.target === relatedDomain.trim());
+
+                            if (existingLink) 
+                            {
+                                // append the relation type
+                                existingLink.type += `/${type}`;
+                            }
+                            else
+                            {
+                                // add new link
+                                links.push({ source: domain.Rootdomain.trim(), target: relatedDomain.trim(), type: type });
+                            }
+                        });
+                    }
+                }
+
+                // create edges for each json attribute
+                data.forEach(domain => {
+                    createLinksFromRelations(domain, "Whois Ip relation", links, 'ASN');
+                    createLinksFromRelations(domain, "Whois Domain relation", links, 'Whois');
+                    createLinksFromRelations(domain, "Mailserver relation", links, 'Mailserver');
+                    createLinksFromRelations(domain, "Nameserver relation", links, 'Nameserver');
+                    createLinksFromRelations(domain, "Title relation", links, 'Title');
+                    createLinksFromRelations(domain, "Google Adsense relation", links, 'GoogleAdsense');
+                    createLinksFromRelations(domain, "Google Analytics relation", links, 'GoogleAnalytics');
+                    createLinksFromRelations(domain, "Social Media relation", links, 'SocialMedia');
+                    createLinksFromRelations(domain, "Favicon relation", links, 'Favicon');
+                });
+
+                // create an SVG container with zoom functionality
+                const svg = d3.select("svg")
+                    .call(d3.zoom().on("zoom", function(event) {
+                        svg.attr("transform", event.transform);
+                    }))
+                    .append("g");
+
+                // initialize the force simulation
+                const simulation = d3.forceSimulation(nodes)
+                    .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+                    .force("charge", d3.forceManyBody().strength(-100).distanceMax(300))
+                    .force("center", d3.forceCenter(window.innerWidth / 2, (window.innerHeight - 100) / 2))
+                    .on("tick", ticked);
+
+                // add edges to SVG
+                const link = svg.append("g")
+                    .attr("class", "links")
+                    .selectAll("line")
+                    .data(links)
+                    .enter().append("line")
+                    .attr("class", "link");
+
+                // add edge labels to SVG
+                const edgeLabel = svg.append("g")
+                    .attr("class", "edge-labels")
+                    .selectAll("text")
+                    .data(links)
+                    .enter().append("text")
+                    .attr("class", "edge-label")
+                    // vertical position of the text
+                    .attr("dy", -1)
+                    .attr("text-anchor", "middle")
+                    .text(d => d.type)
+                    .style("opacity", 0);
+
+                // add nodes to SVG
+                const node = svg.append("g")
+                    .attr("class", "nodes")
+                    .selectAll("circle")
+                    .data(nodes)
+                    .enter().append("circle")
+                    .attr("class", "node")
+                    .attr("r", d => {
+                        // parse subdomain and email counts as integers, treating ? as 0
+                        const subdomainCount = d.Subdomains && d.Subdomains !== '?' ? parseInt(d.Subdomains, 10) : 0;
+                        const emailCount = d.Emails && d.Emails !== '?' ? parseInt(d.Emails, 10) : 0;
+                        const size = subdomainCount * 2 + emailCount;
+
+                        // define node size based on amount of subdomains and emails
+                        const radiusScale = d3.scaleLog()
+                            .domain([1, 800])
+                            .range([3, 13]);
+
+                        // use the scale for positive sizes, otherwise use the minimum size
+                        return size > 0 ? radiusScale(size) : 5;
+                    })
+                    .style("fill", "#5b5959")
+                    .style("stroke-width", 1)
+                    .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended))
+                    .on("click", handleNodeClick);
+
+                // add node labels
+                const labels = svg.append("g")
+                    .attr("class", "node-labels")
+                    .selectAll("text")
+                    .data(nodes)
+                    .enter().append("text")
+                    // position of label in regard to node
+                    .attr("class", "node-label")
+                    .attr("dx", 10)
+                    .attr("dy", -7)
+                    .attr("text-anchor", "middle")
+                    .text(d => d.id);
+
+                // update positions of elements
+                let tickCount = 0;
+
+                function ticked()
+                {
+                    tickCount++;
+                    // only update every 3 ticks
+                    if (tickCount % 3 !== 0) return;
+
+                    link
+                        .attr("x1", d => d.source.x)
+                        .attr("y1", d => d.source.y)
+                        .attr("x2", d => d.target.x)
+                        .attr("y2", d => d.target.y);
+
+                    edgeLabel
+                        .attr("x", d => (d.source.x + d.target.x) / 2)
+                        .attr("y", d => (d.source.y + d.target.y) / 2);
+
+                    node
+                        .attr("cx", d => d.x)
+                        .attr("cy", d => d.y);
+
+                    labels
+                        .attr("x", d => d.x - 10)
+                        .attr("y", d => d.y + 25);
+                }
+
+                // node drag behavior
+                function dragstarted(event, d)
+                {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                }
+
+                function dragged(event, d)
+                {
+                    d.fx = event.x;
+                    d.fy = event.y;
+                }
+
+                function dragended(event, d)
+                {
+                    if (!event.active) simulation.alphaTarget(0);
+                    d.fx = d.x;
+                    d.fy = d.y;
+                }
+
+                // handle click on a node
+                function handleNodeClick(event, d)
+                {
+                    // get data of clicked node
+                    const nodeData = data.find(p => p.Rootdomain.trim() === d.id);
+
+                    // update the infobox content
+                    const infobox = d3.select("#infoboxContent");
+                    infobox.html(`
+                        <strong>Rootdomain:</strong><br> ${nodeData['Rootdomain']}<br>
+                        <br><strong>Subdomains:</strong> ${nodeData['Subdomains']}<br>
+                        <strong>Emails:</strong> ${nodeData['Emails']}<br>
+                        <br><strong>ASN:</strong><br>${nodeData['Whois Ip']}<br>
+                        <br><strong>Whois:</strong><br>${nodeData['Whois Domain']}<br>
+                        <br><strong>Nameserver:</strong><br>${nodeData['Nameserver']}<br>
+                        <br><strong>Mailserver:</strong><br>${nodeData['Mailserver']}<br>
+                        <br><strong>Title:</strong><br>${nodeData['Title']}<br>
+                        <br><strong>SPF:</strong><br>${nodeData['SPF']}<br>
+                        <br><strong>MS-Teams:</strong><br> ${nodeData['MS-Teams']}
+                    `);
+
+                // hide all edge labels
+                edgeLabel.style("opacity", 0);
+
+                // show edge labels connected to the selected node
+                edgeLabel.filter(function(e) {
+                    return e.source.id === d.id || e.target.id === d.id;
+                    }).style("opacity", 1);
+                }
+
+                // handle rootdomain/node search
+                d3.select("#searchButton").on("click", function()
+                {
+                    const searchTerm = d3.select("#searchInput").property("value").trim().toLowerCase();
+                    const searchBox = d3.select("#searchInput");
+
+                    // reset color
+                    node.style("fill", "#5b5959");
+
+                    if (!searchTerm)
+                        return;
+
+                    // find matching nodes
+                    const foundNodes = nodes.filter(node => node.id.toLowerCase() === searchTerm);
+
+                    if (foundNodes.length > 0) {
+                        // change color of matching nodes
+                        node.filter(d => foundNodes.some(n => n.id === d.id))
+                            .style("fill", "#3CFF96");
+
+                        // reset the search box background color
+                        searchBox.style("background-color", "");
+                    }
+                    else
+                    {
+                        // change color of search to red if no results are found
+                        searchBox.style("background-color", "red");
+
+                        // reset the color after 1 second
+                        setTimeout(() => {
+                            searchBox.style("background-color", "");
+                        }, 1000);
+                    }
+                });
+
+                // get nodes with the same attributes
+                document.querySelectorAll('.attribute-button').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const displayAttribute = this.getAttribute('data-attribute');
+                        let actualAttribute = displayAttribute;
+                
+                        const value = prompt(`Enter the value for ${displayAttribute}:`);
+                
+                        // only look for nodes if attribute is not empty
+                        if (value !== null)
+                        {
+                            highlightNodesByAttribute(actualAttribute, value.trim());
+                        }
+                    });
+                });
+
+            function highlightNodesByAttribute(attribute, value)
+            {
+                // reset node colors
+                node.style("fill", "#5b5959");
+
+                if (!value)
+                {
+                    return;
+                }
+            
+                // trim the attribute and convert to lower case
+                const normalizedValue = value.trim().toLowerCase();
+            
+                // highlight nodes that match the attributes value
+                node.filter(d => {
+                    const nodeData = data.find(p => p.Rootdomain.trim() === d.id);
+                    if (nodeData)
+                    {
+                        const attributeValue = nodeData[attribute] ? nodeData[attribute].toString().trim().toLowerCase() : '';
+                        return attributeValue === normalizedValue;
+                    }
+                    return false;
+                }).style("fill", "#AA0000");
+            }
+
+            document.getElementById('copyRedNodes').addEventListener('click', function()
+            {
+                // collect the rootdomains of all red nodes (#AA0000 corresponds to rgb(170, 0, 0))
+                const redNodeRootDomains = node.filter(function(d) {
+                    return d3.select(this).style('fill') === 'rgb(170, 0, 0)';
+                }).data().map(d => d.id);
+            
+                // join them into a single string with each rootdomain on a new line
+                const textToCopy = redNodeRootDomains.join('\n');
+            
+                // copy the text to the clipboard
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    console.log('Rootdomains copied to clipboard:', redNodeRootDomains);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+            });
+    </script>
+</body>
+</html>
+

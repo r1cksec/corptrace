@@ -165,7 +165,7 @@ echo "### Install Golang tools."
 echo ""
 
 # download golang
-wget https://golang.google.cn/dl/go1.21.6.linux-amd64.tar.gz -O ${pathToTemp}/go.tar.gz
+wget https://golang.google.cn/dl/go1.23.0.linux-amd64.tar.gz -O ${pathToTemp}/go.tar.gz
 tar -xf ${pathToTemp}/go.tar.gz -C ${pathToTemp}
 rm -r ${pathToTemp}/go.tar.gz
 export GOPATH=${pathToTemp}
@@ -253,7 +253,7 @@ fi
 
 if ! [ -x "$(command -v trufflehog)" ] || [ "${force}" == "1" ]
 then
-    wget https://github.com/trufflesecurity/trufflehog/releases/download/v3.68.3/trufflehog_3.68.3_linux_amd64.tar.gz -O ${pathToTemp}/truffleHog.tar.gz
+    wget https://github.com/trufflesecurity/trufflehog/releases/download/v3.81.9/trufflehog_3.81.9_linux_amd64.tar.gz -O ${pathToTemp}/truffleHog.tar.gz
     tar -xf ${pathToTemp}/truffleHog.tar.gz -C ${pathToTemp}
     chmod +x ${pathToTemp}/trufflehog
     sudo mv ${pathToTemp}/trufflehog /usr/local/bin
@@ -285,7 +285,7 @@ fi
 
 if ! [ -x "$(command -v noseyparker)" ] || [ "${force}" == "1" ]
 then
-    wget https://github.com/praetorian-inc/noseyparker/releases/download/v0.16.0/noseyparker-v0.16.0-x86_64-unknown-linux-gnu.tar.gz -O ${pathToTemp}/noseyparker-v0.16.0-x86_64-unknown-linux-gnu.tar.gz
+    wget https://github.com/praetorian-inc/noseyparker/releases/download/v0.19.0/noseyparker-v0.19.0-x86_64-unknown-linux-gnu.tar.gz -O ${pathToTemp}/noseyparker-v0.16.0-x86_64-unknown-linux-gnu.tar.gz
     # prevent directory "bin" conflict with "go install" 
     mkdir ${pathToTemp}/noseyparker
     tar -xf ${pathToTemp}/noseyparker-v0.16.0-x86_64-unknown-linux-gnu.tar.gz -C ${pathToTemp}/noseyparker

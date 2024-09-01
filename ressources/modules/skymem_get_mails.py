@@ -22,39 +22,44 @@ exec(code)
 allMails = []
 
 domain = urllib.parse.quote(sys.argv[1])
-driver.get("https://www.skymem.info/srch?q=" + domain)
+try:
+    driver.get("https://www.skymem.info/srch?q=" + domain)
+    
+    allSkymemMails = []
+    secondPage = ""
+    
+    elems = driver.find_elements(By.XPATH, "//a[@href]")
+    
+    for elem in elems:
+        href = elem.get_attribute("href")
+    
+        if (domain in href):
+            allSkymemMails.append(href)
+    
+        if ("/domain/" in href):
+            secondPage = href
+    
+    if (secondPage == ""):
+        print("No results found for: " + sys.argv[1])
+        exit(0)
+    
+    driver.get(secondPage)
+    elements = driver.find_elements(By.XPATH, "//a[@href]")
+    
+    for e in elements:
+        ref = e.get_attribute("href")
+    
+        if (domain in ref):
+            allSkymemMails.append(ref)
+    
+        if ("/domain/" in ref):
+            secondPage = ref
+    
+    driver.close()
 
-allSkymemMails = []
-secondPage = ""
-
-elems = driver.find_elements(By.XPATH, "//a[@href]")
-
-for elem in elems:
-    href = elem.get_attribute("href")
-
-    if (domain in href):
-        allSkymemMails.append(href)
-
-    if ("/domain/" in href):
-        secondPage = href
-
-if (secondPage == ""):
-    print("No results found for: " + sys.argv[1])
-    exit(0)
-
-driver.get(secondPage)
-elements = driver.find_elements(By.XPATH, "//a[@href]")
-
-for e in elements:
-    ref = e.get_attribute("href")
-
-    if (domain in ref):
-        allSkymemMails.append(ref)
-
-    if ("/domain/" in ref):
-        secondPage = ref
-
-driver.close()
+except Exception as e:         
+    print(e)
+    driver.close()
 
 # sort results
 for skymemLink in allSkymemMails:
@@ -68,4 +73,5 @@ allMailsSorted = sorted(set(allMails))
 # print results
 for m in allMailsSorted:
     print(m)
+
 

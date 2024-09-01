@@ -21,5 +21,5 @@ saveFile="$(echo ${companyName} | sed 's/[^[:alnum:]]/_/g')"
 echo "${result}" | jq -c > ${outPath}/shodan-rootdomains-${saveFile}.json
 
 echo ""
-echo "${result}" | jq -r ".matches[] | .domains[], .hostnames[], .http .host" | grep -v -E '([0-9]*\.){3}[0-9]*' | awk -F '.' '{print $(NF-1)"."$NF}' | sort -u
+echo "${result}" | jq -r ".matches[] | .domains[], .hostnames[], .http .host | select(. != null)" | grep -v -E '([0-9]*\.){3}[0-9]*' | awk -F '.' '{print $(NF-1)"."$NF}' | sort -u
 

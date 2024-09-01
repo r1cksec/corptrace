@@ -75,7 +75,7 @@ function collectResults()
             fi
 
             # remove jq errors and no results found strings from results
-            sort -u "${resultDir}/${resultType}_${domainName}" | grep -v "jq: error \|parse error: \|No results found for: " > "${resultDir}/${resultType}_${domainName}-temp"
+            sort -u "${resultDir}/${resultType}_${domainName}" | grep -v "jq: error \|parse error: \|No results found for: \|Domain not found" > "${resultDir}/${resultType}_${domainName}-temp"
             mv "${resultDir}/${resultType}_${domainName}-temp" "${resultDir}/${resultType}_${domainName}"
         fi
     done

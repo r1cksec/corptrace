@@ -47,7 +47,16 @@ timeStamp=$(date +"%Y-%m-%d_%T" | tr ':' '_')
 tmpDataStore="${globalTempDir}/${timeStamp}-${repoDir}"
 noseyparker scan --datastore ${tmpDataStore} ${tmpRepoDir}-noseyparker --progress never > /dev/null ; noseyparker report --datastore ${tmpDataStore} --progress never > ${globalTempDir}/noseyparker 2>&1 &
 
-cd ${tmpRepoDir}-scanrepo; git checkout --quiet origin; git log -p | scanrepo > ${globalTempDir}/scanrepo 2>&1 ; cd - > /dev/null &
+if [ -d ${tmpRepoDir}-scanrepo ]
+then
+    cd ${tmpRepoDir}-scanrepo
+    git checkout --quiet origin
+    git log -p | scanrepo > ${globalTempDir}/scanrepo 2>&1
+    cd - > /dev/null &
+else
+    echo "Error!"
+    exit 1
+fi
 
 wait
 

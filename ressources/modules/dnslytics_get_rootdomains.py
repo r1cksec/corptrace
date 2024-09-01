@@ -29,7 +29,7 @@ if ("ua-" not in gid and "pub-" not in gid):
     driver.close()
     exit(1)
 
-driver.get("https://search.dnslytics.com/search?q=html.tag:" + gid + "&d=domains")
+driver.get("https://search.dnslytics.com/search?q=" + gid + "&d=domains")
 
 domains = driver.find_elements(By.XPATH, './/h4')
 

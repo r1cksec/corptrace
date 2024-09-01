@@ -168,7 +168,7 @@ then
     echo "# tomba.io"
     tombaUsage=$(curl -s --request GET --url "https://api.tomba.io/v1/usage" -H "X-Tomba-Key: ${tombata}" -H "X-Tomba-Secret: ${tombats}" | jq -r '.total .search')
     echo "${tombaUsage}/50 -> 50/month"
-	echo ""
+    echo ""
 fi
 
 urlscan=$(echo "${apiKeys}" | jq -r '.urlscan_io')

@@ -26,7 +26,7 @@ echo "${resultHostname}" | jq -c  > ${outPath}/shodan-rootdomains-hostname-${sav
 echo "${resultIcon}" | jq -c  > ${outPath}/shodan-rootdomains-favicon-${saveFile}.json
 
 echo "Domains and hostnames:" > ${rootDomainResults}
-echo "${resultHostname}" | jq -r ".matches[] | .domains[], .hostnames[], .http .host" | grep -v -E '([0-9]*\.){3}[0-9]*' | grep -v ":" | awk -F '.' '{print $(NF-1)"."$NF}' | sort -u >> ${rootDomainResults}
+echo "${resultHostname}" | jq -r '.matches[] | .domains[], .hostnames[], .http.host | select(. != null)' | grep -v -E '([0-9]*\.){3}[0-9]*' | grep -v ":" | awk -F '.' '{print $(NF-1)"."$NF}' | sort -u >> ${rootDomainResults}
 echo "" >> ${rootDomainResults}
 
 echo "Hosts using the same favicon:" >> ${rootDomainResults}

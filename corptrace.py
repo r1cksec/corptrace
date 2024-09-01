@@ -59,7 +59,7 @@ def getVariablesFromString(syntax, removeOutFile):
 """Return a list of strings that will be added to argumentParser.
 These strings are defined in the modules.json file within the syntax key.
 For each module, the values set in <variable> are defined as arguments.
-The variable outputFile will not be added to the argumentParser.
+The variable outputFile and outputDirectory will not be added to the argumentParser.
 """
 def getArgsOfJson():
     availableModules = loadModules(pathToScriptDir + "/build/modules.json")
@@ -85,7 +85,7 @@ def getArgsOfJson():
 sig = The type of signal, that should be catched.
 frame = The function that should be executed.
 """
-def signal_handler(sig, frame):
+def signalHandler(sig, frame):
     print ("\nCatched keyboard interrupt, exit programm!")
 
     try:
@@ -205,7 +205,10 @@ def createCommandFromTemplate(allExecutableModules):
 
         # full path to module output
         moduleOutPath = pathToModDir + "/" + moduleOutName 
-        moduleOutFile = pathToModDir + "/" + moduleOutName 
+
+        # remove .txt file from outpath
+        moduleOutPath = moduleOutPath.replace(".txt","")
+        moduleOutFile = pathToModDir + "/" + moduleOutName
 
         # create additional directory if module uses <outputDirectory>
         if ("<outputDirectory>" in exeString):
@@ -215,6 +218,8 @@ def createCommandFromTemplate(allExecutableModules):
  
             # replace <outputDirectory> in syntax
             exeString = exeString.replace("<outputDirectory>", moduleOutPath)
+
+            # append file extension
             moduleOutFile = moduleOutPath + ".txt" 
         
         # replace <outputFile> in syntax
@@ -264,28 +269,30 @@ class threadForModule(threading.Thread):
 
 """
 # define and configure static arguments
-argumentParser = argparse.ArgumentParser(description="""Automatic OSINT/Recon.
+argumentParser = argparse.ArgumentParser(description="""Automate OSINT/Recon assessment.
 Use at your own risk.
-I do not take any responsibility for your actions!
 
 Basic usage:
 Print matching modules for a given domain:
 python3 corptrace.py -o /tmp/out -d r1cksec.de
 
 Execute modules for given github user:
-python3 corptrace.py -o /tmp/out -u r1cksec -e
+python3 corptrace.py -o /tmp/out -gu r1cksec -e
 
 Print syntax of modules for given file containing domains:
 python3 corptrace.py -o /tmp/out -f /tmp/domains -v
-
-Print overview of results:
-python3 corptrace.py -o /tmp/out -p
 
 Only execute modules that contain at least one of the given substring in their name:
 python3 corptrace.py -o /tmp/out -c 'companyName' -im shodan -e
 
 Execute modules up to risk level 3, use 8 threads and increase timeout to 35 minutes:
 python3 corptrace.py -o /tmp/out -rl 3 -ta 8 -to 2100 -i '192.168.1.1/24' -e
+
+Print overview of results:
+python3 corptrace.py -o /tmp/out -p
+
+Generate graph based on dnsx_get_coherent_domains results:
+python3 corptrace.py -o /tmp/out -g
 
 """, formatter_class=RawTextHelpFormatter)
 
@@ -312,6 +319,14 @@ argumentParser.add_argument("-p",
                             dest = "printOverview",
                             help = "print overview of results",
                             action = "store_true")
+
+argumentParser.add_argument("-g",
+                            "--graph", 
+                            dest = "generateGraph",
+                            help = "generate graph using dnsx_get_coherent_domains results",
+                            nargs="?",
+                            const="light",
+                            choices=["dark", "light"])
 
 argumentParser.add_argument("-to",
                             "--timeOut",
@@ -384,6 +399,18 @@ if (args.printOverview):
     os.system("bash " + pathToScriptDir + "/ressources/scripts/print-overview.sh " + args.output)
     exit(0)
 
+# generate graph
+if (args.generateGraph):
+    if (args.generateGraph == "dark"):
+        os.system("bash " + pathToScriptDir + "/ressources/scripts/visualize.sh " + args.output + " dark")
+        print("Graph generated: " + args.output + "/dnsx_get_coherent_domains/graph.html")
+        exit(0)
+
+    else:
+        os.system("bash " + pathToScriptDir + "/ressources/scripts/visualize.sh " + args.output + " light")
+        print("Graph generated: " + args.output + "/dnsx_get_coherent_domains/graph.html")
+        exit(0)
+
 # if set to 0 passed arguments of user are wrong
 argumentFlag = "0"
 
@@ -401,7 +428,7 @@ if (argumentFlag == "0"):
     exit(1)
 
 # catch ctrl + c
-signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGINT, signalHandler)
 
 # define colors for printing to stdout
 class bcolor:

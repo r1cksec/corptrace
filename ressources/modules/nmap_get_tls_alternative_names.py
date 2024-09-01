@@ -2,6 +2,7 @@
 
 import sys
 import os
+import ipaddress
 
 # check amount of passed arguments
 if (len(sys.argv) != 2):
@@ -9,7 +10,6 @@ if (len(sys.argv) != 2):
     print("Run nmap and scan IP Range for port 443 and extract Subject Alternative Name")
     sys.exit(1)
 
-print("Start nmap scan on port 443 for " + sys.argv[1])
 nmapCommand = "nmap --min-rate 300 -sT --script /usr/share/nmap/scripts/ssl-cert.nse -Pn -p 443 -n --open -oN "
 outFile = "/tmp/nmap-ssl-cert-" + sys.argv[1].replace("/","_") + ".nmap "
 nmapCommand2 = sys.argv[1] + " > /dev/null"
@@ -52,11 +52,13 @@ with open("/tmp/nmap-ssl-cert-" + sys.argv[1].replace("/","_") + ".nmap") as nma
 
 allFinalDomains = sorted(set(allDomains))
 
-print ("\n## Final Domains ##")
-
 # print results
 for currDom in allFinalDomains:
-    print (currDom)
+    try:
+        # skip ipv4 addresses
+        ipaddress.IPv4Address(currDom)
+    except ipaddress.AddressValueError:
+        print (currDom)
 
 os.system("rm " + outFile)
 

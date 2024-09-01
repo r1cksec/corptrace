@@ -46,19 +46,19 @@ bash install.sh -force
 
 ## Help
 ```
-usage: corptrace.py [-h] -o OUTPUT [-e] [-v] [-to TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES ...]] [-im [INCLUDEMODULES ...]]
-                    [-a ASN] [-c COMPANY] [-d DOMAIN] [-f FILEDOMAINS] [-g GOOGLEID] [-i IPCIDR] [-n NAMESERVER] [-r REPOSITORY] [-u USER]
+usage: corptrace.py [-h] -o OUTPUT [-e] [-v] [-p] [-g [{dark,light}]] [-to TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES ...]]
+                    [-im [INCLUDEMODULES ...]] [-a ASN] [-c COMPANY] [-d DOMAIN] [-f FILEDOMAINS] [-gu GITHUBUSER] [-gi GOOGLEID] [-i IPCIDR] [-n NAMESERVER]
+                    [-r REPOSITORY]
 
-Automatic OSINT/Recon.
+Automate OSINT/Recon assessment.
 Use at your own risk.
-I do not take any responsibility for your actions!
 
 Basic usage:
 Print matching modules for a given domain:
 python3 corptrace.py -o /tmp/out -d r1cksec.de
 
 Execute modules for given github user:
-python3 corptrace.py -o /tmp/out -u r1cksec -e
+python3 corptrace.py -o /tmp/out -gu r1cksec -e
 
 Print syntax of modules for given file containing domains:
 python3 corptrace.py -o /tmp/out -f /tmp/domains -v
@@ -69,12 +69,21 @@ python3 corptrace.py -o /tmp/out -c 'companyName' -im shodan -e
 Execute modules up to risk level 3, use 8 threads and increase timeout to 35 minutes:
 python3 corptrace.py -o /tmp/out -rl 3 -ta 8 -to 2100 -i '192.168.1.1/24' -e
 
+Print overview of results:
+python3 corptrace.py -o /tmp/out -p
+
+Generate graph based on dnsx_get_coherent_domains results:
+python3 corptrace.py -o /tmp/out -g
+
 options:
   -h, --help            show this help message and exit
   -o OUTPUT, --output OUTPUT
                         path to output directory
   -e, --execute         execute matching commands
   -v, --verbose         print full command
+  -p, --print           print overview of results
+  -g [{dark,light}], --graph [{dark,light}]
+                        generate graph using dnsx_get_coherent_domains results
   -to TIMEOUT, --timeOut TIMEOUT
                         maximal time that a single thread is allowed to run in seconds (default 1200)
   -rl RISKLEVEL, --riskLevel RISKLEVEL
@@ -89,11 +98,11 @@ options:
   -c COMPANY, --company COMPANY
   -d DOMAIN, --domain DOMAIN
   -f FILEDOMAINS, --filedomains FILEDOMAINS
-  -g GOOGLEID, --googleid GOOGLEID
+  -gu GITHUBUSER, --githubUser GITHUBUSER
+  -gi GOOGLEID, --googleId GOOGLEID
   -i IPCIDR, --ipcidr IPCIDR
   -n NAMESERVER, --nameserver NAMESERVER
   -r REPOSITORY, --repository REPOSITORY
-  -u USER, --user USER
 ```
 
 ## Modules

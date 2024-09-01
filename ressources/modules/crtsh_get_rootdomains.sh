@@ -7,7 +7,9 @@ then
     exit
 fi
 
-curl -s "https://crt.sh/?q=${1}" \
+urlEncodedInput=$(echo ${1} | sed -e 's/ /%20/g' -e 's/:/%3A/g' -e 's/\//%2F/g' -e 's/?/%3F/g' -e 's/=/%3D/g' -e 's/&/%26/g')
+
+curl -s "https://crt.sh/?q=${urlEncodedInput}" \
 | grep "<TD>" \
 | grep -v "style=" \
 | sed -n 's/.*<TD>\([^<]*\)<\/\?\([^>]*\)>.*/\1/p' \
