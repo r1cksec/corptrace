@@ -63,10 +63,10 @@ do
         if [ -f ${tmpFile} ]
         then
             # grep copyright (remove non printable characters)
-            copyright=$(cat ${tmpFile} | grep -Eio "[^<>\"']*©[^<>\"']*" | tail -n 1 | tr '\n' -d | sed 's/[;*]//g' | sed 's/[^[:print:]]//g')
+            copyright=$(cat ${tmpFile} | grep -Eio "[^<>\"']*©[^<>\"']*" | tail -n 1 | tr '\n' -d | sed 's/[;*-]/ /g' | sed 's/[^[:print:]]//g')
  
             # grep title
-            httpTitle=$(cat ${tmpFile} | grep -Eio "<title>(.*)</title>" | cut -d ">" -f 2 | cut -d "<" -f1 | tr '\n' -d | sed 's/[;*]//g' | sed 's/[^[:print:]]//g')
+            httpTitle=$(cat ${tmpFile} | grep -Eio "<title>(.*)</title>" | cut -d ">" -f 2 | cut -d "<" -f1 | tr '\n' -d | sed 's/[;*-]/ /g' | sed 's/[^[:print:]]//g')
  
             # grep Google Adsense
             googleAdsense=$(cat ${tmpFile} | grep -Eio "pub-[0-9]{16}" | tr '\n' ',')

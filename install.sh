@@ -7,7 +7,7 @@ set -e
 set -u
 
 echo ""
-echo "### Kali Setup Script (VERSION_ID 2024.1)"
+echo "### Setup Script"
 echo "Use 'bash install -force' to reinstall each tool."
 echo ""
 
@@ -35,6 +35,15 @@ pathToTemp="${pathToBuild}/temp"
 pathToGit="${pathToBuild}/git"
 pathToPython="${pathToBuild}/python-env"
 
+# check if the script is run using sudo
+if [ -n "${SUDO_USER:-}" ]
+then
+    pathToHomeDir="/home/${SUDO_USER}"
+else
+    pathToHomeDir="$HOME"
+fi
+
+# create temporay path
 if [ ! -d ${pathToTemp} ]
 then
     mkdir ${pathToTemp}
@@ -83,7 +92,8 @@ leakixKey=$(jq -r '.leakix_net' ${pathToConfig})
 netlasKey=$(jq -r '.netlas_io' ${pathToConfig})
 networksdbKey=$(jq -r '.networksdb_io' ${pathToConfig})
 onypheKey=$(jq -r '.onyphe_io' ${pathToConfig})
-projectdiscoveryKey=$(jq -r '.projectdiscovery_io' ${pathToConfig})
+projectdiscoveryKey=$(jq -r '.projectdiscovery_io_key' ${pathToConfig})
+projectdiscoveryUser=$(jq -r '.projectdiscovery_io_user' ${pathToConfig})
 robtexKey=$(jq -r '.robtex_com' ${pathToConfig})
 securitytrailsKey=$(jq -r '.securitytrails_com' ${pathToConfig})
 shodanKey=$(jq -r '.shodan_io' ${pathToConfig})
@@ -132,6 +142,22 @@ shodan: [${shodanKey}]
 virustotal: [${virustotalKey}]
 zoomeyeapi: [${zoomeyeKey}]
 EOL
+
+# write config for dnsx
+if [ -n "${projectdiscoveryKey}" ]
+then
+    if [ ! -d "${pathToHomeDir}/.pdcp" ]
+    then
+        mkdir "${pathToHomeDir}/.pdcp"
+    fi
+    
+    cat > ${pathToHomeDir}/.pdcp/credentials.yaml << EOL
+- username: $(echo "${projectdiscoveryUser}" | cut -d "@" -f 1)
+  email: ${projectdiscoveryUser}
+  api-key: ${projectdiscoveryKey}
+  server: https://api.projectdiscovery.io
+EOL
+fi
 
 # write api keys, passwords and absolute paths to modules.json
 sed -e "s|REPLACE-GITHUB-APIKEY|${githubKey}|g" \
