@@ -44,6 +44,16 @@ To reinstall / overwrite all tools, the following argument can be specified.
 bash install.sh -force
 ```
 
+## Demo
+
+Example of collecting data:
+
+![Example of execution](ressources/demo/demo.gif)
+
+Example of the visualization of the collected data:
+
+![Example of execution](ressources/demo/demo.png)
+
 ## Help
 ```
 usage: corptrace.py [-h] -o OUTPUT [-e] [-v] [-p] [-g [{dark,light}]] [-to TIMEOUT] [-rl RISKLEVEL] [-ta THREADAMOUNT] [-em [EXCLUDEMODULES ...]]
