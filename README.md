@@ -1,12 +1,12 @@
 # CorpTrace
 
-CorpTrace is a framewok that automates the execution of tools for OSINT and reconnaissance assessments.
+CorpTrace is a framewok that supports the process of collecting information about a target company in the context of a red team assessment.
 I wrote this tool primarily to automate my workflow, so I'm sure it's still buggy for some cases.
 
 ## Usage
 
 The core is the `modules.json` file, which contains the syntax for commands that will be executed.
-It contains tools from other sources as well as some scripts that I have written myself.
+It contains tools from other sources as well as some custom scripts.
 Some of these modules require API keys. These keys can be stored in the `build/config.json` file.
 <br>
 <br>
