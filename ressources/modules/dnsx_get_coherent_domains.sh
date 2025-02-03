@@ -9,9 +9,7 @@ fi
 
 domainFile=${1}
 hosts=$(cat ${domainFile} | sort -u)
-mailServer=$(dnsx -j -silent -l ${domainFile} -mx -resp)
-nsServer=$(dnsx -j -silent -l ${domainFile} -ns -resp)
-asNumbers=$(dnsx -j -silent -l ${domainFile} -asn)
+dnsxResults=$(dnsx -j -silent -l ${domainFile} -mx -ns -asn)
 
 tempDir=$(echo "/tmp/curl-results-"$(date +"%Y-%m-%d_%T"))
 tempResult="${tempDir}/result.csv"
@@ -38,21 +36,22 @@ do
     mdHashFavicon=""
     domainWhois=""
  
-    # get whois of IP (remove non printable characters)
-    hostResolveAble=$(echo "${asNumbers}" | grep "${domain}")
-    ipWhois=$(echo "${asNumbers}" | jq -r --arg domain "${domain}" 'select(.host == $domain) | .asn["as-name"]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g')
+    # get IPv4 (remove non printable characters)
+    ipAddress=$(echo "${dnsxResults}" | jq -r --arg dom "${domain}" 'select(.host == $dom) | .a[]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g' )
  
     # get mailserver
-    mxHost=$(echo "${mailServer}" | jq -r --arg dom "$domain" 'select(.host == $dom) | .mx[]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g')
+    mxHost=$(echo "${dnsxResults}" | jq -r --arg dom "${domain}" 'select(.host == $dom) | .mx[]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g')
 
     # get nameserver
-    nsHost=$(echo "${nsServer}" | jq -r --arg dom "$domain" 'select(.host == $dom) | .ns[]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g')
+    nsHost=$(echo "${dnsxResults}" | jq -r --arg dom "${domain}" 'select(.host == $dom) | .ns[]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g')
+
+    ipWhois=$(echo "${dnsxResults}" | jq -r --arg dom "${domain}" 'select(.host == $dom) | .asn["as-name"]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g')
  
     # get ASN (replace null by empty value)
-    asn=$(echo "${asNumbers}" | jq -r --arg domain "${domain}" 'select(.host == $domain) | .asn["as-number"]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g' | grep -v "jq: error ")
+    asn=$(echo "${dnsxResults}" | jq -r --arg dom "${domain}" 'select(.host == $dom) | .asn["as-number"]? // empty' | tr '\n' ' ' | sed 's/[^[:print:]]//g' | grep -v "jq: error ")
  
     # check if host can be resolved to ip address
-    if grep -q "${domain}" <<< "${hostResolveAble}" 
+    if [ -z ${ipAddress} ]
     then 
         # run curl
         tmpFile="${tempDir}/${domain}.html"
@@ -102,16 +101,17 @@ do
     fi
 
     # get whois of domain
-    domainWhois=$(whois ${domain} | grep "^Registrant Organization: " | awk -F ": " '{print $2}' | sed 's/[^[:print:]]//g' 2> /dev/null)
+    domainWhois=$(whois ${domain} 2> /dev/null)
+    organisation=$(echo ${domainWhois} | grep "^Registrant Organization: " | awk -F ": " '{print $2}' | sed 's/[^[:print:]]//g')
 
     # rerun whois command using another source, if rate limit reached
-    if [ ${$?} -ne 0 ]
+    if echo "${domainWhois}" | grep -q "clientTransferProhibited";
     then
-        domainWhois=$(curl -s "https://www.whois.com/whois/${domain}" | grep -i "Registrant Organization: " | awk -F ": " '{print $2}' | sed 's/[^[:print:]]//g' 2> /dev/null)
+        organisation=$(curl -s "https://www.whois.com/whois/${domain}" | grep -i "Registrant Organization: " | awk -F ": " '{print $2}' | sed 's/[^[:print:]]//g' 2> /dev/null)
     fi
 
     # print csv results
-    echo "${domain} ; ${domainWhois} ; ${ipWhois} ; ${mxHost} ; ${nsHost} ; ${asn} ; ${effectiveUrl} ; ${copyright} ; ${httpTitle} ; ${googleAdsense} ; ${googleAnalytics} ; ${socialMedia} ; ${mdHashFavicon}" >> "${tempResult}"
+    echo "${domain} ; ${organisation} ; ${ipWhois} ; ${mxHost} ; ${nsHost} ; ${asn} ; ${effectiveUrl} ; ${copyright} ; ${httpTitle} ; ${googleAdsense} ; ${googleAnalytics} ; ${socialMedia} ; ${mdHashFavicon}" >> "${tempResult}"
 done
 
 # copy result csv to output directory

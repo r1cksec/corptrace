@@ -25,24 +25,9 @@ exec(code)
 url = "https://www.handelsregister.de"
 driver.get(url)
 
-# get current language settings
-greetingsElement = driver.find_elements(By.ID, "zeile1")
-greetings = greetingsElement[0].get_attribute("innerHTML")
-
-if ("Common register portal" in greetings):
-   searchButton = "Advanced search"
-   pressSearch = "Find"
-elif ("Gemeinsames Registerportal" in greetings):
-   searchButton = "Erweiterte Suche"
-   pressSearch = "Suchen"
-else:
-    print("Sorry only support for englisch or german, switch your default language settings for gecko")
-    searchButton = ""
-    exit(1)
-
-# click on Advanced Search
-advSearch = driver.find_elements(By.XPATH, "//*[contains(text(), '" + searchButton + "')]")
-advSearch[1].click()
+# click on advanced search
+advSearch = driver.find_elements(By.ID, "naviForm:erweiterteSucheLink")
+advSearch[0].click()
 time.sleep(3)
 
 # enter search key
@@ -60,7 +45,8 @@ insideDropdown = driver.find_element(By.ID, "form:ergebnisseProSeite_3")
 insideDropdown.click()
 
 # click on search
-obj = driver.find_elements(By.XPATH, "//*[contains(text(), '" + pressSearch + "')]")
+#obj = driver.find_elements(By.XPATH, "//*[contains(text(), '" + pressSearch + "')]")
+obj = driver.find_elements(By.ID, "form:btnSuche")
 obj[0].click()
 
 time.sleep(15)

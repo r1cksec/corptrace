@@ -31,14 +31,6 @@ then
     echo ""
 fi
 
-censys=$(echo "${apiKeys}" | jq -r '.censys_io')
-if [[ ! -z ${censys} ]]
-then
-    echo "# censys.io"
-    curl -s "https://search.censys.io/api/v1/account" -H "accept: application/json" -H "Authorization: Basic ${censys}" | jq -r '.quota | "\(.used)/\(.allowance) -> \(.resets_at)"'
-    echo ""
-fi
-
 fullhunt=$(echo "${apiKeys}" | jq -r '.fullhunt_io')
 if [[ ! -z ${fullhunt} ]]
 then
@@ -54,14 +46,6 @@ then
     curl -s "https://api.github.com/rate_limit" -H "Authorization: Bearer ${github}" | jq -r '.rate | "\(.used)/\(.limit) -> \(.reset | strftime("%Y-%m-%d %H:%M:%S"))"'
     echo ""
 fi
-
-#grayhatwarfare=$(echo "${apiKeys}" | jq -r '.grayhatwarfare_com')
-#if [[ ! -z ${grayhatwarfare} ]]
-#then
-#    echo "# grayhatwarfare.com"
-#    echo "_/_"
-#    echo ""
-#fi
 
 hunter=$(echo "${apiKeys}" | jq -r '.hunter_io')
 if [[ ! -z ${hunter} ]]
@@ -110,22 +94,6 @@ then
     echo ""
 fi
 
-#projectdiscovery=$(echo "${apiKeys}" | jq -r '.projectdiscovery_io')
-#if [[ ! -z ${projectdiscovery} ]]
-#then
-#    echo "# projectdiscovery.io"
-#    echo "_/_"
-#    echo ""
-#fi
-
-#robtex=$(echo "${apiKeys}" | jq -r '.robtex_com')
-#if [[ ! -z "${robtex}" ]]
-#then
-#    echo "# robtex.com"
-#    echo "_/_"
-#    echo ""
-#fi
-
 securitytrails=$(echo "${apiKeys}" | jq -r '.securitytrails_com')
 if [[ ! -z ${securitytrails} ]]
 then
@@ -152,14 +120,6 @@ then
     echo "200/month"
     echo ""
 fi
-
-#sslmate=$(echo "${apiKeys}" | jq -r '.sslmate_com')
-#if [[ ! -z ${sslmate} ]]
-#then
-#    echo "# sslmate.com"
-#    echo "_/_"
-#    echo ""
-#fi
 
 tombats=$(echo "${apiKeys}" | jq -r '.["tomba_io_ts"]')
 tombata=$(echo "${apiKeys}" | jq -r '.["tomba_io_ta"]')

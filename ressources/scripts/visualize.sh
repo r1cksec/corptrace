@@ -114,28 +114,11 @@ do
             spfStatus="?"
         fi
 
-        # get MS-Teams status
-        if [ -f ${1}/msteams_phishing/msteams_phishing-${rootdomain} ]
-        then
-            enumeratedUsers=$(cat ${1}/msteams_phishing/msteams_phishing-${rootdomain} \
-            | grep -v "Successfully retrieved access token\|Found a valid Teams subscription for your account")
-
-            if echo ${enumeratedUsers} | grep -q "[+]"
-            then
-                teamsStatus="Pwn"
-            else
-                teamsStatus="Configured"
-            fi
-        else
-            teamsStatus="?"
-        fi
-    
         echo -n "{" >> ${resultFile}
         echo -n "\"Rootdomain\":\"${rootdomain}\"," >> ${resultFile}
         echo -n "\"Subdomains\":\"${amountOfSubdomains}\"," >> ${resultFile}
         echo -n "\"Emails\":\"${amountOfEmails}\"," >> ${resultFile}
         echo -n "\"SPF\":\"${spfStatus}\"," >> ${resultFile}
-        echo -n "\"MS-Teams\":\"${teamsStatus}\"," >> ${resultFile}
 
         # remove "
         lineNoQuote=$(echo "${line}" | sed 's/"/_/g')

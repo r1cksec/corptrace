@@ -56,7 +56,22 @@ echo ""
 echo "### APT Install"
 echo ""
 sudo apt update
-sudo apt install -y git wget python3 python3-pip python3.11-venv whois curl nmap libimage-exiftool-perl jq dnstwist bc
+
+# determine distribution
+osRelease=$(cat /etc/os-release | grep "^ID=" | cut -d "=" -f 2)
+
+if [ "${osRelease}" == "debian" ]
+then
+    echo "Debian detected."
+    sudo apt install -y git wget python3 python3-pip python3.11-venv whois curl nmap libimage-exiftool-perl jq dnstwist bc
+elif [ "${osRelease}" == "kali" ]
+then
+    echo "Kali detected."
+    sudo apt install -y git wget python3 python3-pip python3.12-venv whois curl nmap libimage-exiftool-perl jq dnstwist bc
+else
+    echo "No debian nor kali detected, proceed as normal debian."
+    sudo apt install -y git wget python3 python3-pip python3.11-venv whois curl nmap libimage-exiftool-perl jq dnstwist bc
+fi
 
 echo ""
 echo "### Write modules.json"
@@ -82,7 +97,6 @@ fi
 bevigilKey=$(jq -r '.bevigil_com' ${pathToConfig})
 binaryedgeKey=$(jq -r '.binaryedge_io' ${pathToConfig})
 bufferoverKey=$(jq -r '.bufferover_run' ${pathToConfig})
-censysKey=$(jq -r '.censys_io' ${pathToConfig})
 fullhuntKey=$(jq -r '.fullhunt_io' ${pathToConfig})
 githubKey=$(jq -r '.github_com' ${pathToConfig})
 grayhatwarfareKey=$(jq -r '.grayhatwarfare_com' ${pathToConfig})
@@ -91,7 +105,6 @@ intelxKey=$(jq -r '.intelx_io' ${pathToConfig})
 leakixKey=$(jq -r '.leakix_net' ${pathToConfig})
 netlasKey=$(jq -r '.netlas_io' ${pathToConfig})
 networksdbKey=$(jq -r '.networksdb_io' ${pathToConfig})
-onypheKey=$(jq -r '.onyphe_io' ${pathToConfig})
 projectdiscoveryKey=$(jq -r '.projectdiscovery_io_key' ${pathToConfig})
 projectdiscoveryUser=$(jq -r '.projectdiscovery_io_user' ${pathToConfig})
 robtexKey=$(jq -r '.robtex_com' ${pathToConfig})
@@ -99,8 +112,6 @@ securitytrailsKey=$(jq -r '.securitytrails_com' ${pathToConfig})
 shodanKey=$(jq -r '.shodan_io' ${pathToConfig})
 spyonwebKey=$(jq -r '.spyonweb_com' ${pathToConfig})
 sslmateKey=$(jq -r '.sslmate_com' ${pathToConfig})
-teamsPassword=$(jq -r '.teams_microsoft_com_password' ${pathToConfig})
-teamsUser=$(jq -r '.teams_microsoft_com_user' ${pathToConfig})
 tombaKeya=$(jq -r '.tomba_io_ta' ${pathToConfig})
 tombaKeys=$(jq -r '.tomba_io_ts' ${pathToConfig})
 urlscanKey=$(jq -r '.urlscan_io' ${pathToConfig})
@@ -110,13 +121,7 @@ xingPassword=$(jq -r '.xing_com_password' ${pathToConfig})
 xingUser=$(jq -r '.xing_com_user' ${pathToConfig})
 zoomeyeKey=$(jq -r '.zoomeye_hk' ${pathToConfig})
 
-# ' inside xing and teams password
-if [[ "${teamsPassword}" == *"'"* ]]
-then
-    echo "No ' inside teams password allowed."
-    exit 1
-fi
-
+# ' inside xing password
 if [[ "${xingPassword}" == *"'"* ]]
 then
     echo "No ' inside xing password allowed."
@@ -128,7 +133,6 @@ cat > ${pathToBuild}/subfinder.config << EOL
 bevigil: [${bevigilKey}]
 binaryedge: [${binaryedgeKey}]
 bufferover: [${bufferoverKey}]
-censys: [${censysKey}]
 certspotter: [${sslmateKey}]
 chaos: [${projectdiscoveryKey}]
 github: [${githubKey}]
@@ -164,10 +168,7 @@ sed -e "s|REPLACE-GITHUB-APIKEY|${githubKey}|g" \
     -e "s|REPLACE-GRAYHATWARFARE-APIKEY|${grayhatwarfareKey}|g" \
     -e "s|REPLACE-HUNTER-APIKEY|${hunterKey}|g" \
     -e "s|REPLACE-RESSOURCE-PATH|${pathToRessources}|g" \
-    -e "s|REPLACE-MSTEAMS-USER|${teamsUser}|g" \
-    -e "s|REPLACE-MSTEAMS-PASSWORD|${teamsPassword}|g" \
     -e "s|REPLACE-NETWORKSDB-APIKEY|${networksdbKey}|g" \
-    -e "s|REPLACE-ONYPHE-APIKEY|${onypheKey}|g" \
     -e "s|REPLACE-INTELX-APIKEY|${intelxKey}|g" \
     -e "s|REPLACE-ROBTEX-APIKEY|${robtexKey}|g" \
     -e "s|REPLACE-SECURITYTRAILS-APIKEY|${securitytrailsKey}|g" \
@@ -191,7 +192,7 @@ echo "### Install Golang tools."
 echo ""
 
 # download golang
-wget https://golang.google.cn/dl/go1.23.0.linux-amd64.tar.gz -O ${pathToTemp}/go.tar.gz
+wget https://go.dev/dl/go1.23.5.linux-amd64.tar.gz -O ${pathToTemp}/go.tar.gz
 tar -xf ${pathToTemp}/go.tar.gz -C ${pathToTemp}
 rm -r ${pathToTemp}/go.tar.gz
 export GOPATH=${pathToTemp}
@@ -349,6 +350,18 @@ else
     echo "dnsreaper is installed"
 fi
 
+git clone https://github.com/nullenc0de/servicelens ${pathToGit}/servicelens
+if ! [ -x "$(command -v servicelens)" ] || [ "${force}" == "1" ]
+then
+    ${pathToPython}/bin/pip3 install dnspython
+    echo "cd ${pathToGit}/servicelens && ${pathToPython}/bin/python3 servicelens.py \"\$@\"" > ${pathToTemp}/servicelens
+    chmod +x ${pathToTemp}/servicelens
+    sudo mv ${pathToTemp}/servicelens /usr/local/bin
+else
+    echo "servicelens is installed"
+fi
+
+
 git clone https://github.com/MattKeeley/Spoofy ${pathToGit}/Spoofy
 if ! [ -x "$(command -v spoofy)" ] || [ "${force}" == "1" ]
 then
@@ -369,17 +382,6 @@ then
     sudo mv ${pathToTemp}/favfreak /usr/local/bin
 else
     echo "favfreak is installed"
-fi
-
-git clone https://github.com/sse-secure-systems/TeamsEnum ${pathToGit}/TeamsEnum
-if ! [ -x "$(command -v TeamsEnum)" ] || [ "${force}" == "1" ]
-then
-    ${pathToPython}/bin/pip3 install -r ${pathToGit}/TeamsEnum/requirements.txt
-    echo "cd ${pathToGit}/TeamsEnum && ${pathToPython}/bin/python3 TeamsEnum.py \"\$@\"" > ${pathToTemp}/TeamsEnum
-    chmod +x ${pathToTemp}/TeamsEnum
-    sudo mv ${pathToTemp}/TeamsEnum /usr/local/bin
-else
-    echo "TeamsEnum is installed"
 fi
 
 echo ""
@@ -415,4 +417,5 @@ deactivate
 sudo rm -rf ${pathToTemp}
 echo ""
 echo "Done"
+
 

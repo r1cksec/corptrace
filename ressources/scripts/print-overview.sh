@@ -85,7 +85,6 @@ function collectResults()
 collectResults "${resultDir}/letItGo" "letItGo-" "" "rootdomains" 
 collectResults "${resultDir}/dns_get_top_level_domains" "dns_get_top_level_domains-" "" "rootdomains" 
 collectResults "${resultDir}/dnstwist" "dnstwist-" "" "rootdomains" 
-collectResults "${resultDir}/onyphe_get_rootdomains" "onyphe_get_rootdomains-" ".txt" "rootdomains" 
 collectResults "${resultDir}/robtex_get_rootdomains" "robtex_get_rootdomains-" ".txt" "rootdomains" 
 collectResults "${resultDir}/shodan_get_rootdomains_from_domain" "shodan_get_rootdomains_from_domain-" ".txt" "rootdomains" 
 collectResults "${resultDir}/spyonweb_get_rootdomains" "spyonweb_get_rootdomains-" ".txt" "rootdomains" 
@@ -105,9 +104,9 @@ collectResults "${resultDir}/hackertarget_get_rootdomains_from_gid" "hackertarge
 collectResults "${resultDir}/hackertarget_get_rootdomains_from_cidr" "hackertarget_get_rootdomains_from_cidr-" "" "domains-cidr"
 collectResults "${resultDir}/nmap_get_tls_alternative_names" "nmap_get_tls_alternative_names-" "" "domains-cidr"
 collectResults "${resultDir}/nmap_reverse_lookup" "nmap_reverse_lookup-" "" "domains-cidr"
+collectResults "${resultDir}/networksdb_get_rootdomains_from_cidr" "networksdb_get_rootdomains_from_cidr-" ".txt" "domains-cidr"
 collectResults "${resultDir}/validin_get_rootdomains_from_cidr" "validin_get_rootdomains_from_cidr-" ".txt" "domains-cidr"
 
-collectResults "${resultDir}/columbus_get_subdomains" "columbus_get_subdomains-" "" "subdomains"
 collectResults "${resultDir}/massdns" "massdns-" "" "subdomains"
 collectResults "${resultDir}/myssl_get_subdomains" "myssl_get_subdomains-" "" "subdomains"
 collectResults "${resultDir}/subdomaincenter_get_subdomains" "subdomaincenter_get_subdomains-" "" "subdomains"
@@ -141,7 +140,6 @@ then
 fi
 
 allSpoofys=""
-allTeams=""
 
 # collect all rootdomains where spf has been scanned
 if [ -d "${resultDir}/spoofy" ]
@@ -149,23 +147,16 @@ then
     allSpoofys=$(ls "${resultDir}/spoofy" | awk -F 'spoofy-' '{print $2}')
 fi
 
-# collect all rootdomains where ms teams collab configuration has been scanned
-if [ -d "${resultDir}/msteams_phishing" ]
-then
-    allTeams=$(ls "${resultDir}/msteams_phishing" | awk -F 'msteams_phishing-' '{print $2}')
-fi
-
 # merge all rootdomains for table overview
-allResults="${allSubdomains} ${allEmails} ${allSpoofys} ${allTeams}"
+allResults="${allSubdomains} ${allEmails} ${allSpoofys}"
 printDomains=$(echo "${allResults}" | tr ' ' '\n' | sort -u)
-printf "%-40s %-30s %-30s %-30s %-30s\n" "Domain" "Subdomains" "Emails" "SPF" "MsTeams"
+printf "%-40s %-30s %-30s %-30s\n" "Domain" "Subdomains" "Emails" "SPF"
 
 for domain in ${printDomains}
 do
     countSubdomains="?"
     countEmails="?"
     spoofable="?"
-    collab="?"
 
     if [ -f ${resultDir}/subdomains_${domain} ]
     then
@@ -188,17 +179,6 @@ do
         fi
     fi
 
-    if [ -f ${resultDir}/msteams_phishing/msteams_phishing-${domain} ]
-    then
-        collab="Unreachable"
-        teamsCollab=$(cat "${resultDir}/msteams_phishing/msteams_phishing-${domain}" | grep -v "\[+\] Successfully \|\[+\] Found " | grep "\[+\]")
-
-        if [ $? -eq 0 ]
-        then
-            collab="Pwn"
-        fi
-    fi
-
-    printf "%-40s %-30s %-30s %-30s %-30s\n" "${domain}" "${countSubdomains}" "${countEmails}" "${spoofable}" "${collab}"
+    printf "%-40s %-30s %-30s %-30s\n" "${domain}" "${countSubdomains}" "${countEmails}" "${spoofable}"
 done
 

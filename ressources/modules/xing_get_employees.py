@@ -32,13 +32,15 @@ password = sys.argv[3]
 url = "https://login.xing.com"
 driver.get(url)
 
+wait = WebDriverWait(driver, 8)
+
 # click allow cookies
 try:
-    driver.find_element(By.ID, "consent-accept-button").click()
+    driver.find_element(By.XPATH, '//button[@data-testid="uc-accept-all-button"]').click()
 except:
     pass
 
-wait = WebDriverWait(driver, 20)
+wait = WebDriverWait(driver, 8)
 
 # login
 WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.ID, "username")))
@@ -60,16 +62,21 @@ try:
 except:
     pass
 
+time.sleep(1)
+
 # search for company name
 searchUrl = "https://www.xing.com/search/companies?sc_o=navigation_search_companies_search&sc_o_PropActionOrigin=navigation_badge_no_badge&keywords=" + domain
 driver.get(searchUrl)
 try:
-    companyProfile = driver.find_element(By.CSS_SELECTOR, ".search-card-style-containerLink-70ccdd46")
+    companyProfile = driver.find_element(By.CSS_SELECTOR, '[data-testid="company-card-link-test-id"]')
     companyHref = companyProfile.get_attribute("href")
     companyPage = companyHref.replace("https://www.xing.com/pages/", "")
 except Exception as e:
     print(e)
     print("Error while searching for company profile using " + domain + " - maybe this is not a widely used domain")
+    driver.get("https://www.xing.com/login/logout?sc_o=navigation_logout&sc_o_PropActionOrigin=navigation_badge_no_badge")
+    time.sleep(3)
+    driver.close()
     exit(1)
 
 # extract cookie
@@ -78,6 +85,8 @@ for c in cookies:
     if ("login" == c["name"]):
          loginCookie = {"login": c["value"]}
 
+driver.get("https://www.xing.com/login/logout?sc_o=navigation_logout&sc_o_PropActionOrigin=navigation_badge_no_badge")
+time.sleep(3)
 driver.close()
 
 # get company ID
@@ -147,4 +156,5 @@ for obj in empoyleeObjects:
     print(employee["gender"], end=" ; ")
     profilePage = "https://www.xing.com/profile/" + employee["pageName"]
     print(profilePage)
+
 

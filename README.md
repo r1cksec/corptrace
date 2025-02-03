@@ -117,7 +117,6 @@ options:
 
 ## Modules
 
-- columbus_get_subdomains
 - crtsh_get_rootdomains
 - csprecon
 - dns_get_records
@@ -142,17 +141,17 @@ options:
 - hunter_get_emails
 - letItGo
 - massdns
-- msteams_phishing
 - myssl_get_subdomains
-- networksdb_get_company_names
-- networksdb_get_ipranges
+- networksdb_get_company_names_from_domain
+- networksdb_get_ipranges_from_company
+- networksdb_get_rootdomains_from_cidr.py
 - nmap_get_tls_alternative_names
 - nmap_reverse_lookup
 - northdata_get_company_names
-- onyphe_get_rootdomains
 - phonebook_get_mails
 - robtex_get_rootdomains
 - securitytrails_get_ip_history
+- servicelens
 - shodan_get_ports_from_cidr
 - shodan_get_rootdomains_from_company
 - shodan_get_rootdomains_from_domain

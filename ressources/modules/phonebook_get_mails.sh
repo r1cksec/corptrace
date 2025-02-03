@@ -16,13 +16,20 @@ domain=${1}
 outPath=${2}
 
 # amount of results may vary
-searchId=$(curl -s -X POST -H "Content-Type: application/json" -H "x-key: ${apiKey}" 'https://2.intelx.io/phonebook/search' --data "{\"term\":\"${domain}\",\"lookuplevel\":0,\"maxresults\":1000,\"timeout\":null,\"datefrom\":\"\",\"dateto\":\"\",\"sort\":2,\"media\":0,\"terminate\":[]}" | jq -r .id)
-sleep 3
-result=$(curl -s -H "x-key: ${apiKey}" "https://2.intelx.io/phonebook/search/result?id=${searchId}")
+curlResult=$(curl -s -X POST -H "Content-Type: application/json" -H "x-key: ${apiKey}" 'https://2.intelx.io/phonebook/search' --data "{\"term\":\"${domain}\",\"lookuplevel\":0,\"maxresults\":1000,\"timeout\":null,\"datefrom\":\"\",\"dateto\":\"\",\"sort\":2,\"media\":0,\"terminate\":[]}")
+searchId=$(echo ${curlResult}| jq -r .id)
 
-# write json output to file
-saveFile="$(echo ${domain} | sed 's/[^[:alnum:]]/_/g')"
-echo "${result}" | jq -c > ${outPath}/phonebook-${saveFile}.json
-
-echo "${result}" | jq -r '.selectors[] | select(.selectortypeh == "Email Address") | .selectorvalue'
+if [[ -z "$searchId" ]]
+then
+    echo "SearchId is empty, maybe your intelx API key is not allowed to query phonebook."
+    exit 1
+else
+    sleep 30
+    result=$(curl -s -H "x-key: ${apiKey}" "https://2.intelx.io/phonebook/search/result?id=${searchId}")
+    
+    # write json output to file
+    saveFile="$(echo ${domain} | sed 's/[^[:alnum:]]/_/g')"
+    echo "${result}" | jq -c > ${outPath}/phonebook-${saveFile}.json
+    echo "${result}" | jq -r '.selectors[] | select(.selectortypeh == "Email Address") | .selectorvalue'
+fi
 
