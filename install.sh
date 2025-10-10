@@ -62,15 +62,34 @@ osRelease=$(cat /etc/os-release | grep "^ID=" | cut -d "=" -f 2)
 
 if [ "${osRelease}" == "debian" ]
 then
-    echo "Debian detected."
-    sudo apt install -y git wget python3 python3-pip python3.11-venv whois curl nmap libimage-exiftool-perl jq dnstwist bc
+    # Install base packages for Debian
+    sudo apt install -y git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist bc
+
+    # Check if Python 3.11 is installed and install python3.11-venv
+    if apt list --installed 2>/dev/null | grep -q 'python3.11'; then
+        sudo apt install -y python3.11-venv
+    else
+        sudo apt install -y python3-venv
+    fi
+
 elif [ "${osRelease}" == "kali" ]
 then
-    echo "Kali detected."
-    sudo apt install -y git wget python3 python3-pip python3.12-venv whois curl nmap libimage-exiftool-perl jq dnstwist bc
+    # Install base packages for Kali
+    sudo apt install -y git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist bc
+
+    # Check if Python 3.12 is installed and install python3.12-venv
+    if apt list --installed 2>/dev/null | grep -q 'python3.12'; then
+        sudo apt install -y python3.12-venv
+    else
+        sudo apt install -y python3-venv
+    fi
+
 else
-    echo "No debian nor kali detected, proceed as normal debian."
-    sudo apt install -y git wget python3 python3-pip python3.11-venv whois curl nmap libimage-exiftool-perl jq dnstwist bc
+    # No Debian nor Kali detected, proceed as normal Debian
+    sudo apt install -y git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist bc
+
+    # Install default python3-venv
+    sudo apt install -y python3-venv
 fi
 
 echo ""
