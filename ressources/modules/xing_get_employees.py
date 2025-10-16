@@ -11,10 +11,17 @@ import os
 import time
 
 # check amount of passed arguments
-if (len(sys.argv) != 4):
-    print("usage: {} domain email password".format(sys.argv[0]))
+if not (len(sys.argv) == 4 or len(sys.argv) == 5):
+    print("usage: {} domain email password [forceDetailCollection]".format(sys.argv[0]))
     print("Visit xing.com and extract all empoylees")
     sys.exit(1)
+
+# used to force detail collection (send api request for each employee)
+forceDetails = "false"
+
+# check for optional forceDetailCollection flag
+if (len(sys.argv) == 5):
+    forceDetails = "true"
 
 # get absolute path to current directory
 currentPosition =  os.path.realpath(__file__)
@@ -32,15 +39,15 @@ password = sys.argv[3]
 url = "https://login.xing.com"
 driver.get(url)
 
-wait = WebDriverWait(driver, 8)
+wait = WebDriverWait(driver, 11)
 
 # click allow cookies
 try:
-    driver.find_element(By.XPATH, '//button[@data-testid="uc-accept-all-button"]').click()
+    driver.find_element(By.CSS_SELECTOR, ".sc-dcJsrY.eLOIWU").click()
 except:
     pass
 
-wait = WebDriverWait(driver, 8)
+wait = WebDriverWait(driver, 5)
 
 # login
 WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.ID, "username")))
@@ -58,7 +65,7 @@ time.sleep(5)
 
 # click skip if prompted for MFA
 try:
-    driver.find_element(By.CLASS_NAME, "sc-6z95j0-1").click()
+    driver.find_element(By.CLASS_NAME, "button-styles__Text-sc-1602633f-5").click()
 except:
     pass
 
@@ -85,9 +92,7 @@ for c in cookies:
     if ("login" == c["name"]):
          loginCookie = {"login": c["value"]}
 
-driver.get("https://www.xing.com/login/logout?sc_o=navigation_logout&sc_o_PropActionOrigin=navigation_badge_no_badge")
-time.sleep(3)
-driver.close()
+time.sleep(2)
 
 # get company ID
 xingApi = "https://www.xing.com/xing-one/api"
@@ -108,7 +113,7 @@ empoyleesResponse = requests.post(xingApi, headers=headers, json=body2, cookies=
 employeesJson = empoyleesResponse.json()
 empoyleeObjects = employeesJson["data"]["company"]["employees"]["edges"]
 
-print("Firstnam ; Lastname ; Location ; Email ; Phone ; Mobile ; Gender ; Url")
+print("Firstnam ; Lastname ; Occupation ; Location ; Email ; Phone ; Mobile ; Gender ; Url")
 
 for obj in empoyleeObjects:
     # placeholder for detail contact information
@@ -122,18 +127,25 @@ for obj in empoyleeObjects:
     employee = obj["node"]["profileDetails"]
     print(employee["firstName"].lower(), end=" ; ")
     print(employee["lastName"].lower(), end=" ; ")
+    try:
+        print(employee["occupations"][0]['subline'], end=" ; ")
+    except:
+        print("Unknown", end=" ; ")
 
     # users who enter a street name may provide additional information
-    # thanks to https://github.com/rosegabe/employeexing for this idea
-    if (employee["location"] is not None):
-        if (employee["location"]["city"] is not None):
+    if (employee["location"] is not None) or (forceDetails == "true"):
+        if (employee["location"]["city"] is not None) or (forceDetails == "true"):
             city = employee["location"]["city"]
 
-        if (employee["location"]["street"] is not None):
+        if (employee["location"]["street"] is not None) or (forceDetails == "true"):
             body3 = {"operationName":"profileContactDetails", "variables":{"profileId":employee['pageName']},
                      "query":"query profileContactDetails($profileId: SlugOrID!) { profileModules(id: $profileId) { xingIdModule { ...xingIdContactDetails outdated lastModified } }}fragment xingIdContactDetails on XingIdModule { contactDetails { business { address { city country { countryCode name: localizationValue } province { id canonicalName name: localizationValue } street zip } email fax { phoneNumber } mobile { phoneNumber } phone { phoneNumber }}}}"}
             contactResponse = requests.post(xingApi, headers=headers, json=body3, cookies=loginCookie)
             contactJson = contactResponse.json()
+
+            # sleep do prevent rate limit (requesting details for each employee)
+            if (forceDetails == "true"):
+                time.sleep(15)
 
             contact = contactJson["data"]["profileModules"]["xingIdModule"]["contactDetails"]["business"]
             if (contact["email"] is not None):
@@ -157,4 +169,8 @@ for obj in empoyleeObjects:
     profilePage = "https://www.xing.com/profile/" + employee["pageName"]
     print(profilePage)
 
+time.sleep(1)
+driver.get("https://www.xing.com/login/logout?sc_o=navigation_logout&sc_o_PropActionOrigin=navigation_badge_no_badge")
+time.sleep(3)
+driver.close()
 

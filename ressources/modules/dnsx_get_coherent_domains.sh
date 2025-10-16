@@ -19,6 +19,8 @@ echo "Hostname ; Whois Domain ; Whois IP ; Mailserver ; NS Server ; ASN ; Effect
 
 for domain in ${hosts}
 do
+    sleep 3
+
     # reset values
     hostResolveAble=""
     ipWhois=""
@@ -104,8 +106,8 @@ do
     domainWhois=$(whois ${domain} 2> /dev/null)
     organisation=$(echo ${domainWhois} | grep "^Registrant Organization: " | awk -F ": " '{print $2}' | sed 's/[^[:print:]]//g')
 
-    # rerun whois command using another source, if rate limit reached
-    if echo "${domainWhois}" | grep -q "clientTransferProhibited";
+    # rerun whois command using another source, if result is empty
+    if [ -z "${organisation}" ];
     then
         organisation=$(curl -s "https://www.whois.com/whois/${domain}" | grep -i "Registrant Organization: " | awk -F ": " '{print $2}' | sed 's/[^[:print:]]//g' 2> /dev/null)
     fi

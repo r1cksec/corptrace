@@ -266,14 +266,20 @@
                 }
             
                 // trim the attribute and convert to lower case
-                const normalizedValue = value.trim().toLowerCase();
+                const normalizedValue = value.toLowerCase().replace(/\s+/g, "");
             
                 // highlight nodes that match the attributes value
                 node.filter(d => {
                     const nodeData = data.find(p => p.Rootdomain.trim() === d.id);
                     if (nodeData)
                     {
-                        const attributeValue = nodeData[attribute] ? nodeData[attribute].toString().trim().toLowerCase() : '';
+                        const attributeValue = nodeData[attribute]  
+                          ? (() => {
+                          const txt = document.createElement("textarea");
+                          txt.innerHTML = nodeData[attribute].toString();
+                          return txt.value.toLowerCase().replace(/\s+/g, "");
+                          })()
+                        : '';
                         return attributeValue === normalizedValue;
                     }
                     return false;

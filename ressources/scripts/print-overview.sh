@@ -50,44 +50,49 @@ function collectResults()
             fi
  
             # remove lines that should not be included in results
-            if [[ "${f}" == *"letItGo-"* ]]
+            if [[ "${f}" == *"subfinder"* ]]
             then
-                cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | sed -n '/------/,/Stats:/{//!p}' | grep -v "These domains \|DOMAIN \|---" | awk -F ' ' '{print $1}' | grep -v 'onmicrosoft.com' >> "${resultDir}/${resultType}_${domainName}"
-
-            elif [[ "${f}" == *"subfinder"* ]]
-            then
-                cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | grep -v "Current subfinder version" >> "${resultDir}/${resultType}_${domainName}"
+                cat "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" | grep -v "Current subfinder version" >> "${resultDir}/${resultType}_${domainName}"
 
             elif [[ "${f}" == *"dnstwist-"* ]]
             then
-                cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | awk -F ' ' '{print $2}' >> "${resultDir}/${resultType}_${domainName}"
+                cat "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" | awk -F ' ' '{print $2}' >> "${resultDir}/${resultType}_${domainName}"
 
             elif [[ "${f}" == *"nmap_reverse_lookup-"* ]]
             then
-                cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | awk -F ' ' '{print $1}' >> "${resultDir}/${resultType}_${domainName}"
+                cat "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" | awk -F ' ' '{print $1}' >> "${resultDir}/${resultType}_${domainName}"
 
             elif [[ "${f}" == *"massdns-"* ]]
             then
-                cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" | awk -F '. ' '{print $1}' >> "${resultDir}/${resultType}_${domainName}"
+                timestamp=$(date +"%Y-%m-%d_%T")
+                cat "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" | grep -v "0.0.0.0" | grep " A " | awk -F " A " '{print $2}' | sort -u | grep -Eo '([0-9]*\.){3}[0-9]*' > "/tmp/${timestamp}_massdns_print_${domainName}"
+
+                while read -r line || [[ -n "${line}" ]]
+                do
+                    # -m 1 to prevent stdout errors
+                    grep -m 1 "$line" "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" | awk -F '. ' '{print $1}' >> "${resultDir}/${resultType}_${domainName}"
+                done < "/tmp/${timestamp}_massdns_print_${domainName}"
 
             else
-                cat "$pathToDir/${nameScheme1}${domainName}${nameScheme2}" >> "${resultDir}/${resultType}_${domainName}"
+                cat "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" >> "${resultDir}/${resultType}_${domainName}"
+
             fi
 
-            # remove jq errors and no results found strings from results
-            sort -u "${resultDir}/${resultType}_${domainName}" | grep -v "jq: error \|parse error: \|No results found for: \|Domain not found" > "${resultDir}/${resultType}_${domainName}-temp"
-            mv "${resultDir}/${resultType}_${domainName}-temp" "${resultDir}/${resultType}_${domainName}"
+            if [ -s "${resultDir}/${resultType}_${domainName}" ]
+            then
+                # remove jq errors and no results found strings from results
+                sort -u "${resultDir}/${resultType}_${domainName}" | grep -v "jq: error \|parse error: \|No results found for: \|Domain not found" > "${resultDir}/${resultType}_${domainName}-temp"
+                mv "${resultDir}/${resultType}_${domainName}-temp" "${resultDir}/${resultType}_${domainName}"
+            fi
         fi
     done
 }
 
 # create rootdomain files
-collectResults "${resultDir}/letItGo" "letItGo-" "" "rootdomains" 
 collectResults "${resultDir}/dns_get_top_level_domains" "dns_get_top_level_domains-" "" "rootdomains" 
 collectResults "${resultDir}/dnstwist" "dnstwist-" "" "rootdomains" 
 collectResults "${resultDir}/robtex_get_rootdomains" "robtex_get_rootdomains-" ".txt" "rootdomains" 
 collectResults "${resultDir}/shodan_get_rootdomains_from_domain" "shodan_get_rootdomains_from_domain-" ".txt" "rootdomains" 
-collectResults "${resultDir}/spyonweb_get_rootdomains" "spyonweb_get_rootdomains-" ".txt" "rootdomains" 
 collectResults "${resultDir}/urlscan_get_rootdomains_from_domain" "urlscan_get_rootdomains_from_domain-" ".txt" "rootdomains" 
 collectResults "${resultDir}/validin_get_rootdomains_from_domain" "validin_get_rootdomains_from_domain-" ".txt" "rootdomains" 
 collectResults "${resultDir}/zoomeye_get_rootdomains_from_domain" "zoomeye_get_rootdomains_from_domain-" ".txt" "rootdomains" 
@@ -116,7 +121,6 @@ collectResults "${resultDir}/urlscan_get_subdomains" "urlscan_get_subdomains-" "
 # create email files
 collectResults "${resultDir}/gpg_get_emails" "gpg_get_emails-" "" "emails"
 collectResults "${resultDir}/hunter_get_emails" "hunter_get_emails-" ".txt" "emails"
-collectResults "${resultDir}/phonebook_get_mails" "phonebook_get_mails-" ".txt" "emails"
 collectResults "${resultDir}/skymem_get_mails" "skymem_get_mails-" "" "emails"
 collectResults "${resultDir}/tomba_get_emails" "tomba_get_emails-" ".txt" "emails"
 

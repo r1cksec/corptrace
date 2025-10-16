@@ -48,7 +48,7 @@ if [ ! -d ${pathToTemp} ]
 then
     mkdir ${pathToTemp}
 else
-    rm -rf ${pathToTemp}
+    sudo rm -rf ${pathToTemp}
     mkdir ${pathToTemp}
 fi
 
@@ -57,40 +57,8 @@ echo "### APT Install"
 echo ""
 sudo apt update
 
-# determine distribution
-osRelease=$(cat /etc/os-release | grep "^ID=" | cut -d "=" -f 2)
-
-if [ "${osRelease}" == "debian" ]
-then
-    # Install base packages for Debian
-    sudo apt install -y git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist bc
-
-    # Check if Python 3.11 is installed and install python3.11-venv
-    if apt list --installed 2>/dev/null | grep -q 'python3.11'; then
-        sudo apt install -y python3.11-venv
-    else
-        sudo apt install -y python3-venv
-    fi
-
-elif [ "${osRelease}" == "kali" ]
-then
-    # Install base packages for Kali
-    sudo apt install -y git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist bc
-
-    # Check if Python 3.12 is installed and install python3.12-venv
-    if apt list --installed 2>/dev/null | grep -q 'python3.12'; then
-        sudo apt install -y python3.12-venv
-    else
-        sudo apt install -y python3-venv
-    fi
-
-else
-    # No Debian nor Kali detected, proceed as normal Debian
-    sudo apt install -y git wget python3 python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist bc
-
-    # Install default python3-venv
-    sudo apt install -y python3-venv
-fi
+# install basic packets
+sudo apt install -y git wget python3 python3-venv python3-pip whois curl nmap libimage-exiftool-perl jq dnstwist bc
 
 echo ""
 echo "### Write modules.json"
@@ -368,18 +336,6 @@ then
 else
     echo "dnsreaper is installed"
 fi
-
-git clone https://github.com/nullenc0de/servicelens ${pathToGit}/servicelens
-if ! [ -x "$(command -v servicelens)" ] || [ "${force}" == "1" ]
-then
-    ${pathToPython}/bin/pip3 install dnspython
-    echo "cd ${pathToGit}/servicelens && ${pathToPython}/bin/python3 servicelens.py \"\$@\"" > ${pathToTemp}/servicelens
-    chmod +x ${pathToTemp}/servicelens
-    sudo mv ${pathToTemp}/servicelens /usr/local/bin
-else
-    echo "servicelens is installed"
-fi
-
 
 git clone https://github.com/MattKeeley/Spoofy ${pathToGit}/Spoofy
 if ! [ -x "$(command -v spoofy)" ] || [ "${force}" == "1" ]

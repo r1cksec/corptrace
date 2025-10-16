@@ -14,11 +14,12 @@ fi
 
 domain=${1}
 outPath=${2}
-result=$(curl -s -X GET "https://api.zoomeye.hk/domain/search?q=${domain}" -H "API-KEY:${apiKey}")
+encodedQuery=$(echo -n "domain:'${domain}'" | base64 -w 0)
+result=$(curl -s -X POST "https://api.zoomeye.ai/v2/search" -d "{\"qbase64\": \"${encodedQuery}\", \"page\": 1}" -H "API-KEY: ${apiKey}")
 
 # write json output to file
 saveFile="$(echo ${domain} | sed 's/[^[:alnum:]]/_/g')"
 echo "${result}" | jq -c > ${outPath}/zoomeye-rootdomains-${saveFile}.json
 
-echo "${result}" | jq -r ".list[] .name" | awk -F '.' '{print $(NF-1)"."$NF}' | tr '[:upper:]' '[:lower:]' | sort -u
+echo "${result}" | jq -r '.data[] | select(.domain and .domain != "") | .domain' | sort -u
 

@@ -139,7 +139,6 @@ options:
 - hackertarget_get_rootdomains_from_nameserver
 - handelsregister_get_company_names
 - hunter_get_emails
-- letItGo
 - massdns
 - myssl_get_subdomains
 - networksdb_get_company_names_from_domain
@@ -148,17 +147,14 @@ options:
 - nmap_get_tls_alternative_names
 - nmap_reverse_lookup
 - northdata_get_company_names
-- phonebook_get_mails
 - robtex_get_rootdomains
 - securitytrails_get_ip_history
-- servicelens
 - shodan_get_ports_from_cidr
 - shodan_get_rootdomains_from_company
 - shodan_get_rootdomains_from_domain
 - skymem_get_mails
 - spk
 - spoofy
-- spyonweb_get_rootdomains
 - subdomaincenter_get_subdomains
 - subfinder
 - tmdb_get_company_names
@@ -170,7 +166,6 @@ options:
 - validin_get_rootdomains_from_domain
 - whois_get_ips
 - xing_get_employees
-- zoomeye_get_ports_from_cidr
 - zoomeye_get_rootdomains_from_domain
 - whoxy_get_rootdomains
 

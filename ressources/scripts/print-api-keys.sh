@@ -11,18 +11,6 @@ then
     echo ""
 fi  
 
-binaryedge=$(echo "${apiKeys}" | jq -r '.binaryedge_io')
-if [[ ! -z ${binaryedge} ]]
-then
-    echo "# binaryedge.io"
-    binaryedgeJson=$(curl -s "https://api.binaryedge.io/v2/user/subscription" -H "X-Key: ${binaryedge}")
-    binaryedgeRequestsPlan=$(echo ${binaryedgeJson} | jq -r '.requests_plan')
-    binaryedgeRequestsLeft=$(echo ${binaryedgeJson} | jq -r '.requests_left')
-    binaryedgeRequestsLeft2=$(echo "${binaryedgeRequestsPlan} - ${binaryedgeRequestsLeft}" | bc)
-    echo "${binaryedgeRequestsLeft2}/${binaryedgeRequestsPlan} -> ${binaryedgeRequestsLeft}"
-    echo ""
-fi
-
 bufferover=$(echo "${apiKeys}" | jq -r '.bufferover_run')
 if [[ ! -z ${bufferover} ]]
 then
@@ -52,18 +40,6 @@ if [[ ! -z ${hunter} ]]
 then
     echo "# hunter.io"
     curl -s "https://api.hunter.io/v2/account?api_key=${hunter}" | jq -r '.data .requests .searches as $s | "\($s .used)/\($s .available) -> \(.data .reset_date)"'
-    echo ""
-fi
-
-intelx=$(echo "${apiKeys}" | jq -r '.intelx_io')
-if [[ ! -z ${intelx} ]]
-then
-    echo "# intelx.io"
-    intelxJson=$(curl -s -H "x-key: ${intelx}" "https://2.intelx.io/authenticate/info")
-    intelxCreditMax=$(echo ${intelxJson} | jq -r '.paths ."/phonebook/search" | .CreditMax')
-    intelxCredit=$(echo ${intelxJson} | jq -r '.paths ."/phonebook/search" | .Credit')
-    intelxCredit2=$(echo "${intelxCreditMax} - ${intelxCredit}" | bc)
-    echo "${intelxCredit2}/${intelxCreditMax} -> 10/day"
     echo ""
 fi
 
@@ -114,20 +90,13 @@ then
     echo ""
 fi
 
-if [[ ! -z $(echo "${apiKeys}" | jq -r '.spyonweb_com') ]]
-then
-    echo "# spyonweb.com"
-    echo "200/month"
-    echo ""
-fi
-
 tombats=$(echo "${apiKeys}" | jq -r '.["tomba_io_ts"]')
 tombata=$(echo "${apiKeys}" | jq -r '.["tomba_io_ta"]')
 if [[ ! -z ${tombats} ]]
 then
     echo "# tomba.io"
     tombaUsage=$(curl -s --request GET --url "https://api.tomba.io/v1/usage" -H "X-Tomba-Key: ${tombata}" -H "X-Tomba-Secret: ${tombats}" | jq -r '.total .search')
-    echo "${tombaUsage}/50 -> 50/month"
+    echo "${tombaUsage}/25 -> 25/month"
     echo ""
 fi
 
@@ -158,11 +127,15 @@ then
     echo ""
 fi
 
-zoomeye=$(echo "${apiKeys}" | jq -r '.zoomeye_hk')
+zoomeye=$(echo "${apiKeys}" | jq -r '.zoomeye_ai')
 if [[ ! -z ${zoomeye} ]]
 then
-    echo "# zoomeye.hk"
-    curl -s -X GET "https://api.zoomeye.hk/resources-info" -H "API-KEY:${zoomeye}" | jq -r '"Free: \(.quota_info .remain_free_quota) (renewed monthly) \nPay:  \(.quota_info .remain_pay_quota) (per account registration)"'
+    echo "# zoomeye.ai"
+    result=$(curl -s -X POST "https://api.zoomeye.ai/v2/userinfo" -H "API-KEY: ${zoomeye}")
+    zoomeyepoint=$(echo "${result}" | jq -r '.data .subscription .zoomeye_points')
+    zoomeyepointsgeneric=$(echo "${result}" | jq -r '.data .subscription .points')
+    echo "${zoomeyepoint}/2000 -> 2000/year"
+    echo "${zoomeyepointsgeneric}/3000 -> 3000/month"
     echo ""
 fi
 
