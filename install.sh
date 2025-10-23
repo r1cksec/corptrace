@@ -82,22 +82,21 @@ fi
 
 # read api keys
 bevigilKey=$(jq -r '.bevigil_com' ${pathToConfig})
-binaryedgeKey=$(jq -r '.binaryedge_io' ${pathToConfig})
 bufferoverKey=$(jq -r '.bufferover_run' ${pathToConfig})
 fullhuntKey=$(jq -r '.fullhunt_io' ${pathToConfig})
 githubKey=$(jq -r '.github_com' ${pathToConfig})
 grayhatwarfareKey=$(jq -r '.grayhatwarfare_com' ${pathToConfig})
 hunterKey=$(jq -r '.hunter_io' ${pathToConfig})
-intelxKey=$(jq -r '.intelx_io' ${pathToConfig})
 leakixKey=$(jq -r '.leakix_net' ${pathToConfig})
 netlasKey=$(jq -r '.netlas_io' ${pathToConfig})
 networksdbKey=$(jq -r '.networksdb_io' ${pathToConfig})
 projectdiscoveryKey=$(jq -r '.projectdiscovery_io_key' ${pathToConfig})
 projectdiscoveryUser=$(jq -r '.projectdiscovery_io_user' ${pathToConfig})
+pugreconKey=$(jq -r '.pugrecon_com' ${pathToConfig})
+rsecloudKey=$(jq -r '.rsecloud_com' ${pathToConfig})
 robtexKey=$(jq -r '.robtex_com' ${pathToConfig})
 securitytrailsKey=$(jq -r '.securitytrails_com' ${pathToConfig})
 shodanKey=$(jq -r '.shodan_io' ${pathToConfig})
-spyonwebKey=$(jq -r '.spyonweb_com' ${pathToConfig})
 sslmateKey=$(jq -r '.sslmate_com' ${pathToConfig})
 tombaKeya=$(jq -r '.tomba_io_ta' ${pathToConfig})
 tombaKeys=$(jq -r '.tomba_io_ts' ${pathToConfig})
@@ -118,15 +117,16 @@ fi
 # write config for subfinder
 cat > ${pathToBuild}/subfinder.config << EOL
 bevigil: [${bevigilKey}]
-binaryedge: [${binaryedgeKey}]
 bufferover: [${bufferoverKey}]
 certspotter: [${sslmateKey}]
 chaos: [${projectdiscoveryKey}]
+fullhunt: [${fullhuntKey}]
 github: [${githubKey}]
 hunter: [${hunterKey}]
-intelx: [2.intelx.io:${intelxKey}]
 leakix: [${leakixKey}]
 netlas: [${netlasKey}]
+pugrecon: [${pugreconKey}]
+rsecloud: [${rsecloudKey}]
 robtex: [${robtexKey}]
 securitytrails: [${securitytrailsKey}]
 shodan: [${shodanKey}]
@@ -156,11 +156,9 @@ sed -e "s|REPLACE-GITHUB-APIKEY|${githubKey}|g" \
     -e "s|REPLACE-HUNTER-APIKEY|${hunterKey}|g" \
     -e "s|REPLACE-RESSOURCE-PATH|${pathToRessources}|g" \
     -e "s|REPLACE-NETWORKSDB-APIKEY|${networksdbKey}|g" \
-    -e "s|REPLACE-INTELX-APIKEY|${intelxKey}|g" \
     -e "s|REPLACE-ROBTEX-APIKEY|${robtexKey}|g" \
     -e "s|REPLACE-SECURITYTRAILS-APIKEY|${securitytrailsKey}|g" \
     -e "s|REPLACE-SHODAN-APIKEY|${shodanKey}|g" \
-    -e "s|REPLACE-SPYONWEP-APIKEY|${spyonwebKey}|g" \
     -e "s|REPLACE-SUBFINDER-CONFIG|${pathToBuild}/subfinder.config|g" \
     -e "s|REPLACE-TOMBATA-APIKEY|${tombaKeya}|g" \
     -e "s|REPLACE-TOMBATS-APIKEY|${tombaKeys}|g" \

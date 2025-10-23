@@ -1,22 +1,20 @@
 {
     "bevigil_com": "",
-    "binaryedge_io": "",
     "bufferover_run": "",
-    "censys_io": "",
+    "fullhunt_io": "",
     "github_com": "",
     "grayhatwarfare_com": "",
     "hunter_io": "",
-    "intelx_io": "",
     "leakix_net": "",
     "netlas_io": "",
     "networksdb_io": "",
-    "onyphe_io": "",
     "projectdiscovery_io_key": "",
     "projectdiscovery_io_user": "",
+    "pugrecon_com": "",
+    "rsecloud_com": "",
     "robtex_com": "",
     "securitytrails_com": "",
     "shodan_io": "",
-    "spyonweb_com": "",
     "sslmate_com": "",
     "tomba_io_ta": "",
     "tomba_io_ts": "",
@@ -25,6 +23,6 @@
     "virustotal_com": "",
     "xing_com_password": "",
     "xing_com_user": "",
-    "zoomeye_hk": ""
+    "zoomeye_ai": ""
 }
 
