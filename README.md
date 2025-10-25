@@ -44,7 +44,7 @@ To reinstall / overwrite all tools, the following argument can be specified.
 bash install.sh -force
 ```
 
-## Demo
+## Demo (2024)
 
 Example of collecting data:
 

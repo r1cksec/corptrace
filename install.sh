@@ -171,6 +171,7 @@ sed -e "s|REPLACE-GITHUB-APIKEY|${githubKey}|g" \
 
 # last line in modules.json should not contain an API key, because if key is empty, the line will be removed and the JSON syntax is broken
 grep -v " '' " "${pathToTemp}/modules.json" > ${pathToBuild}/modules.json
+echo "Done"
 
 echo ""
 echo "### Install Golang tools."
@@ -241,7 +242,7 @@ echo ""
 if ! [ -x "$(command -v geckodriver)" ] || [ "${force}" == "1" ]
 then
     latestGeckodriver=$(curl -sL https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r ".tag_name")
-    wget https://github.com/mozilla/geckodriver/releases/download/${latestGeckodriver}/geckodriver-${latestGeckodriver}-linux64.tar.gz -O ${pathToTemp}/geckodriver.tar.gz
+    wget "https://github.com/mozilla/geckodriver/releases/download/${latestGeckodriver}/geckodriver-${latestGeckodriver}-linux64.tar.gz" -O ${pathToTemp}/geckodriver.tar.gz
     tar -xf ${pathToTemp}/geckodriver.tar.gz -C ${pathToTemp}
     chmod +x ${pathToTemp}/geckodriver
     sudo mv ${pathToTemp}/geckodriver /usr/local/bin
@@ -254,7 +255,7 @@ if ! [ -x "$(command -v gitleaks)" ] || [ "${force}" == "1" ]
 then
     latestGitleaks=$(curl -sL https://api.github.com/repos/gitleaks/gitleaks/releases/latest | jq -r ".tag_name")
     latestGitleaksNoV=$(echo ${latestGitleaks} | sed "s/v//")
-    wget https://github.com/gitleaks/gitleaks/releases/download/${latestGitleaks}/gitleaks_${latestGitleaksNoV}_linux_x64.tar.gz -O ${pathToTemp}/gitleaks.tar.gz
+    wget "https://github.com/gitleaks/gitleaks/releases/download/${latestGitleaks}/gitleaks_${latestGitleaksNoV}_linux_x64.tar.gz" -O ${pathToTemp}/gitleaks.tar.gz
     tar -xf ${pathToTemp}/gitleaks.tar.gz -C ${pathToTemp}
     chmod +x ${pathToTemp}/gitleaks
     sudo mv ${pathToTemp}/gitleaks /usr/local/bin
@@ -265,23 +266,15 @@ fi
 
 if ! [ -x "$(command -v trufflehog)" ] || [ "${force}" == "1" ]
 then
-    wget https://github.com/trufflesecurity/trufflehog/releases/download/v3.81.9/trufflehog_3.81.9_linux_amd64.tar.gz -O ${pathToTemp}/truffleHog.tar.gz
+    latestTruffleHog=$(curl -sL https://api.github.com/repos/trufflesecurity/trufflehog/releases/latest | jq -r ".tag_name")
+    latestTruffleHogNoV=$(echo ${latestTruffleHog} | sed "s/v//")
+    wget "https://github.com/trufflesecurity/trufflehog/releases/download/${latestTruffleHog}/trufflehog_${latestTruffleHogNoV}_linux_amd64.tar.gz" -O ${pathToTemp}/truffleHog.tar.gz
     tar -xf ${pathToTemp}/truffleHog.tar.gz -C ${pathToTemp}
     chmod +x ${pathToTemp}/trufflehog
     sudo mv ${pathToTemp}/trufflehog /usr/local/bin
     rm ${pathToTemp}/README.md ${pathToTemp}/LICENSE ${pathToTemp}/truffleHog.tar.gz
 else
     echo "trufflehog is installed"
-fi
-
-if ! [ -x "$(command -v letItGo)" ] || [ "${force}" == "1" ]
-then
-    latestLetitgo=$(curl -sL https://api.github.com/repos/SecurityRiskAdvisors/letItGo/releases/latest | jq -r ".tag_name")
-    wget https://github.com/SecurityRiskAdvisors/letItGo/releases/download/${latestLetitgo}/letItGo_${latestLetitgo}_linux_amd64 -O ${pathToTemp}/letItGo
-    chmod +x ${pathToTemp}/letItGo
-    sudo mv ${pathToTemp}/letItGo /usr/local/bin
-else
-    echo "letItGo is installed"
 fi
 
 if ! [ -x "$(command -v scanrepo)" ] || [ "${force}" == "1" ]
@@ -297,10 +290,11 @@ fi
 
 if ! [ -x "$(command -v noseyparker)" ] || [ "${force}" == "1" ]
 then
-    wget https://github.com/praetorian-inc/noseyparker/releases/download/v0.19.0/noseyparker-v0.19.0-x86_64-unknown-linux-gnu.tar.gz -O ${pathToTemp}/noseyparker-v0.16.0-x86_64-unknown-linux-gnu.tar.gz
+    latestNoseyparker=$(curl -sL https://api.github.com/repos/praetorian-inc/noseyparker/releases/latest | jq -r ".tag_name")
+    wget "https://github.com/praetorian-inc/noseyparker/releases/download/${latestNoseyparker}/noseyparker-${latestNoseyparker}-x86_64-unknown-linux-gnu.tar.gz" -O ${pathToTemp}/noseyparker-x86_64-unknown-linux-gnu.tar.gz
     # prevent directory "bin" conflict with "go install" 
     mkdir ${pathToTemp}/noseyparker
-    tar -xf ${pathToTemp}/noseyparker-v0.16.0-x86_64-unknown-linux-gnu.tar.gz -C ${pathToTemp}/noseyparker
+    tar -xf ${pathToTemp}/noseyparker-x86_64-unknown-linux-gnu.tar.gz -C ${pathToTemp}/noseyparker
     chmod +x ${pathToTemp}/noseyparker/bin/noseyparker
     sudo mv ${pathToTemp}/noseyparker/bin/noseyparker /usr/local/bin
 else
