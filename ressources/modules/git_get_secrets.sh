@@ -3,7 +3,7 @@
 if [ ${#} -ne 2 ]
 then
     echo "usage: ${0} repository outputDirectory"
-    echo "Clone repository and run gitleaks, trufflehog, scanrepo, noseyparker"
+    echo "Clone repository and run gitleaks, trufflehog, noseyparker"
     echo "repository: https://<url>"
     exit 1
 fi
@@ -36,7 +36,6 @@ fi
 # copy repositories
 cp -r ${tmpRepoDir} ${tmpRepoDir}-gitleaks
 cp -r ${tmpRepoDir} ${tmpRepoDir}-trufflehog
-cp -r ${tmpRepoDir} ${tmpRepoDir}-scanrepo
 cp -r ${tmpRepoDir} ${tmpRepoDir}-noseyparker
 
 gitleaks detect --source ${tmpRepoDir}-gitleaks -v > ${globalTempDir}/gitleaks 2>&1 &
@@ -46,17 +45,6 @@ trufflehog git file://${tmpRepoDir}-trufflehog --no-update > ${globalTempDir}/tr
 timeStamp=$(date +"%Y-%m-%d_%T" | tr ':' '_')
 tmpDataStore="${globalTempDir}/${timeStamp}-${repoDir}"
 noseyparker scan --datastore ${tmpDataStore} ${tmpRepoDir}-noseyparker --progress never > /dev/null ; noseyparker report --datastore ${tmpDataStore} --progress never > ${globalTempDir}/noseyparker 2>&1 &
-
-if [ -d ${tmpRepoDir}-scanrepo ]
-then
-    cd ${tmpRepoDir}-scanrepo
-    git checkout --quiet origin
-    git log -p | scanrepo > ${globalTempDir}/scanrepo 2>&1
-    cd - > /dev/null &
-else
-    echo "Error!"
-    exit 1
-fi
 
 wait
 
@@ -79,12 +67,6 @@ printf "${GR}###### noseyparker ######${NC}\n"
 echo ""
 cat ${globalTempDir}/noseyparker > ${outputDir}/${clearRepoName}/noseyparker
 cat ${globalTempDir}/noseyparker
-
-echo ""
-printf "${GR}###### scanrepo ######${NC}\n"
-echo ""
-cat ${globalTempDir}/scanrepo > ${outputDir}/${clearRepoName}/scanrepo
-cat ${globalTempDir}/scanrepo
 
 rm -rf "${globalTempDir}"
 

@@ -277,17 +277,6 @@ else
     echo "trufflehog is installed"
 fi
 
-if ! [ -x "$(command -v scanrepo)" ] || [ "${force}" == "1" ]
-then
-    wget https://github.com/techjacker/repo-security-scanner/releases/download/0.4.1/repo-security-scanner_0.4.1_Linux_x86_64.tar.gz -O ${pathToTemp}/scanrepo.tar.gz
-    tar -xf ${pathToTemp}/scanrepo.tar.gz -C ${pathToTemp}
-    chmod +x ${pathToTemp}/repo-security-scanner
-    sudo mv ${pathToTemp}/repo-security-scanner /usr/local/bin/scanrepo
-    rm ${pathToTemp}/scanrepo.tar.gz
-else
-    echo "scanrepo is installed"
-fi
-
 if ! [ -x "$(command -v noseyparker)" ] || [ "${force}" == "1" ]
 then
     latestNoseyparker=$(curl -sL https://api.github.com/repos/praetorian-inc/noseyparker/releases/latest | jq -r ".tag_name")
