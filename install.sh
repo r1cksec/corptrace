@@ -43,7 +43,7 @@ else
     pathToHomeDir="$HOME"
 fi
 
-# create temporay path
+# create temporary path
 if [ ! -d ${pathToTemp} ]
 then
     mkdir ${pathToTemp}

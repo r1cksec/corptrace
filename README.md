@@ -23,7 +23,7 @@ Depending on the input, some modules may take very long to terminate.
 To prevent timeouts of the individual modules, the duration of the timeout window can be adjusted during execution.
 <br>
 <br>
-The following command executes all available modules for a domain up to risk level 2:
+The following command executes all available modules for a domain up to risk level 2 (possible risk level 1-4):
 
 ```
 python3 corptrace.py -o /tmp/out -d r1cksec.de -e
@@ -31,7 +31,6 @@ python3 corptrace.py -o /tmp/out -d r1cksec.de -e
 
 ## Install
 
-The installation script was developed for Kali Linux.
 Before running the installation, it is recommended to store API keys in the corresponding configuration file.
 
 ```
