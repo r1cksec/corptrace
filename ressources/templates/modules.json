@@ -22,6 +22,7 @@
     {"name": "handelsregister_get_company_names", "riskLevel": "2", "syntax": "handelsregister_get_company_names '<company>' > <outputFile> 2>&1"},
     {"name": "hunter_get_emails", "riskLevel": "2", "syntax": "hunter_get_emails <domain> <outputDirectory> 'REPLACE-HUNTER-APIKEY' > <outputFile> 2>&1"},
     {"name": "massdns", "riskLevel": "4", "syntax": "cat REPLACE-RESSOURCE-PATH/wordlists/subdomains-top1million-110000.txt | awk -F \" \" '{print $1\".<domain>\"}' | massdns -r REPLACE-RESSOURCE-PATH/wordlists/resolvers.txt -t A -o S -w <outputFile> > /dev/null 2>&1"},
+    {"name": "ms_get_rootdomains_from_tenant", "riskLevel": "1", "syntax": "ms_get_rootdomains_from_tenant <domain> > <outputFile> 2>&1"},
     {"name": "myssl_get_subdomains", "riskLevel": "1", "syntax": "myssl_get_subdomains <domain> > <outputFile> 2>&1"},
     {"name": "networksdb_get_company_names_from_domain", "riskLevel": "2", "syntax": "networksdb_get_company_names_from_domain '<domain>' <outputDirectory> 'REPLACE-NETWORKSDB-APIKEY' > <outputFile> 2>&1"},
     {"name": "networksdb_get_ipranges_from_company", "riskLevel": "2", "syntax": "networksdb_get_ipranges_from_company '<company>' <outputDirectory> 'REPLACE-NETWORKSDB-APIKEY' > <outputFile> 2>&1"},

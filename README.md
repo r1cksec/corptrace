@@ -139,10 +139,11 @@ options:
 - handelsregister_get_company_names
 - hunter_get_emails
 - massdns
+- ms_get_rootdomains_from_tenant
 - myssl_get_subdomains
 - networksdb_get_company_names_from_domain
 - networksdb_get_ipranges_from_company
-- networksdb_get_rootdomains_from_cidr.py
+- networksdb_get_rootdomains_from_cidr
 - nmap_get_tls_alternative_names
 - nmap_reverse_lookup
 - northdata_get_company_names
