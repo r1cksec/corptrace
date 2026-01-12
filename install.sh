@@ -178,7 +178,7 @@ echo "### Install Golang tools."
 echo ""
 
 # download golang
-wget https://go.dev/dl/go1.23.5.linux-amd64.tar.gz -O ${pathToTemp}/go.tar.gz
+wget https://go.dev/dl/go1.24.1.linux-amd64.tar.gz -O ${pathToTemp}/go.tar.gz
 tar -xf ${pathToTemp}/go.tar.gz -C ${pathToTemp}
 rm -r ${pathToTemp}/go.tar.gz
 export GOPATH=${pathToTemp}
