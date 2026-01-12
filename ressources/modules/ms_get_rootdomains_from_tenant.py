@@ -26,10 +26,8 @@ except Exception as e:
     print(e)
     exit(1)
 
-url = "https://accounts.accesscontrol.windows.net/" + tenantId + "/metadata/json/1"
-
 try:
-    req = Request(url, headers={"User-Agent": "python-urllib/3"})
+    req = Request("https://accounts.accesscontrol.windows.net/" + tenantId + "/metadata/json/1")
     with urlopen(req, timeout=20) as resp:
         data = resp.read()
         metadata = json.loads(data.decode("utf-8"))
