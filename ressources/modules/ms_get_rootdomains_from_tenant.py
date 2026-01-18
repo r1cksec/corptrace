@@ -33,6 +33,7 @@ try:
         metadata = json.loads(data.decode("utf-8"))
 
     allDomains = []
+    onmicroDomains = []
 
     for audience in metadata["allowedAudiences"]:
         domain = audience.split("accounts.accesscontrol.windows.net@")
@@ -44,17 +45,25 @@ try:
 
         # get rootdomain from subdomain
         elif (len(domainParts) > 2):
-            allDomains.append(".".join(domainParts[-2:]))
+            if ("onmicrosoft" in domainParts[-2]):
+                onmicroDomains.append(".".join(domainParts))
+            else:
+                allDomains.append(".".join(domainParts[-2:]))
 
         # add rootomain
         elif (len(domainParts) == 2):
             allDomains.append(".".join(domainParts))
 
     uniqRootdomains = sorted(set(allDomains))
+    uniqOnMicroDomains = sorted(set(onmicroDomains))
 
     for ud in uniqRootdomains:
-        if (not ud == "onmicrosoft.com"):
-            print(ud)
+        print(ud)
+
+    print("")
+
+    for ud in uniqOnMicroDomains:
+        print(ud)
 
 except Exception as e:
     print("Error while getting rootdomains:")
