@@ -1,6 +1,6 @@
 # CorpTrace
 
-CorpTrace is a framewok that supports the process of collecting information about a target company in the context of a red team assessment.
+CorpTrace is a framework that supports the process of collecting information about a target company in the context of a red team assessment.
 I wrote this tool primarily to automate my workflow, so I'm sure it's still buggy for some cases.
 
 ## Usage
