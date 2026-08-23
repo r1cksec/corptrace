@@ -3,6 +3,8 @@
 from lxml import etree
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import sys
 import time
 import os
@@ -25,6 +27,13 @@ exec(code)
 url = "https://www.handelsregister.de"
 driver.get(url)
 
+# dismiss cookie banner
+try:
+    cookieBtn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#cookieBtn a")))
+    cookieBtn.click()
+except Exception:
+    pass
+
 # click on advanced search
 advSearch = driver.find_elements(By.ID, "naviForm:erweiterteSucheLink")
 advSearch[0].click()
@@ -45,11 +54,11 @@ insideDropdown = driver.find_element(By.ID, "form:ergebnisseProSeite_3")
 insideDropdown.click()
 
 # click on search
-#obj = driver.find_elements(By.XPATH, "//*[contains(text(), '" + pressSearch + "')]")
 obj = driver.find_elements(By.ID, "form:btnSuche")
 obj[0].click()
 
-time.sleep(15)
+# sleep and wait for result to appear
+WebDriverWait(driver, 60).until(lambda d: len(d.find_elements(By.XPATH, '//*[@id="ergebnissForm:selectedSuchErgebnisFormTable_data"]/tr')) > 0)
 
 # parse results
 sourceCode = driver.page_source
@@ -75,4 +84,5 @@ for trClass in allTrsClasses:
         print("")
 
 driver.close()
+
 

@@ -13,7 +13,7 @@ else
 fi
 
 # use only first part of company name for search
-company=$(${1} | cut -d " " -f 1)
+company=$(echo "${1}" | cut -d " " -f 1)
 outPath=${2}
 
 result=$(curl -s --request GET --url "https://buckets.grayhatwarfare.com/api/v2/files?keywords=${company}&start=0&limit=1000" --header "Authorization: Bearer ${apiKey}")

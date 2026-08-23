@@ -1,4 +1,8 @@
 import os
+import logging
+
+# silence selenium error logs
+logging.getLogger("selenium.webdriver.common.selenium_manager").setLevel(logging.ERROR)
 
 currentPosition = os.path.realpath(__file__)
 dn = os.path.dirname(currentPosition)         
@@ -36,4 +40,5 @@ driver.implicitly_wait(10)
 
 # 60 seconds timeout
 driver.set_page_load_timeout(60)
+
 

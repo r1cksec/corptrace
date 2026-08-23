@@ -62,16 +62,10 @@ function collectResults()
             then
                 cat "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" | awk -F ' ' '{print $1}' >> "${resultDir}/${resultType}_${domainName}"
 
+			# only print domains, where the ip address does not appears more than 10 times
             elif [[ "${f}" == *"massdns-"* ]]
             then
-                timestamp=$(date +"%Y-%m-%d_%T")
-                cat "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" | grep -v "0.0.0.0" | grep " A " | awk -F " A " '{print $2}' | sort -u | grep -Eo '([0-9]*\.){3}[0-9]*' > "/tmp/${timestamp}_massdns_print_${domainName}"
-
-                while read -r line || [[ -n "${line}" ]]
-                do
-                    # -m 1 to prevent stdout errors
-                    grep -m 1 "$line" "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" | awk -F '. ' '{print $1}' >> "${resultDir}/${resultType}_${domainName}"
-                done < "/tmp/${timestamp}_massdns_print_${domainName}"
+                cat "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" | grep " A " | grep -v "0.0.0.0" | awk '{count[$NF]++; lines[NR]=$0; ip[NR]=$NF} END {for (i=1; i<=NR; i++) if (count[ip[i]] <= 10) print lines[i]}' | awk -F " A " '{print $1}' | sed 's/\.$//' | sort -u >> "${resultDir}/${resultType}_${domainName}"
 
             else
                 cat "${pathToDir}/${nameScheme1}${domainName}${nameScheme2}" >> "${resultDir}/${resultType}_${domainName}"
@@ -185,4 +179,5 @@ do
 
     printf "%-40s %-30s %-30s %-30s\n" "${domain}" "${countSubdomains}" "${countEmails}" "${spoofable}"
 done
+
 

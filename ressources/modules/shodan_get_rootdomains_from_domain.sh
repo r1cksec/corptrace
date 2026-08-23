@@ -16,7 +16,7 @@ domain=${1}
 outPath=${2}
 
 resultHostname=$(curl -s "https://api.shodan.io/shodan/host/search?key=${apiKey}&query=hostname:${domain}")
-iconHash=$(echo "https://${domain}" | favfreak --shodan | grep "\[DORK\]" | awk -F "http.favicon.hash:" '{print $2}' )
+iconHash=$(get_favicon_shodan_hash "${domain}")
 resultIcon=$(curl -s "https://api.shodan.io/shodan/host/search?key=${apiKey}&query=http.favicon.hash:${iconHash}")
 
 # write json output to file

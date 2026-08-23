@@ -43,7 +43,8 @@ wait = WebDriverWait(driver, 11)
 
 # click allow cookies
 try:
-    driver.find_element(By.CSS_SELECTOR, ".sc-dcJsrY.eLOIWU").click()
+    accept_btn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "uc-accept-button")))
+    accept_btn.click()
 except:
     pass
 
@@ -125,48 +126,72 @@ for obj in empoyleeObjects:
 
     # collect contact details for each employee
     employee = obj["node"]["profileDetails"]
-    print(employee["firstName"].lower(), end=" ; ")
-    print(employee["lastName"].lower(), end=" ; ")
+    try:
+        print(employee["firstName"].lower(), end=" ; ")
+    except:
+        print("FirstnameError", end=" ; ")
+
+    try:
+        print(employee["lastName"].lower(), end=" ; ")
+    except:
+        print("LastnameError", end=" ; ")
+
     try:
         print(employee["occupations"][0]['subline'], end=" ; ")
     except:
         print("Unknown", end=" ; ")
 
     # users who enter a street name may provide additional information
-    if (employee["location"] is not None) or (forceDetails == "true"):
-        if (employee["location"]["city"] is not None) or (forceDetails == "true"):
-            city = employee["location"]["city"]
+    try:
+        if (employee["location"] is not None) or (forceDetails == "true"):
+            if (employee["location"]["city"] is not None) or (forceDetails == "true"):
+                city = employee["location"]["city"]
 
-        if (employee["location"]["street"] is not None) or (forceDetails == "true"):
-            body3 = {"operationName":"profileContactDetails", "variables":{"profileId":employee['pageName']},
-                     "query":"query profileContactDetails($profileId: SlugOrID!) { profileModules(id: $profileId) { xingIdModule { ...xingIdContactDetails outdated lastModified } }}fragment xingIdContactDetails on XingIdModule { contactDetails { business { address { city country { countryCode name: localizationValue } province { id canonicalName name: localizationValue } street zip } email fax { phoneNumber } mobile { phoneNumber } phone { phoneNumber }}}}"}
-            contactResponse = requests.post(xingApi, headers=headers, json=body3, cookies=loginCookie)
-            contactJson = contactResponse.json()
+            if (employee["location"]["street"] is not None) or (forceDetails == "true"):
+                body3 = {"operationName":"profileContactDetails", "variables":{"profileId":employee['pageName']},
+                         "query":"query profileContactDetails($profileId: SlugOrID!) { profileModules(id: $profileId) { xingIdModule { ...xingIdContactDetails outdated lastModified } }}fragment xingIdContactDetails on XingIdModule { contactDetails { business { address { city country { countryCode name: localizationValue } province { id canonicalName name: localizationValue } street zip } email fax { phoneNumber } mobile { phoneNumber } phone { phoneNumber }}}}"}
+                contactResponse = requests.post(xingApi, headers=headers, json=body3, cookies=loginCookie)
+                contactJson = contactResponse.json()
 
-            # sleep do prevent rate limit (requesting details for each employee)
-            if (forceDetails == "true"):
-                time.sleep(15)
+                # sleep do prevent rate limit (requesting details for each employee)
+                if (forceDetails == "true"):
+                    time.sleep(15)
 
-            contact = contactJson["data"]["profileModules"]["xingIdModule"]["contactDetails"]["business"]
-            if (contact["email"] is not None):
-                email = contact["email"]
+                contact = contactJson["data"]["profileModules"]["xingIdModule"]["contactDetails"]["business"]
+                if (contact["email"] is not None):
+                    email = contact["email"]
 
-            if (contact["phone"] is not None):
-                if (contact["phone"]["phoneNumber"] is not None):
-                    phone = contact["phone"]["phoneNumber"]
+                if (contact["phone"] is not None):
+                    if (contact["phone"]["phoneNumber"] is not None):
+                        phone = contact["phone"]["phoneNumber"]
 
-                if (contact["mobile"] is not None and contact["mobile"]["phoneNumber"] is not None):
-                    mobile = contact["mobile"]["phoneNumber"]
+                    if (contact["mobile"] is not None and contact["mobile"]["phoneNumber"] is not None):
+                        mobile = contact["mobile"]["phoneNumber"]
 
-            if (employee["location"]["street"] is not None):
-                street = employee["location"]["street"]
+                if (employee["location"]["street"] is not None):
+                    street = employee["location"]["street"]
+    except:
+        city = "Unknown"
+        street = "Unknown"
+        email = "Unknown"
+        phone = "Unknown"
+        mobile = "Unknown"
 
     print(city + ", " + street, end=" ; ")
     print(email, end=" ; ")
     print(phone, end=" ; ")
     print(mobile, end=" ; ")
-    print(employee["gender"], end=" ; ")
-    profilePage = "https://www.xing.com/profile/" + employee["pageName"]
+
+    try:
+        print(employee["gender"], end=" ; ")
+    except:
+        print("Unknown", end=" ; ")
+
+    try:
+        profilePage = "https://www.xing.com/profile/" + employee["pageName"]
+    except:
+        profilePage = "Unknown"
+
     print(profilePage)
 
 time.sleep(1)

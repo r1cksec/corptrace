@@ -116,6 +116,7 @@ options:
 
 ## Modules
 
+- azmap_rootdomains
 - crtsh_get_rootdomains
 - csprecon
 - dns_get_records
@@ -139,7 +140,6 @@ options:
 - handelsregister_get_company_names
 - hunter_get_emails
 - massdns
-- ms_get_rootdomains_from_tenant
 - myssl_get_subdomains
 - networksdb_get_company_names_from_domain
 - networksdb_get_ipranges_from_company
@@ -164,6 +164,8 @@ options:
 - urlscan_get_subdomains
 - validin_get_rootdomains_from_cidr
 - validin_get_rootdomains_from_domain
+- validin_get_subdomains_from_domain
+- validin_get_rootdomains_from_nameserver
 - whois_get_ips
 - xing_get_employees
 - zoomeye_get_rootdomains_from_domain
